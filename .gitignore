@@ -1,0 +1,87 @@
+# Ignore the Library folder
+[Ll]ibrary/
+
+# Ignore the Temp folder
+[Tt]emp/
+
+# Ignore the Obj folder
+[Oo]bj/
+
+# Ignore the Build folder
+[Bb]uild/
+
+# Ignore the Logs folder
+[Ll]ogs/
+
+# Ignore the Packages folder (only if you have package dependencies elsewhere)
+[Pp]ackages/
+
+# Ignore auto-generated files for Visual Studio and Rider
+.vs
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+
+# Ignore Unity-generated files
+*.unitypackage
+*.asset
+*.mat
+
+# Ignore crash reports
+sysinfo.txt
+
+# Ignore build metadata
+*.apk
+*.aab
+*.exe
+
+# Ignore Mac files
+.DS_Store
+
+# Ignore crash logs
+*.log
+
+# Ignore all meta files except in Assets and ProjectSettings
+!Assets/**/*.meta
+!ProjectSettings/**/*.meta
+
+# Ignore Play mode test results
+TestResults/
+
+# Ignore Rider and JetBrains-specific files
+.idea/
+*.sln.iml
+
+# Ignore Collaborate temporary files
+.collab/
+.collab.meta
+.collab/
+
+# Ignore AddressableAsset files
+/Assets/AddressableAssetsData/
+
+# Ignore ScriptableObject auto-generated files
+*.so
+
+# Ignore LFS lock files
+*.lock
+
+# Ignore Yarn and NPM packages
+node_modules/
+.yarn/
+
+# Ignore the results of builds
+[Bb]uilds/
