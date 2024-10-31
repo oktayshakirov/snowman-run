@@ -1,4 +1,4 @@
-# Ignore the Library folder
+# Ignore the Library folder (but include the Packages folder to avoid missing dependencies)
 [Ll]ibrary/
 
 # Ignore the Temp folder
@@ -13,9 +13,8 @@
 # Ignore the Logs folder
 [Ll]ogs/
 
-# Ignore the Packages folder (only if you have package dependencies elsewhere)
-[Pp]ackages/
-
+# Keep the Packages folder to ensure dependencies are included in version control
+# (Remove "[Pp]ackages/" line to include Packages folder)
 # Ignore auto-generated files for Visual Studio and Rider
 .vs
 .vscode/
@@ -37,6 +36,8 @@
 
 # Ignore Unity-generated files
 *.unitypackage
+
+# Ignore asset files and materials that are not necessary
 *.asset
 *.mat
 
@@ -54,7 +55,7 @@ sysinfo.txt
 # Ignore crash logs
 *.log
 
-# Ignore all meta files except in Assets and ProjectSettings
+# Include all meta files in Assets and ProjectSettings
 !Assets/**/*.meta
 !ProjectSettings/**/*.meta
 
