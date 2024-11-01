@@ -13,10 +13,11 @@
 # Ignore the Logs folder
 [Ll]ogs/
 
-# Keep the Packages folder to ensure dependencies are included in version control
-# (Remove "[Pp]ackages/" line to include Packages folder)
+# Ensure Packages folder is included for dependency tracking
+!Packages/
+
 # Ignore auto-generated files for Visual Studio and Rider
-.vs
+.vs/
 .vscode/
 *.csproj
 *.unityproj
@@ -32,50 +33,46 @@
 *.mdb
 *.opendb
 *.VC.db
-*.pidb.meta
 
-# Ignore Unity-generated files
+# Ignore Unity-generated package files
 *.unitypackage
 
-# Ignore asset files and materials that are not necessary
-*.asset
-*.mat
-
-# Ignore crash reports
+# Ignore crash reports and other logs
 sysinfo.txt
-
-# Ignore build metadata
-*.apk
-*.aab
-*.exe
-
-# Ignore Mac files
-.DS_Store
-
-# Ignore crash logs
 *.log
+
+# Ignore MacOS-specific system files
+.DS_Store
 
 # Include all meta files in Assets and ProjectSettings
 !Assets/**/*.meta
 !ProjectSettings/**/*.meta
+
+# Ensure ProjectSettings is included for configuration consistency
+!ProjectSettings/
 
 # Ignore Play mode test results
 TestResults/
 
 # Ignore Rider and JetBrains-specific files
 .idea/
-*.sln.iml
 
-# Ignore Collaborate temporary files
-.collab/
-.collab.meta
-.collab/
+# Ignore Unity Collaborate temporary files
+.Collab/
 
 # Ignore AddressableAsset files
 /Assets/AddressableAssetsData/
 
-# Ignore ScriptableObject auto-generated files
-*.so
+# Exclude large auto-generated Unity assets that are not critical for version control
+[Ll]ightingData.asset
+
+# Ignore common build files for multiple platforms
+*.apk
+*.aab
+*.exe
+*.app
+*.xcodeproj
+*.ipa
 
 # Ignore LFS lock files
 *.lock
