@@ -93,7 +93,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 34c29d260409e48dea9dbc46a7f7c1b3,
+    type: 2}
   m_LightingSettings: {fileID: 1040757436}
 --- !u!196 &4
 NavMeshSettings:
@@ -218,7 +219,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   rb: {fileID: 41877087}
-  horizontalMultiplier: 1.7
   speedIncreasePerPoint: 0.5
 --- !u!1 &126221218
 GameObject:
@@ -720,7 +720,7 @@ LightingSettings:
   m_AlbedoBoost: 1
   m_IndirectOutputScale: 1
   m_UsingShadowmask: 1
-  m_BakeBackend: 1
+  m_BakeBackend: 2
   m_LightmapMaxSize: 1024
   m_LightmapSizeFixed: 0
   m_UseMipmapLimits: 1
@@ -910,7 +910,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Score: 0'
+  m_Text: 'Coins: 0'
 --- !u!222 &1994156826
 CanvasRenderer:
   m_ObjectHideFlags: 0
