@@ -29,7 +29,7 @@ public class GroundTile : MonoBehaviour {
     public void SpawnCoins()
     {
         int coinsToSpawn = Random.Range(1, 4);
-        float laneOffset = 2.5f;
+        float laneOffset = 3f;
         
         for (int i = 0; i < coinsToSpawn; i++)
         {
