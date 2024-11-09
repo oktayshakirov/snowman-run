@@ -16,6 +16,10 @@
 # Ensure Packages folder is included for dependency tracking
 !Packages/
 
+# Ignore platform-specific UserSettings and layout files
+UserSettings/
+*.dwlt
+
 # Ignore auto-generated files for Visual Studio and Rider
 .vs/
 .vscode/
