@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
 
     bool alive = true;
     public float speed = 5;
     [SerializeField] Rigidbody rb;
+
+    [SerializeField] Transform leftHand;
+    [SerializeField] Transform rightHand;
+    public float handRotationAngle = 25f;
+    public float handRotationSpeed = 5f;
 
     private int currentLane = 1;
     private float laneDistance = 3.0f;
@@ -50,11 +56,13 @@ public class PlayerMovement : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0) {
                 currentLane--;
                 ApplyLean(-leanAngle);
+                RotateHands(-handRotationAngle);
                 isMoving = true;
                 Invoke("ResetMove", 0.1f);
             } else if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2) {
                 currentLane++;
                 ApplyLean(leanAngle);
+                RotateHands(handRotationAngle);
                 isMoving = true;
                 Invoke("ResetMove", 0.1f);
             }
@@ -72,9 +80,11 @@ public class PlayerMovement : MonoBehaviour {
                         if (swipe.x > 0 && currentLane < 2) {
                             currentLane++;
                             ApplyLean(leanAngle);
+                            RotateHands(handRotationAngle);
                         } else if (swipe.x < 0 && currentLane > 0) {
                             currentLane--;
                             ApplyLean(-leanAngle);
+                            RotateHands(-handRotationAngle);
                         }
                         isMoving = true;
                         Invoke("ResetMove", 0.1f);
@@ -88,9 +98,36 @@ public class PlayerMovement : MonoBehaviour {
         targetRotation = Quaternion.Euler(0, 0, angle);
     }
 
+    private void RotateHands(float angle) {
+        if (angle > 0) {
+            leftHand.localRotation = Quaternion.Euler(0, 0, -handRotationAngle);
+            rightHand.localRotation = Quaternion.Euler(0, 0, handRotationAngle);
+        } else {
+            leftHand.localRotation = Quaternion.Euler(0, 0, handRotationAngle);
+            rightHand.localRotation = Quaternion.Euler(0, 0, -handRotationAngle);
+        }
+    }
+
     private void ResetMove() {
         isMoving = false;
         targetRotation = Quaternion.Euler(0, 0, 0);
+        StartCoroutine(ResetHands());
+    }
+
+    private IEnumerator ResetHands() {
+        Quaternion leftHandStartRotation = leftHand.localRotation;
+        Quaternion rightHandStartRotation = rightHand.localRotation;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 1f) {
+            leftHand.localRotation = Quaternion.Lerp(leftHandStartRotation, Quaternion.identity, elapsedTime);
+            rightHand.localRotation = Quaternion.Lerp(rightHandStartRotation, Quaternion.identity, elapsedTime);
+            elapsedTime += Time.deltaTime * handRotationSpeed;
+            yield return null;
+        }
+
+        leftHand.localRotation = Quaternion.identity;
+        rightHand.localRotation = Quaternion.identity;
     }
 
     public void Die() {

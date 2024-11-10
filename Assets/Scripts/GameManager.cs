@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
     public void IncrementScore ()
     {
         score++;
-        scoreText.text = "SCORE: " + score;
+        scoreText.text = "Coins: " + score;
         // Increase the player's speed
         playerMovement.speed += playerMovement.speedIncreasePerPoint;
     }
