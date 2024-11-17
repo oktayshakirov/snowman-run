@@ -5,8 +5,8 @@ using System.Collections;
 public class MountainRepeater : MonoBehaviour
 {
     [SerializeField] GameObject mountainPrefab;
-    [SerializeField] int numberOfMountains = 10;
-    [SerializeField] float mountainLength = 20f; 
+    [SerializeField] int numberOfMountains = 20; 
+    [SerializeField] float mountainLength = 20f;
     [SerializeField] float fadeInDuration = 2f;
 
     private List<GameObject> activeMountains = new List<GameObject>();
@@ -16,17 +16,18 @@ public class MountainRepeater : MonoBehaviour
 
     private void Start()
     {
-        playerTransform = Camera.main.transform; 
+        playerTransform = Camera.main.transform;
         InitializeMountains();
     }
 
     private void Update()
     {
-        if (playerTransform.position.z > activeMountains[activeMountains.Count - 1].transform.position.z - mountainLength * 5)
+        if (playerTransform.position.z > activeMountains[activeMountains.Count - 1].transform.position.z - mountainLength * 10)
         {
             SpawnMountainSegment();
         }
-        if (activeMountains[0].transform.position.z < playerTransform.position.z - mountainLength * 5)
+
+        if (activeMountains[0].transform.position.z < playerTransform.position.z - mountainLength * 12)
         {
             Destroy(activeMountains[0]);
             activeMountains.RemoveAt(0);
@@ -37,6 +38,7 @@ public class MountainRepeater : MonoBehaviour
     {
         nextLeftMountainPosition = transform.position + Vector3.left * mountainPrefab.transform.localScale.x;
         nextRightMountainPosition = transform.position + Vector3.right * mountainPrefab.transform.localScale.x;
+
         for (int i = 0; i < numberOfMountains; i++)
         {
             SpawnMountainSegment();

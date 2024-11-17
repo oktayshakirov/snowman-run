@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
 [ExecuteInEditMode]
-public class GroundSpawner : MonoBehaviour {
-
+public class GroundSpawner : MonoBehaviour
+{
     [SerializeField] GameObject groundTile;
     Vector3 nextSpawnPoint;
 
@@ -12,10 +12,15 @@ public class GroundSpawner : MonoBehaviour {
         nextSpawnPoint = temp.transform.GetChild(1).transform.position;
         if (spawnItems && Application.isPlaying)
         {
-            temp.GetComponent<GroundTile>().SpawnObstacle();
+            var groundTileScript = temp.GetComponent<GroundTile>();
+            groundTileScript.SpawnObstacle();
             if (Random.Range(0f, 1f) < 0.5f)
             {
-                temp.GetComponent<GroundTile>().SpawnCoins();
+                groundTileScript.SpawnCoins();
+            }
+            if (Random.Range(0f, 1f) < 0.1f) 
+            {
+                groundTileScript.SpawnRamps();
             }
         }
     }
