@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (onRamp)
         {
-            forwardMove += Vector3.down * 0.1f; // Simulate gravity on the ramp
+            forwardMove += Vector3.down * 0.1f; 
             rb.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(Vector3.Cross(transform.right, rampNormal)), Time.fixedDeltaTime * leanSpeed);
         }
 

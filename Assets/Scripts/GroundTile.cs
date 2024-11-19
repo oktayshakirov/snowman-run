@@ -8,6 +8,8 @@ public class GroundTile : MonoBehaviour
     [SerializeField] GameObject obstaclePrefab;
     [SerializeField] GameObject rampPrefab;
 
+    private HashSet<Vector3> usedPositions = new HashSet<Vector3>();
+
     private void Start()
     {
         groundSpawner = GameObject.FindFirstObjectByType<GroundSpawner>();
@@ -46,28 +48,35 @@ public class GroundTile : MonoBehaviour
                 transform.position.z
             );
 
-            Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity, transform);
+            if (!IsPositionOccupied(spawnPosition))
+            {
+                Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity, transform);
+                usedPositions.Add(spawnPosition);
+            }
         }
     }
 
-public void SpawnRamps()
-{
-    float rampSpawnProbability = 0.5f; 
-    if (Random.value > rampSpawnProbability)
+    public void SpawnRamps()
     {
-        return;
+        float rampSpawnProbability = 0.5f;
+        if (Random.value > rampSpawnProbability)
+        {
+            return;
+        }
+
+        int laneIndex = Random.Range(0, 3);
+        Vector3 spawnPosition = new Vector3(
+            (laneIndex - 1) * 3f,
+            0f,
+            transform.position.z + Random.Range(-2f, 2f)
+        );
+
+        if (!IsPositionOccupied(spawnPosition))
+        {
+            Instantiate(rampPrefab, spawnPosition, Quaternion.identity, transform);
+            usedPositions.Add(spawnPosition);
+        }
     }
-
-    int laneIndex = Random.Range(0, 3);
-    Vector3 spawnPosition = new Vector3(
-        (laneIndex - 1) * 3f,
-        0f,
-        transform.position.z + Random.Range(-2f, 2f) 
-    );
-
-    Instantiate(rampPrefab, spawnPosition, Quaternion.identity, transform); // Removed rotation
-}
-
 
     public void SpawnCoins()
     {
@@ -84,24 +93,24 @@ public void SpawnRamps()
                 transform.position.z + Random.Range(-1f, 1f)
             );
 
-            GameObject temp = Instantiate(coinPrefab, transform);
-            temp.transform.position = spawnPosition;
+            if (!IsPositionOccupied(spawnPosition))
+            {
+                GameObject temp = Instantiate(coinPrefab, transform);
+                temp.transform.position = spawnPosition;
+                usedPositions.Add(spawnPosition);
+            }
         }
     }
 
-    Vector3 GetRandomPointInCollider(Collider collider)
+    private bool IsPositionOccupied(Vector3 position)
     {
-        Vector3 point = new Vector3(
-            Random.Range(collider.bounds.min.x, collider.bounds.max.x),
-            Random.Range(collider.bounds.min.y, collider.bounds.max.y),
-            Random.Range(collider.bounds.min.z, collider.bounds.max.z)
-        );
-        if (point != collider.ClosestPoint(point))
+        foreach (var usedPosition in usedPositions)
         {
-            point = GetRandomPointInCollider(collider);
+            if (Vector3.Distance(usedPosition, position) < 2f)
+            {
+                return true;
+            }
         }
-
-        point.y = 1;
-        return point;
+        return false;
     }
 }
