@@ -31,6 +31,10 @@ public class PlayerMovement : MonoBehaviour
     private bool onRamp = false;
     private Vector3 rampNormal;
 
+    public float arrowSpeedMultiplier = 1.5f; 
+    public float arrowBoostDuration = 2.0f;  
+    private bool speedBoostActive = false;
+
     private void Start()
     {
         targetRotation = transform.rotation;
@@ -186,6 +190,23 @@ public class PlayerMovement : MonoBehaviour
             onRamp = false;
             speed /= rampSpeedMultiplier;
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Arrow") && !speedBoostActive)
+        {
+            StartCoroutine(ApplySpeedBoost());
+        }
+    }
+
+    private IEnumerator ApplySpeedBoost()
+    {
+        speedBoostActive = true;
+        speed *= arrowSpeedMultiplier;
+        yield return new WaitForSeconds(arrowBoostDuration);
+        speed /= arrowSpeedMultiplier;
+        speedBoostActive = false;
     }
 
     public void Die()

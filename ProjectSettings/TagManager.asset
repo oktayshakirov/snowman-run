@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ramp
+  - Ground
+  - Arrow
   layers:
   - Default
   - TransparentFX

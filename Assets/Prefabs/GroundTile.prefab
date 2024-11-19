@@ -308,4 +308,5 @@ MonoBehaviour:
     type: 3}
   obstaclePrefab: {fileID: 4294881466510954959, guid: 0918d1752a02edf4298fa643d5575163,
     type: 3}
-  rampPrefab: {fileID: 1750121629297360, guid: 47e679cbed6a2d34285382aaeb83a951, type: 3}
+  rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
+    type: 3}
