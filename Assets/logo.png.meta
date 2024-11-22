@@ -1,12 +1,5 @@
 fileFormatVersion: 2
-guid: 27cfa95353763794dafd1452e4c6b6a6
-AssetOrigin:
-  serializedVersion: 1
-  productId: 69201
-  packageName: '4 Snow Materials [High Quality] [Materials Collection]'
-  packageVersion: 1.0
-  assetPath: Assets/!Materials Collection/4 Snow Materials/snow_3_tga.tga
-  uploadId: 131544
+guid: a540c60b298de4111993481d986f2013
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -37,7 +30,7 @@ TextureImporter:
   generateCubemap: 6
   cubemapConvolution: 0
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
@@ -47,7 +40,7 @@ TextureImporter:
     wrapU: 0
     wrapV: 0
     wrapW: 0
-  nPOTScale: 0
+  nPOTScale: 1
   lightmap: 0
   compressionQuality: 50
   spriteMode: 0
@@ -70,9 +63,9 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
