@@ -6,6 +6,7 @@ public class SnowmanCollision : MonoBehaviour
     public float explosionForce = 500f; 
     public float explosionRadius = 5f; 
     public Transform explosionCenter; 
+    public GameObject snowBurstPrefab; 
 
     private bool isExploded = false; 
 
@@ -15,6 +16,7 @@ public class SnowmanCollision : MonoBehaviour
         {
             isExploded = true; 
             Explode();
+            SpawnSnowBurst();
         }
     }
 
@@ -28,6 +30,15 @@ public class SnowmanCollision : MonoBehaviour
                 rb.isKinematic = false;
                 rb.AddExplosionForce(explosionForce, explosionCenter.position, explosionRadius);
             }
+        }
+    }
+
+    void SpawnSnowBurst()
+    {
+        if (snowBurstPrefab != null)
+        {
+            GameObject snowBurst = Instantiate(snowBurstPrefab, explosionCenter.position, Quaternion.identity);
+            Destroy(snowBurst, 3f); 
         }
     }
 }
