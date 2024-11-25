@@ -48,7 +48,7 @@ public class GroundTile : MonoBehaviour
                 transform.position.z
             );
 
-            if (!IsPositionOccupied(spawnPosition))
+            if (!IsPositionOccupied(spawnPosition, obstaclePrefab))
             {
                 Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity, transform);
                 usedPositions.Add(spawnPosition);
@@ -71,7 +71,7 @@ public class GroundTile : MonoBehaviour
             transform.position.z + Random.Range(-2f, 2f)
         );
 
-        if (!IsPositionOccupied(spawnPosition))
+        if (!IsPositionOccupied(spawnPosition, rampPrefab))
         {
             Instantiate(rampPrefab, spawnPosition, Quaternion.identity, transform);
             usedPositions.Add(spawnPosition);
@@ -93,7 +93,7 @@ public class GroundTile : MonoBehaviour
                 transform.position.z + Random.Range(-1f, 1f)
             );
 
-            if (!IsPositionOccupied(spawnPosition))
+            if (!IsPositionOccupied(spawnPosition, coinPrefab))
             {
                 GameObject temp = Instantiate(coinPrefab, transform);
                 temp.transform.position = spawnPosition;
@@ -102,15 +102,25 @@ public class GroundTile : MonoBehaviour
         }
     }
 
-    private bool IsPositionOccupied(Vector3 position)
+    private bool IsPositionOccupied(Vector3 position, GameObject prefab)
     {
+        float minimumDistance = GetMinimumDistanceForType(prefab);
+
         foreach (var usedPosition in usedPositions)
         {
-            if (Vector3.Distance(usedPosition, position) < 2f)
+            if (Vector3.Distance(usedPosition, position) < minimumDistance)
             {
                 return true;
             }
         }
         return false;
+    }
+
+    private float GetMinimumDistanceForType(GameObject prefab)
+    {
+        if (prefab == coinPrefab) return 1f;        
+        if (prefab == rampPrefab) return 3f;       
+        if (prefab == obstaclePrefab) return 2f;   
+        return 2f;                               
     }
 }
