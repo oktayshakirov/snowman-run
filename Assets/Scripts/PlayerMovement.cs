@@ -40,28 +40,30 @@ public class PlayerMovement : MonoBehaviour
         targetRotation = transform.rotation;
     }
 
-    private void FixedUpdate()
+   private void FixedUpdate()
+{
+    if (!alive) return;
+
+    float movementMultiplier = 5f; 
+    Vector3 forwardMove = transform.forward * speed * movementMultiplier * Time.fixedDeltaTime;
+
+    if (onRamp)
     {
-        if (!alive) return;
-
-        Vector3 forwardMove = transform.forward * speed * Time.fixedDeltaTime;
-
-        if (onRamp)
-        {
-            forwardMove += Vector3.down * 0.1f; 
-            rb.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(Vector3.Cross(transform.right, rampNormal)), Time.fixedDeltaTime * leanSpeed);
-        }
-
-        rb.MovePosition(rb.position + forwardMove);
-
-        Vector3 targetPosition = new Vector3((currentLane - 1) * laneDistance, rb.position.y, rb.position.z);
-        rb.MovePosition(Vector3.Lerp(rb.position, targetPosition, Time.fixedDeltaTime * 10));
-
-        if (!onRamp)
-        {
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * leanSpeed);
-        }
+        forwardMove += Vector3.down * 0.1f; 
+        rb.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(Vector3.Cross(transform.right, rampNormal)), Time.fixedDeltaTime * leanSpeed);
     }
+
+    rb.MovePosition(rb.position + forwardMove);
+
+    Vector3 targetPosition = new Vector3((currentLane - 1) * laneDistance, rb.position.y, rb.position.z);
+    rb.MovePosition(Vector3.Lerp(rb.position, targetPosition, Time.fixedDeltaTime * 10));
+
+    if (!onRamp)
+    {
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * leanSpeed);
+    }
+}
+
 
     private void Update()
     {
@@ -209,11 +211,17 @@ public class PlayerMovement : MonoBehaviour
         speedBoostActive = false;
     }
 
-    public void Die()
+public void Die()
+{
+    alive = false;
+    if (GameManager.inst != null)
     {
-        alive = false;
-        Invoke("Restart", 2);
+        GameManager.inst.OnPlayerCrash();
     }
+
+    Invoke("Restart", 2); 
+}
+
 
     private void Restart()
     {
