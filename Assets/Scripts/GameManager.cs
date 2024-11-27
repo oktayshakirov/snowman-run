@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 using System.Collections;
 
 public class GameManager : MonoBehaviour
@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
     int score;
     public static GameManager inst;
 
-    [SerializeField] Text scoreText;
-    [SerializeField] Text speedText;
+    [SerializeField] TMP_Text coinsText;
+    [SerializeField] TMP_Text speedText;
     [SerializeField] PlayerMovement playerMovement;
 
     [SerializeField] float baseSpeed = 1f;
@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
 
         score++;
-        scoreText.text = score.ToString();
+        coinsText.text = score.ToString();
         playerMovement.speed += speedIncreaseAmount;
     }
 
