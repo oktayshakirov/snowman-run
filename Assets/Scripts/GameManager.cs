@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager inst;
 
-    [SerializeField] private TMP_Text coinsText;
+    [SerializeField] private TMP_Text coinsText;  
     [SerializeField] private TMP_Text speedText;
     [SerializeField] private PlayerMovement playerMovement;
 
@@ -20,7 +20,8 @@ public class GameManager : MonoBehaviour
 
     private float currentSpeed = 0f;
     private bool isGameOver = false;
-    private int score = 0;
+    private int score = 0;  
+
     public float BaseSpeed => baseSpeed;
     public float MaxSpeed => maxSpeed;
     public float SpeedIncreaseAmount => speedIncreaseAmount;
@@ -32,7 +33,6 @@ public class GameManager : MonoBehaviour
         if (inst == null)
         {
             inst = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -42,10 +42,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        playerMovement.InitializeSpeed(BaseSpeed);
-        coinsText.text = score.ToString();
-        StartCoroutine(InitialAcceleration());
-        StartCoroutine(IncreaseSpeedOverTime());
+        StartNewGame();
     }
 
     private void Update()
@@ -55,6 +52,19 @@ public class GameManager : MonoBehaviour
             currentSpeed = Mathf.Lerp(currentSpeed, playerMovement.GetSpeed(), Time.deltaTime * speedLerpRate);
             UpdateSpeedUI();
         }
+    }
+
+    public void StartNewGame()
+    {
+        isGameOver = false;
+        score = 0;
+        coinsText.text = score.ToString();
+        playerMovement.gameObject.SetActive(true);
+        playerMovement.InitializeSpeed(BaseSpeed);
+
+        currentSpeed = BaseSpeed;
+        StartCoroutine(InitialAcceleration());
+        StartCoroutine(IncreaseSpeedOverTime());
     }
 
     public void IncrementScore()
@@ -72,9 +82,18 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
 
         isGameOver = true;
+        WalletManager.AddCoins(score);
+
         playerMovement.SetSpeed(0f);
         currentSpeed = 0f;
         UpdateSpeedUI();
+        StartCoroutine(DelayedShowStartScreen());
+    }
+
+    private IEnumerator DelayedShowStartScreen()
+    {
+        yield return new WaitForSeconds(2f);
+        StartScreenManager.Instance.ShowStartScreen();
     }
 
     private void UpdateSpeedUI()

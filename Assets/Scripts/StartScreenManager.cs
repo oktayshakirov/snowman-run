@@ -3,11 +3,18 @@ using TMPro;
 
 public class StartScreenManager : MonoBehaviour
 {
+    public static StartScreenManager Instance;
+
     [SerializeField] private GameObject startScreenCanvas;
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private TMP_Text totalCoinsText;
 
     private void Start()
+    {
+        ShowStartScreen();
+    }
+
+    public void ShowStartScreen()
     {
         startScreenCanvas.SetActive(true);
         if (gameCanvas != null)
@@ -28,11 +35,13 @@ public class StartScreenManager : MonoBehaviour
 
         startScreenCanvas.SetActive(false);
         Time.timeScale = 1;
+
+
     }
 
     private void UpdateTotalCoinsUI()
     {
-        int totalCoins = WalletManager.GetTotalCoins(); 
+        int totalCoins = WalletManager.GetTotalCoins();
         totalCoinsText.text = $"{totalCoins}";
     }
 }
