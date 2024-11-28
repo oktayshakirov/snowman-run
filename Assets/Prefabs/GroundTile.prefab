@@ -310,3 +310,4 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
+  nextTileSpawnPoint: {fileID: 374595906407350880}

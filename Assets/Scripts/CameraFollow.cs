@@ -2,35 +2,49 @@
 
 public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] Transform player;
-    [SerializeField] Transform fallbackTarget;
-    Vector3 offset;
+    [SerializeField] private Transform player;
+    private Vector3 defaultOffset;
+    private Vector3 initialOffset;
+    private float elapsedTime = 0f;
+    [SerializeField] private float zoomDuration = 2f;
+    [SerializeField] private float zoomFactor = 2f;
 
     private void Start()
     {
-        if (player == null) return;
-        offset = transform.position - player.position;
+        if (player == null)
+        {
+            Debug.LogError("CameraFollow script requires a player Transform to follow.");
+            return;
+        }
+        defaultOffset = transform.position - player.position;
+        initialOffset = defaultOffset * zoomFactor;
     }
 
     private void LateUpdate()
     {
-        if (player != null)
+        if (player == null) return;
+
+        Vector3 desiredPosition;
+
+        if (elapsedTime < zoomDuration)
         {
-            Vector3 targetPos = new Vector3(
-                player.position.x + offset.x,
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / zoomDuration;
+            Vector3 currentOffset = Vector3.Lerp(initialOffset, defaultOffset, t);
+            desiredPosition = new Vector3(
+                player.position.x + currentOffset.x,
                 transform.position.y,
-                player.position.z + offset.z
+                player.position.z + currentOffset.z
             );
-            transform.position = targetPos;
         }
-        else if (fallbackTarget != null)
+        else
         {
-            Vector3 targetPos = new Vector3(
-                fallbackTarget.position.x + offset.x,
+            desiredPosition = new Vector3(
+                player.position.x + defaultOffset.x,
                 transform.position.y,
-                fallbackTarget.position.z + offset.z
+                player.position.z + defaultOffset.z
             );
-            transform.position = targetPos;
         }
+        transform.position = desiredPosition;
     }
 }

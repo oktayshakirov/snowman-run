@@ -1,29 +1,25 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
-public class Coin : MonoBehaviour {
+public class Coin : MonoBehaviour
+{
+    [SerializeField] private float turnSpeed = 90f;
 
-    [SerializeField] float turnSpeed = 90f;
-
-    private void OnTriggerEnter (Collider other)
+    private void Update()
     {
-        if (other.gameObject.GetComponent<Obstacle>() != null) {
+        transform.Rotate(0, turnSpeed * Time.deltaTime, 0);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.GetComponent<Obstacle>() != null)
+        {
             Destroy(gameObject);
             return;
         }
-        if (other.gameObject.name != "Player") {
-            return;
+        if (other.gameObject.CompareTag("Player"))
+        {
+            GameManager.inst.IncrementScore();
+            Destroy(gameObject);
         }
-        GameManager.inst.IncrementScore();
-        Destroy(gameObject);
     }
-
-    private void Start () {
-
-	}
-
-	private void Update () {
-        transform.Rotate(0, 0, turnSpeed * Time.deltaTime);
-	}
 }
