@@ -4,69 +4,73 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
-    bool alive = true;
-    public float speed = 5;
-    [SerializeField] Rigidbody rb;
+    private bool alive = true;
 
-    [SerializeField] Transform leftHand;
-    [SerializeField] Transform rightHand;
-    public float handRotationAngle = 25f;
-    public float handRotationSpeed = 5f;
+    [Header("Speed Settings")]
+    [SerializeField] private float speed;
+    private float maxSpeed;
+
+    [SerializeField] private Rigidbody rb;
+
+    [Header("Hand Rotation Settings")]
+    [SerializeField] private Transform leftHand;
+    [SerializeField] private Transform rightHand;
+    [SerializeField] private float handRotationAngle = 25f;
+    [SerializeField] private float handRotationSpeed = 5f;
 
     private int currentLane = 1;
     private float laneDistance = 3.0f;
     private bool isMoving = false;
 
-    public float speedIncreasePerPoint = 0.1f;
     private Vector2 startTouchPosition;
     private Vector2 endTouchPosition;
     private float swipeThreshold = 50f;
 
-    public float leanAngle = 15f;
-    public float leanSpeed = 10f;
-    public float shakeAmount = 0.05f;
+    [Header("Lean Settings")]
+    [SerializeField] private float leanAngle = 15f;
+    [SerializeField] private float leanSpeed = 10f;
     private Quaternion targetRotation;
 
-    public float rampSpeedMultiplier = 1.2f;
+    [Header("Ramp and Boost Settings")]
+    [SerializeField] private float rampSpeedMultiplier = 1.2f;
     private bool onRamp = false;
-    private Vector3 rampNormal;
 
-    public float arrowSpeedMultiplier = 1.5f; 
-    public float arrowBoostDuration = 2.0f;  
+    [SerializeField] private float arrowSpeedMultiplier = 1.5f;
+    [SerializeField] private float arrowBoostDuration = 2.0f;
     private bool speedBoostActive = false;
 
     private void Start()
     {
         targetRotation = transform.rotation;
+        maxSpeed = GameManager.inst.MaxSpeed; 
     }
 
-   private void FixedUpdate()
-{
-    if (!alive) return;
-
-    float movementMultiplier = 5f; 
-    Vector3 forwardMove = transform.forward * speed * movementMultiplier * Time.fixedDeltaTime;
-
-    if (onRamp)
+    public void InitializeSpeed(float initialSpeed)
     {
-        forwardMove += Vector3.down * 0.1f; 
-        rb.rotation = Quaternion.Lerp(rb.rotation, Quaternion.LookRotation(Vector3.Cross(transform.right, rampNormal)), Time.fixedDeltaTime * leanSpeed);
+        speed = initialSpeed;
     }
 
-    rb.MovePosition(rb.position + forwardMove);
-
-    Vector3 targetPosition = new Vector3((currentLane - 1) * laneDistance, rb.position.y, rb.position.z);
-    rb.MovePosition(Vector3.Lerp(rb.position, targetPosition, Time.fixedDeltaTime * 10));
-
-    if (!onRamp)
+    private void FixedUpdate()
     {
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * leanSpeed);
-    }
-}
+        if (!alive) return;
 
+        Vector3 forwardMove = Vector3.forward * speed * Time.fixedDeltaTime;
+        rb.MovePosition(rb.position + forwardMove);
+
+        Vector3 targetPosition = new Vector3((currentLane - 1) * laneDistance, rb.position.y, rb.position.z);
+        Vector3 newPosition = Vector3.MoveTowards(rb.position, targetPosition, laneDistance * Time.fixedDeltaTime * 10);
+        rb.MovePosition(new Vector3(newPosition.x, rb.position.y, rb.position.z));
+
+        if (!onRamp)
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * leanSpeed);
+        }
+    }
 
     private void Update()
     {
+        if (!alive) return;
+
         if (transform.position.y < -5)
         {
             Die();
@@ -77,57 +81,61 @@ public class PlayerMovement : MonoBehaviour
 
     private void DetectInput()
     {
-        if (!isMoving)
+        if (isMoving) return;
+
+        bool moved = false;
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0)
+            currentLane--;
+            moved = true;
+            ApplyLean(-leanAngle);
+            RotateHands(-handRotationAngle);
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2)
+        {
+            currentLane++;
+            moved = true;
+            ApplyLean(leanAngle);
+            RotateHands(handRotationAngle);
+        }
+
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began)
             {
-                currentLane--;
-                ApplyLean(-leanAngle);
-                RotateHands(-handRotationAngle);
-                isMoving = true;
-                Invoke("ResetMove", 0.1f);
+                startTouchPosition = touch.position;
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2)
+            else if (touch.phase == TouchPhase.Ended)
             {
-                currentLane++;
-                ApplyLean(leanAngle);
-                RotateHands(handRotationAngle);
-                isMoving = true;
-                Invoke("ResetMove", 0.1f);
-            }
+                endTouchPosition = touch.position;
+                Vector2 swipe = endTouchPosition - startTouchPosition;
 
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-
-                if (touch.phase == TouchPhase.Began)
+                if (Mathf.Abs(swipe.x) > swipeThreshold)
                 {
-                    startTouchPosition = touch.position;
-                }
-                else if (touch.phase == TouchPhase.Ended)
-                {
-                    endTouchPosition = touch.position;
-                    Vector2 swipe = endTouchPosition - startTouchPosition;
-
-                    if (Mathf.Abs(swipe.x) > swipeThreshold)
+                    if (swipe.x > 0 && currentLane < 2)
                     {
-                        if (swipe.x > 0 && currentLane < 2)
-                        {
-                            currentLane++;
-                            ApplyLean(leanAngle);
-                            RotateHands(handRotationAngle);
-                        }
-                        else if (swipe.x < 0 && currentLane > 0)
-                        {
-                            currentLane--;
-                            ApplyLean(-leanAngle);
-                            RotateHands(-handRotationAngle);
-                        }
-                        isMoving = true;
-                        Invoke("ResetMove", 0.1f);
+                        currentLane++;
+                        ApplyLean(leanAngle);
+                        RotateHands(handRotationAngle);
+                        moved = true;
+                    }
+                    else if (swipe.x < 0 && currentLane > 0)
+                    {
+                        currentLane--;
+                        ApplyLean(-leanAngle);
+                        RotateHands(-handRotationAngle);
+                        moved = true;
                     }
                 }
             }
+        }
+
+        if (moved)
+        {
+            isMoving = true;
+            StartCoroutine(ResetMove());
         }
     }
 
@@ -138,20 +146,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void RotateHands(float angle)
     {
-        if (angle > 0)
-        {
-            leftHand.localRotation = Quaternion.Euler(0, 0, -handRotationAngle);
-            rightHand.localRotation = Quaternion.Euler(0, 0, handRotationAngle);
-        }
-        else
-        {
-            leftHand.localRotation = Quaternion.Euler(0, 0, handRotationAngle);
-            rightHand.localRotation = Quaternion.Euler(0, 0, -handRotationAngle);
-        }
+        float leftHandAngle = angle > 0 ? -handRotationAngle : handRotationAngle;
+        float rightHandAngle = angle > 0 ? handRotationAngle : -handRotationAngle;
+        leftHand.localRotation = Quaternion.Euler(0, 0, leftHandAngle);
+        rightHand.localRotation = Quaternion.Euler(0, 0, rightHandAngle);
     }
 
-    private void ResetMove()
+    private IEnumerator ResetMove()
     {
+        yield return new WaitForSeconds(0.1f);
         isMoving = false;
         targetRotation = Quaternion.Euler(0, 0, 0);
         StartCoroutine(ResetHands());
@@ -162,12 +165,14 @@ public class PlayerMovement : MonoBehaviour
         Quaternion leftHandStartRotation = leftHand.localRotation;
         Quaternion rightHandStartRotation = rightHand.localRotation;
         float elapsedTime = 0f;
+        float duration = 1f / handRotationSpeed;
 
-        while (elapsedTime < 1f)
+        while (elapsedTime < duration)
         {
-            leftHand.localRotation = Quaternion.Lerp(leftHandStartRotation, Quaternion.identity, elapsedTime);
-            rightHand.localRotation = Quaternion.Lerp(rightHandStartRotation, Quaternion.identity, elapsedTime);
-            elapsedTime += Time.deltaTime * handRotationSpeed;
+            float t = elapsedTime / duration;
+            leftHand.localRotation = Quaternion.Lerp(leftHandStartRotation, Quaternion.identity, t);
+            rightHand.localRotation = Quaternion.Lerp(rightHandStartRotation, Quaternion.identity, t);
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
@@ -180,8 +185,8 @@ public class PlayerMovement : MonoBehaviour
         if (collision.collider.CompareTag("Ramp"))
         {
             onRamp = true;
-            rampNormal = collision.contacts[0].normal;
-            speed *= rampSpeedMultiplier;
+            float newSpeed = speed * rampSpeedMultiplier;
+            speed = Mathf.Min(newSpeed, maxSpeed);
         }
     }
 
@@ -205,26 +210,41 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator ApplySpeedBoost()
     {
         speedBoostActive = true;
-        speed *= arrowSpeedMultiplier;
+        float originalSpeed = speed;
+        float newSpeed = speed * arrowSpeedMultiplier;
+        speed = Mathf.Min(newSpeed, maxSpeed);
         yield return new WaitForSeconds(arrowBoostDuration);
-        speed /= arrowSpeedMultiplier;
+        speed = originalSpeed;
         speedBoostActive = false;
     }
 
-public void Die()
-{
-    alive = false;
-    if (GameManager.inst != null)
+    public void Die()
     {
-        GameManager.inst.OnPlayerCrash();
+        if (!alive) return;
+
+        alive = false;
+        speed = 0f;
+
+        if (GameManager.inst != null)
+        {
+            GameManager.inst.OnPlayerCrash();
+        }
+
+        Invoke("Restart", 2f);
     }
-
-    Invoke("Restart", 2); 
-}
-
 
     private void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
+    }
+
+    public void SetSpeed(float newSpeed)
+    {
+        speed = newSpeed;
     }
 }
