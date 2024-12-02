@@ -273,7 +273,7 @@ QualitySettings:
     shadowResolution: 3
     shadowProjection: 1
     shadowCascades: 4
-    shadowDistance: 40
+    shadowDistance: 10
     shadowNearPlaneOffset: 3
     shadowCascade2Split: 0.33333334
     shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
@@ -282,14 +282,14 @@ QualitySettings:
     globalTextureMipmapLimit: 0
     textureMipmapLimitSettings: []
     anisotropicTextures: 2
-    antiAliasing: 4
-    softParticles: 1
+    antiAliasing: 8
+    softParticles: 0
     softVegetation: 1
-    realtimeReflectionProbes: 1
+    realtimeReflectionProbes: 0
     billboardsFaceCameraPosition: 1
     useLegacyDetailDistribution: 1
     adaptiveVsync: 0
-    vSyncCount: 1
+    vSyncCount: 0
     realtimeGICPUUsage: 100
     adaptiveVsyncExtraA: 0
     adaptiveVsyncExtraB: 0
@@ -327,7 +327,7 @@ QualitySettings:
     PS4: 5
     PSP2: 2
     Stadia: 5
-    Standalone: 4
+    Standalone: 5
     WebGL: 3
     Windows Store Apps: 5
     XboxOne: 5
