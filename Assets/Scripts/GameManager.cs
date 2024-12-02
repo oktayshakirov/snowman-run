@@ -87,13 +87,16 @@ public class GameManager : MonoBehaviour
         playerMovement.SetSpeed(0f);
         currentSpeed = 0f;
         UpdateSpeedUI();
-        StartCoroutine(DelayedShowStartScreen());
+        StartCoroutine(DelayedStartScreen());
     }
 
-    private IEnumerator DelayedShowStartScreen()
+    private IEnumerator DelayedStartScreen()
     {
         yield return new WaitForSeconds(2f);
-        StartScreenManager.Instance.ShowStartScreen();
+        if (StartScreenManager.Instance != null)
+        {
+            StartScreenManager.Instance.ShowStartScreen();
+        }
     }
 
     private void UpdateSpeedUI()
