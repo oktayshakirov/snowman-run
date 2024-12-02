@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Arrow
   - Obstacle
+  - PreviewCamera
   layers:
   - Default
   - TransparentFX
