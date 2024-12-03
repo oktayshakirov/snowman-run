@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float maxSpeed = 40f;
     [SerializeField] private float speedLerpRate = 5f;
 
+    public bool IsGameActive => !isGameOver && Time.timeScale > 0;
     private float currentSpeed = 0f;
     private bool isGameOver = false;
     private int score = 0;  
