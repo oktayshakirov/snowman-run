@@ -7,7 +7,8 @@ public class StartScreenManager : MonoBehaviour
 
     [SerializeField] private GameObject startScreenCanvas;
     [SerializeField] private GameObject gameCanvas;
-    [SerializeField] private TMP_Text totalCoinsText;
+    [SerializeField] private TMP_Text totalCoinsText; 
+    [SerializeField] private TMP_Text currentLevelText; 
 
     [Header("Camera Reference")]
     [SerializeField] private PreviewCameraController previewCamera;  
@@ -31,7 +32,7 @@ public class StartScreenManager : MonoBehaviour
         }
 
         Time.timeScale = 0;
-        UpdateTotalCoinsUI();
+        UpdateUI();
 
         if (previewCamera != null)
         {
@@ -51,9 +52,11 @@ public class StartScreenManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void UpdateTotalCoinsUI()
+    private void UpdateUI()
     {
         int totalCoins = WalletManager.GetTotalCoins();
         totalCoinsText.text = $"{totalCoins}";
+        int currentLevel = PlayerPrefs.GetInt("UnlockedLevels", 1);
+        currentLevelText.text = $"Level: {currentLevel}";
     }
 }
