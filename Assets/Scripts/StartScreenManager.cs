@@ -50,7 +50,7 @@ public void StartGame()
     }
 
     startScreenCanvas.SetActive(false);
-    AudioManager.Instance.PlaySound(GameManager.inst.weeSound);
+    AudioManager.Instance.PlaySound(GameManager.inst.weeSound, AudioManager.Instance.weeSoundVolume);
     Time.timeScale = 1;
     GameManager.inst.StartNewGame();
 }
