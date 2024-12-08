@@ -18,6 +18,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float maxSpeed = 40f;
     [SerializeField] private float speedLerpRate = 5f;
 
+    [Header("Sound Effects")]
+    [SerializeField] public AudioClip weeSound;
+    [SerializeField] private AudioClip coinSound;
+    [SerializeField] private AudioClip crashSound;
+
     private int totalCoins;
     private int currentLevel = 1;
     public bool IsGameActive => !isGameOver && Time.timeScale > 0;
@@ -59,17 +64,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartNewGame()
-    {
-        isGameOver = false;
-        score = 0;
-        coinsText.text = score.ToString();
-        playerMovement.gameObject.SetActive(true);
-        playerMovement.InitializeSpeed(BaseSpeed);
-        currentSpeed = BaseSpeed;
-        StartCoroutine(InitialAcceleration());
-        StartCoroutine(IncreaseSpeedOverTime());
-    }
+public void StartNewGame()
+{
+    isGameOver = false;
+    score = 0;
+    coinsText.text = score.ToString();
+    playerMovement.gameObject.SetActive(true);
+    playerMovement.InitializeSpeed(BaseSpeed);
+    currentSpeed = BaseSpeed;
+    StartCoroutine(InitialAcceleration());
+    StartCoroutine(IncreaseSpeedOverTime());
+}
 
     public void IncrementScore()
     {
@@ -79,6 +84,7 @@ public class GameManager : MonoBehaviour
         coinsText.text = score.ToString();
         float newSpeed = Mathf.Min(playerMovement.GetSpeed() + SpeedIncreaseAmount, MaxSpeed);
         playerMovement.SetSpeed(newSpeed);
+        AudioManager.Instance.PlaySound(coinSound); 
     }
 
     public void OnPlayerCrash()
@@ -91,6 +97,7 @@ public class GameManager : MonoBehaviour
         playerMovement.SetSpeed(0f);
         currentSpeed = 0f;
         UpdateSpeedUI();
+        AudioManager.Instance.PlaySound(crashSound); 
         StartCoroutine(DelayedStartScreen());
     }
 
@@ -100,35 +107,35 @@ public class GameManager : MonoBehaviour
         UpdateUnlockedLevels();
     }
 
-  private void UpdateUnlockedLevels()
-{
-    totalCoins = WalletManager.GetTotalCoins();
-    int baseIncrement = 100;
-    int unlockedLevels = 1;
-
-    for (int level = 1; ; level++)
+    private void UpdateUnlockedLevels()
     {
-        int requiredCoins = baseIncrement * (level - 1) * level;
+        totalCoins = WalletManager.GetTotalCoins();
+        int baseIncrement = 100;
+        int unlockedLevels = 1;
 
-        if (totalCoins >= requiredCoins)
+        for (int level = 1; ; level++)
         {
-            unlockedLevels = level;
+            int requiredCoins = baseIncrement * (level - 1) * level;
+
+            if (totalCoins >= requiredCoins)
+            {
+                unlockedLevels = level;
+            }
+            else
+            {
+                break;
+            }
         }
-        else
+
+        int currentStoredLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+
+        if (unlockedLevels > currentStoredLevel)
         {
-            break;
+            PlayerPrefs.SetInt("UnlockedLevels", unlockedLevels);
+            PlayerPrefs.SetInt("CurrentLevel", unlockedLevels);
+            PlayerPrefs.Save();
         }
     }
-
-    int currentStoredLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
-
-    if (unlockedLevels > currentStoredLevel)
-    {
-        PlayerPrefs.SetInt("UnlockedLevels", unlockedLevels);
-        PlayerPrefs.SetInt("CurrentLevel", unlockedLevels);
-        PlayerPrefs.Save();
-    }
-}
 
     public void StartLevel(int level)
     {

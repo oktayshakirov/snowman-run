@@ -9,6 +9,7 @@ public class StartScreenManager : MonoBehaviour
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private TMP_Text totalCoinsText; 
     [SerializeField] private TMP_Text currentLevelText; 
+    
 
     [Header("Camera Reference")]
     [SerializeField] private PreviewCameraController previewCamera;  
@@ -41,16 +42,18 @@ public class StartScreenManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
+public void StartGame()
+{
+    if (gameCanvas != null)
     {
-        if (gameCanvas != null)
-        {
-            gameCanvas.SetActive(true);
-        }
-
-        startScreenCanvas.SetActive(false);
-        Time.timeScale = 1;
+        gameCanvas.SetActive(true);
     }
+
+    startScreenCanvas.SetActive(false);
+    AudioManager.Instance.PlaySound(GameManager.inst.weeSound);
+    Time.timeScale = 1;
+    GameManager.inst.StartNewGame();
+}
 
     private void UpdateUI()
     {
