@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private int currentLane = 1;
     private float laneDistance = 3.0f;
     private bool isMoving = false;
+    private bool controlsEnabled = false;
 
     private Vector2 startTouchPosition;
     private Vector2 endTouchPosition;
@@ -42,12 +43,20 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         targetRotation = transform.rotation;
-        maxSpeed = GameManager.inst.MaxSpeed; 
+        maxSpeed = GameManager.inst.MaxSpeed;
+        controlsEnabled = false;
+        StartCoroutine(EnableControlsAfterDelay(2f));
     }
 
     public void InitializeSpeed(float initialSpeed)
     {
         speed = initialSpeed;
+    }
+
+    private IEnumerator EnableControlsAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        controlsEnabled = true;
     }
 
     private void FixedUpdate()
@@ -76,68 +85,72 @@ public class PlayerMovement : MonoBehaviour
             Die();
         }
 
-        DetectInput();
-    }
-
-private void DetectInput()
-{
-    if (!GameManager.inst.IsGameActive || isMoving) return; 
-
-    bool moved = false;
-    if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0)
-    {
-        currentLane--;
-        moved = true;
-        ApplyLean(-leanAngle);
-        RotateHands(-handRotationAngle);
-    }
-    else if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2)
-    {
-        currentLane++;
-        moved = true;
-        ApplyLean(leanAngle);
-        RotateHands(handRotationAngle);
-    }
-
-    if (Input.touchCount > 0)
-    {
-        Touch touch = Input.GetTouch(0);
-
-        if (touch.phase == TouchPhase.Began)
+        if (controlsEnabled)
         {
-            startTouchPosition = touch.position;
+            DetectInput();
         }
-        else if (touch.phase == TouchPhase.Ended)
-        {
-            endTouchPosition = touch.position;
-            Vector2 swipe = endTouchPosition - startTouchPosition;
+    }
 
-            if (Mathf.Abs(swipe.x) > swipeThreshold)
+    private void DetectInput()
+    {
+        if (!GameManager.inst.IsGameActive || isMoving) return;
+
+        bool moved = false;
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0)
+        {
+            currentLane--;
+            moved = true;
+            ApplyLean(-leanAngle);
+            RotateHands(-handRotationAngle);
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2)
+        {
+            currentLane++;
+            moved = true;
+            ApplyLean(leanAngle);
+            RotateHands(handRotationAngle);
+        }
+
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began)
             {
-                if (swipe.x > 0 && currentLane < 2)
+                startTouchPosition = touch.position;
+            }
+            else if (touch.phase == TouchPhase.Ended)
+            {
+                endTouchPosition = touch.position;
+                Vector2 swipe = endTouchPosition - startTouchPosition;
+
+                if (Mathf.Abs(swipe.x) > swipeThreshold)
                 {
-                    currentLane++;
-                    ApplyLean(leanAngle);
-                    RotateHands(handRotationAngle);
-                    moved = true;
-                }
-                else if (swipe.x < 0 && currentLane > 0)
-                {
-                    currentLane--;
-                    ApplyLean(-leanAngle);
-                    RotateHands(-handRotationAngle);
-                    moved = true;
+                    if (swipe.x > 0 && currentLane < 2)
+                    {
+                        currentLane++;
+                        ApplyLean(leanAngle);
+                        RotateHands(handRotationAngle);
+                        moved = true;
+                    }
+                    else if (swipe.x < 0 && currentLane > 0)
+                    {
+                        currentLane--;
+                        ApplyLean(-leanAngle);
+                        RotateHands(-handRotationAngle);
+                        moved = true;
+                    }
                 }
             }
         }
-    }
 
-    if (moved)
-    {
-        isMoving = true;
-        StartCoroutine(ResetMove());
+        if (moved)
+        {
+            isMoving = true;
+            StartCoroutine(ResetMove());
+        }
     }
-}
 
     private void ApplyLean(float angle)
     {
