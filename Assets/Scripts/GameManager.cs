@@ -84,7 +84,7 @@ public void StartNewGame()
         coinsText.text = score.ToString();
         float newSpeed = Mathf.Min(playerMovement.GetSpeed() + SpeedIncreaseAmount, MaxSpeed);
         playerMovement.SetSpeed(newSpeed);
-        AudioManager.Instance.PlaySound(coinSound); 
+        AudioManager.Instance.PlaySound(coinSound, AudioManager.Instance.coinSoundVolume);
     }
 
     public void OnPlayerCrash()
@@ -97,7 +97,7 @@ public void StartNewGame()
         playerMovement.SetSpeed(0f);
         currentSpeed = 0f;
         UpdateSpeedUI();
-        AudioManager.Instance.PlaySound(crashSound); 
+        AudioManager.Instance.PlaySound(crashSound, AudioManager.Instance.crashSoundVolume); 
         StartCoroutine(DelayedStartScreen());
     }
 

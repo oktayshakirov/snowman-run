@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
@@ -6,13 +7,23 @@ public class AudioManager : MonoBehaviour
 
     [Header("Sound Effects")]
     public AudioClip swipeSound;
+    [Range(0f, 1f)] public float swipeSoundVolume = 1f;
+
     public AudioClip jumpSound;
+    [Range(0f, 1f)] public float jumpSoundVolume = 1f;
+
     public AudioClip coinSound;
+    [Range(0f, 1f)] public float coinSoundVolume = 1f;
+
     public AudioClip weeSound;
+    [Range(0f, 1f)] public float weeSoundVolume = 1f;
+
     public AudioClip crashSound;
+    [Range(0f, 1f)] public float crashSoundVolume = 1f;
 
     [Header("Background Music")]
     public AudioClip backgroundMusic;
+    [Range(0f, 1f)] public float backgroundMusicVolume = 0.3f; 
 
     private AudioSource audioSource;
     private AudioSource musicSource;
@@ -38,17 +49,42 @@ public class AudioManager : MonoBehaviour
         {
             musicSource.clip = backgroundMusic;
             musicSource.loop = true;
-            musicSource.volume = 0.5f; 
+            musicSource.volume = backgroundMusicVolume; 
             musicSource.Play();
         }
     }
 
-    public void PlaySound(AudioClip clip)
+    public void PlaySound(AudioClip clip, float volume)
     {
         if (clip != null)
         {
-            audioSource.PlayOneShot(clip);
+            audioSource.PlayOneShot(clip, Mathf.Clamp01(volume));
         }
+    }
+
+    public void PlaySwipeSound()
+    {
+        PlaySound(swipeSound, swipeSoundVolume);
+    }
+
+    public void PlayJumpSound()
+    {
+        PlaySound(jumpSound, jumpSoundVolume);
+    }
+
+    public void PlayCoinSound()
+    {
+        PlaySound(coinSound, coinSoundVolume);
+    }
+
+    public void PlayWeeSound()
+    {
+        PlaySound(weeSound, weeSoundVolume);
+    }
+
+    public void PlayCrashSound()
+    {
+        PlaySound(crashSound, crashSoundVolume);
     }
 
     public void ToggleMusic(bool isMuted)
@@ -58,6 +94,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetMusicVolume(float volume)
     {
-        musicSource.volume = Mathf.Clamp01(volume);
+        backgroundMusicVolume = Mathf.Clamp01(volume);
+        musicSource.volume = backgroundMusicVolume;
     }
 }
