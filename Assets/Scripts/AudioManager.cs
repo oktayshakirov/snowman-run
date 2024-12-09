@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using System.Runtime.InteropServices;
 
 public class AudioManager : MonoBehaviour
 {
@@ -23,10 +23,15 @@ public class AudioManager : MonoBehaviour
 
     [Header("Background Music")]
     public AudioClip backgroundMusic;
-    [Range(0f, 1f)] public float backgroundMusicVolume = 0.3f; 
+    [Range(0f, 1f)] public float backgroundMusicVolume = 0.3f;
 
     private AudioSource audioSource;
     private AudioSource musicSource;
+
+#if UNITY_IOS && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void SetAVAudioSessionPlayback();
+#endif
 
     private void Awake()
     {
@@ -39,6 +44,10 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+#if UNITY_IOS && !UNITY_EDITOR
+        SetAVAudioSessionPlayback();
+#endif
     }
 
     private void Start()
@@ -49,7 +58,7 @@ public class AudioManager : MonoBehaviour
         {
             musicSource.clip = backgroundMusic;
             musicSource.loop = true;
-            musicSource.volume = backgroundMusicVolume; 
+            musicSource.volume = backgroundMusicVolume;
             musicSource.Play();
         }
     }
