@@ -10,6 +10,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text speedText;
     [SerializeField] private PlayerMovement playerMovement;
 
+    [Header("UI Screens")]
+    [SerializeField] private GameObject pauseScreen;
+    [SerializeField] private GameObject settingsScreen;
+    [SerializeField] private GameObject startScreenCanvas;
+
     [Header("Speed Settings")]
     [SerializeField] private float baseSpeed = 10f;
     [SerializeField] private float speedIncreaseAmount = 0.5f;
@@ -27,10 +32,10 @@ public class GameManager : MonoBehaviour
     private int currentLevel = 1;
     public bool IsGameActive => !isGameOver && Time.timeScale > 0;
     private bool isGameOver = false;
+    private bool isGamePaused = false;
     private int score = 0;
     private float displayedSpeedLerp = 0f;
     public float MaxSpeed => maxSpeed;
-
 
     private bool useKmh = true;
 
@@ -56,7 +61,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!isGameOver)
+        if (!isGameOver && !isGamePaused)
         {
             UpdateSpeedUI();
         }
@@ -65,6 +70,7 @@ public class GameManager : MonoBehaviour
     public void StartNewGame()
     {
         isGameOver = false;
+        isGamePaused = false;
         score = 0;
         coinsText.text = score.ToString();
         playerMovement.gameObject.SetActive(true);
@@ -134,6 +140,7 @@ public class GameManager : MonoBehaviour
     {
         currentLevel = Mathf.Max(level, PlayerPrefs.GetInt("CurrentLevel", 1));
         isGameOver = false;
+        isGamePaused = false;
         score = 0;
 
         float levelSpeed = baseSpeed + (currentLevel - 1) * 2f;
@@ -168,6 +175,43 @@ public class GameManager : MonoBehaviour
         UpdateSpeedUI();
     }
 
+    public void PauseGame()
+    {
+        if (isGamePaused) return;
+
+        isGamePaused = true;
+        Time.timeScale = 0;
+        pauseScreen.SetActive(true);
+    }
+
+    public void ResumeGame()
+    {
+        if (!isGamePaused) return;
+
+        isGamePaused = false;
+        Time.timeScale = 1;
+        pauseScreen.SetActive(false);
+    }
+
+    public void ExitToStartScreen()
+    {
+        isGamePaused = false;
+        Time.timeScale = 1;
+        pauseScreen.SetActive(false);
+        startScreenCanvas.SetActive(true);
+    }
+
+    public void OpenSettings()
+    {
+        pauseScreen.SetActive(false);
+        settingsScreen.SetActive(true);
+    }
+
+    public void CloseSettings()
+    {
+        settingsScreen.SetActive(false);
+        pauseScreen.SetActive(true);
+    }
 
     private IEnumerator InitialAcceleration()
     {
@@ -184,7 +228,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator IncreaseSpeedOverTime()
     {
-        while (!isGameOver)
+        while (!isGameOver && !isGamePaused)
         {
             yield return new WaitForSeconds(timeBetweenSpeedIncreases);
             float newSpeed = Mathf.Min(playerMovement.GetSpeed() + timeSpeedIncreaseAmount, maxSpeed);
