@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Runtime.InteropServices;
 
 public class AudioManager : MonoBehaviour
 {
@@ -25,13 +24,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip backgroundMusic;
     [Range(0f, 1f)] public float backgroundMusicVolume = 0.3f;
 
-    private AudioSource audioSource;
+    private AudioSource sfxSource;
     private AudioSource musicSource;
 
-#if UNITY_IOS && !UNITY_EDITOR
-    [DllImport("__Internal")]
-    private static extern void SetAVAudioSessionPlayback();
-#endif
+    private bool isMusicMuted = false;
+    private bool isSfxMuted = false;
 
     private void Awake()
     {
@@ -44,16 +41,13 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-#if UNITY_IOS && !UNITY_EDITOR
-        SetAVAudioSessionPlayback();
-#endif
     }
 
     private void Start()
     {
-        audioSource = gameObject.AddComponent<AudioSource>();
+        sfxSource = gameObject.AddComponent<AudioSource>();
         musicSource = gameObject.AddComponent<AudioSource>();
+
         if (backgroundMusic != null)
         {
             musicSource.clip = backgroundMusic;
@@ -65,9 +59,9 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySound(AudioClip clip, float volume)
     {
-        if (clip != null)
+        if (!isSfxMuted && clip != null)
         {
-            audioSource.PlayOneShot(clip, Mathf.Clamp01(volume));
+            sfxSource.PlayOneShot(clip, Mathf.Clamp01(volume));
         }
     }
 
@@ -98,7 +92,13 @@ public class AudioManager : MonoBehaviour
 
     public void ToggleMusic(bool isMuted)
     {
+        isMusicMuted = isMuted;
         musicSource.mute = isMuted;
+    }
+
+    public void ToggleSFX(bool isMuted)
+    {
+        isSfxMuted = isMuted;
     }
 
     public void SetMusicVolume(float volume)
