@@ -12,9 +12,33 @@ public class SettingsManager : MonoBehaviour
     [Header("UI Dropdowns")]
     [SerializeField] private TMP_Dropdown speedUnitDropdown;
 
+    [Header("Navigation")]
+    [SerializeField] private GameObject startScreenCanvas;
+    [SerializeField] private GameObject pauseScreen;
+    private GameObject previousMenu;
+
     private void Start()
     {
         LoadSettings();
+    }
+
+    public void OpenSettings(GameObject originatingMenu)
+    {
+        previousMenu = originatingMenu;
+        gameObject.SetActive(true);
+        if (previousMenu != null)
+        {
+            previousMenu.SetActive(false);
+        }
+    }
+
+    public void CloseSettings()
+    {
+        gameObject.SetActive(false);
+        if (previousMenu != null)
+        {
+            previousMenu.SetActive(true);
+        }
     }
 
     public void ToggleMusic(bool isEnabled)
@@ -52,7 +76,6 @@ public class SettingsManager : MonoBehaviour
             GameManager.inst.RefreshSpeedUnit();
         }
     }
-
 
     private void LoadSettings()
     {
