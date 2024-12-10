@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Runtime.InteropServices;
 
 public class AudioManager : MonoBehaviour
 {
@@ -30,6 +31,11 @@ public class AudioManager : MonoBehaviour
     private bool isMusicMuted = false;
     private bool isSfxMuted = false;
 
+#if UNITY_IOS && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void SetAVAudioSessionPlayback();
+#endif
+
     private void Awake()
     {
         if (Instance == null)
@@ -41,6 +47,10 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+#if UNITY_IOS && !UNITY_EDITOR
+        SetAVAudioSessionPlayback();
+#endif
     }
 
     private void Start()
