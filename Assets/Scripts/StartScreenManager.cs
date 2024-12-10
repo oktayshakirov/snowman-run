@@ -7,12 +7,12 @@ public class StartScreenManager : MonoBehaviour
 
     [SerializeField] private GameObject startScreenCanvas;
     [SerializeField] private GameObject gameCanvas;
-    [SerializeField] private TMP_Text totalCoinsText; 
-    [SerializeField] private TMP_Text currentLevelText; 
-    
+    [SerializeField] private GameObject settingsScreenCanvas; 
+    [SerializeField] private TMP_Text totalCoinsText;
+    [SerializeField] private TMP_Text currentLevelText;
 
     [Header("Camera Reference")]
-    [SerializeField] private PreviewCameraController previewCamera;  
+    [SerializeField] private PreviewCameraController previewCamera;
 
     private void Awake()
     {
@@ -32,28 +32,58 @@ public class StartScreenManager : MonoBehaviour
             gameCanvas.SetActive(false);
         }
 
+        if (settingsScreenCanvas != null)
+        {
+            settingsScreenCanvas.SetActive(false);
+        }
+
         Time.timeScale = 0;
         UpdateUI();
 
         if (previewCamera != null)
         {
-            previewCamera.ResetCameraPosition();     
+            previewCamera.ResetCameraPosition();
             previewCamera.MoveCameraToPreviewPosition();
         }
     }
 
-public void StartGame()
-{
-    if (gameCanvas != null)
+    public void StartGame()
     {
-        gameCanvas.SetActive(true);
+        if (gameCanvas != null)
+        {
+            gameCanvas.SetActive(true);
+        }
+
+        startScreenCanvas.SetActive(false);
+        if (settingsScreenCanvas != null)
+        {
+            settingsScreenCanvas.SetActive(false);
+        }
+
+        AudioManager.Instance.PlaySound(GameManager.inst.weeSound, AudioManager.Instance.weeSoundVolume);
+        Time.timeScale = 1;
+        GameManager.inst.StartNewGame();
     }
 
-    startScreenCanvas.SetActive(false);
-    AudioManager.Instance.PlaySound(GameManager.inst.weeSound, AudioManager.Instance.weeSoundVolume);
-    Time.timeScale = 1;
-    GameManager.inst.StartNewGame();
-}
+    public void OpenSettings()
+    {
+        if (settingsScreenCanvas != null)
+        {
+            settingsScreenCanvas.SetActive(true);
+        }
+
+        startScreenCanvas.SetActive(false);
+    }
+
+    public void CloseSettings()
+    {
+        if (settingsScreenCanvas != null)
+        {
+            settingsScreenCanvas.SetActive(false);
+        }
+
+        startScreenCanvas.SetActive(true);
+    }
 
     private void UpdateUI()
     {

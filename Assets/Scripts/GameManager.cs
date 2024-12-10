@@ -26,15 +26,13 @@ public class GameManager : MonoBehaviour
     private int totalCoins;
     private int currentLevel = 1;
     public bool IsGameActive => !isGameOver && Time.timeScale > 0;
-    private float currentSpeed = 0f;
     private bool isGameOver = false;
     private int score = 0;
-
-    public float BaseSpeed => baseSpeed;
+    private float displayedSpeedLerp = 0f;
     public float MaxSpeed => maxSpeed;
-    public float SpeedIncreaseAmount => speedIncreaseAmount;
-    public float TimeBetweenSpeedIncreases => timeBetweenSpeedIncreases;
-    public float TimeSpeedIncreaseAmount => timeSpeedIncreaseAmount;
+
+
+    private bool useKmh = true;
 
     private void Awake()
     {
@@ -52,6 +50,7 @@ public class GameManager : MonoBehaviour
     {
         totalCoins = WalletManager.GetTotalCoins();
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
         StartNewGame();
     }
 
@@ -59,22 +58,20 @@ public class GameManager : MonoBehaviour
     {
         if (!isGameOver)
         {
-            currentSpeed = Mathf.Lerp(currentSpeed, playerMovement.GetSpeed(), Time.deltaTime * speedLerpRate);
             UpdateSpeedUI();
         }
     }
 
-public void StartNewGame()
-{
-    isGameOver = false;
-    score = 0;
-    coinsText.text = score.ToString();
-    playerMovement.gameObject.SetActive(true);
-    playerMovement.InitializeSpeed(BaseSpeed);
-    currentSpeed = BaseSpeed;
-    StartCoroutine(InitialAcceleration());
-    StartCoroutine(IncreaseSpeedOverTime());
-}
+    public void StartNewGame()
+    {
+        isGameOver = false;
+        score = 0;
+        coinsText.text = score.ToString();
+        playerMovement.gameObject.SetActive(true);
+        playerMovement.InitializeSpeed(baseSpeed);
+        StartCoroutine(InitialAcceleration());
+        StartCoroutine(IncreaseSpeedOverTime());
+    }
 
     public void IncrementScore()
     {
@@ -82,8 +79,6 @@ public void StartNewGame()
 
         score++;
         coinsText.text = score.ToString();
-        float newSpeed = Mathf.Min(playerMovement.GetSpeed() + SpeedIncreaseAmount, MaxSpeed);
-        playerMovement.SetSpeed(newSpeed);
         AudioManager.Instance.PlaySound(coinSound, AudioManager.Instance.coinSoundVolume);
     }
 
@@ -95,9 +90,7 @@ public void StartNewGame()
         WalletManager.AddCoins(score);
         UpdateUnlockedLevels();
         playerMovement.SetSpeed(0f);
-        currentSpeed = 0f;
-        UpdateSpeedUI();
-        AudioManager.Instance.PlaySound(crashSound, AudioManager.Instance.crashSoundVolume); 
+        AudioManager.Instance.PlaySound(crashSound, AudioManager.Instance.crashSoundVolume);
         StartCoroutine(DelayedStartScreen());
     }
 
@@ -144,13 +137,9 @@ public void StartNewGame()
         score = 0;
 
         float levelSpeed = baseSpeed + (currentLevel - 1) * 2f;
-        float obstacleDensity = 1f + (currentLevel - 1) * 0.2f;
-        float coinDensity = 1f - (currentLevel - 1) * 0.1f;
-
         playerMovement.InitializeSpeed(levelSpeed);
         coinsText.text = score.ToString();
         playerMovement.gameObject.SetActive(true);
-        currentSpeed = levelSpeed;
         StartCoroutine(InitialAcceleration());
         StartCoroutine(IncreaseSpeedOverTime());
     }
@@ -166,9 +155,19 @@ public void StartNewGame()
 
     private void UpdateSpeedUI()
     {
-        float speedInKmH = currentSpeed * 1.2f;
-        speedText.text = $"{speedInKmH:F1} km/h";
+        float playerSpeed = playerMovement.GetSpeed();
+        displayedSpeedLerp = Mathf.Lerp(displayedSpeedLerp, playerSpeed, Time.deltaTime * speedLerpRate);
+        float convertedSpeed = useKmh ? displayedSpeedLerp * 1.2f : displayedSpeedLerp * 0.746f;
+        string unit = useKmh ? "km/h" : "mph";
+        speedText.text = $"{convertedSpeed:F1} {unit}";
     }
+
+    public void RefreshSpeedUnit()
+    {
+        useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
+        UpdateSpeedUI();
+    }
+
 
     private IEnumerator InitialAcceleration()
     {
@@ -178,20 +177,17 @@ public void StartNewGame()
         while (elapsedTime < accelerationDuration)
         {
             elapsedTime += Time.deltaTime;
-            currentSpeed = Mathf.Lerp(0f, BaseSpeed, elapsedTime / accelerationDuration);
             UpdateSpeedUI();
             yield return null;
         }
-
-        currentSpeed = BaseSpeed;
     }
 
     private IEnumerator IncreaseSpeedOverTime()
     {
         while (!isGameOver)
         {
-            yield return new WaitForSeconds(TimeBetweenSpeedIncreases);
-            float newSpeed = Mathf.Min(playerMovement.GetSpeed() + TimeSpeedIncreaseAmount, MaxSpeed);
+            yield return new WaitForSeconds(timeBetweenSpeedIncreases);
+            float newSpeed = Mathf.Min(playerMovement.GetSpeed() + timeSpeedIncreaseAmount, maxSpeed);
             playerMovement.SetSpeed(newSpeed);
         }
     }
