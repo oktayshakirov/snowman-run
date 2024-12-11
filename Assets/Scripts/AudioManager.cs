@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Runtime.InteropServices;
 
 public class AudioManager : MonoBehaviour
 {
@@ -7,18 +6,16 @@ public class AudioManager : MonoBehaviour
 
     [Header("Sound Effects")]
     public AudioClip swipeSound;
-    [Range(0f, 1f)] public float swipeSoundVolume = 1f;
-
     public AudioClip jumpSound;
-    [Range(0f, 1f)] public float jumpSoundVolume = 1f;
-
     public AudioClip coinSound;
-    [Range(0f, 1f)] public float coinSoundVolume = 1f;
-
     public AudioClip weeSound;
-    [Range(0f, 1f)] public float weeSoundVolume = 1f;
-
     public AudioClip crashSound;
+
+    [Header("Sound Volumes")]
+    [Range(0f, 1f)] public float swipeSoundVolume = 1f;
+    [Range(0f, 1f)] public float jumpSoundVolume = 1f;
+    [Range(0f, 1f)] public float coinSoundVolume = 1f;
+    [Range(0f, 1f)] public float weeSoundVolume = 1f;
     [Range(0f, 1f)] public float crashSoundVolume = 1f;
 
     [Header("Background Music")]
@@ -31,10 +28,14 @@ public class AudioManager : MonoBehaviour
     private bool isMusicMuted = false;
     private bool isSfxMuted = false;
 
-#if UNITY_IOS && !UNITY_EDITOR
-    [DllImport("__Internal")]
-    private static extern void SetAVAudioSessionPlayback();
-#endif
+    public enum SoundType
+    {
+        Swipe,
+        Jump,
+        Coin,
+        Wee,
+        Crash
+    }
 
     private void Awake()
     {
@@ -47,10 +48,6 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-#if UNITY_IOS && !UNITY_EDITOR
-        SetAVAudioSessionPlayback();
-#endif
     }
 
     private void Start()
@@ -67,37 +64,34 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlaySound(AudioClip clip, float volume)
+    public void PlaySound(SoundType soundType)
     {
-        if (!isSfxMuted && clip != null)
+        if (isSfxMuted) return;
+
+        AudioClip clip = soundType switch
+        {
+            SoundType.Swipe => swipeSound,
+            SoundType.Jump => jumpSound,
+            SoundType.Coin => coinSound,
+            SoundType.Wee => weeSound,
+            SoundType.Crash => crashSound,
+            _ => null
+        };
+
+        float volume = soundType switch
+        {
+            SoundType.Swipe => swipeSoundVolume,
+            SoundType.Jump => jumpSoundVolume,
+            SoundType.Coin => coinSoundVolume,
+            SoundType.Wee => weeSoundVolume,
+            SoundType.Crash => crashSoundVolume,
+            _ => 1f
+        };
+
+        if (clip != null)
         {
             sfxSource.PlayOneShot(clip, Mathf.Clamp01(volume));
         }
-    }
-
-    public void PlaySwipeSound()
-    {
-        PlaySound(swipeSound, swipeSoundVolume);
-    }
-
-    public void PlayJumpSound()
-    {
-        PlaySound(jumpSound, jumpSoundVolume);
-    }
-
-    public void PlayCoinSound()
-    {
-        PlaySound(coinSound, coinSoundVolume);
-    }
-
-    public void PlayWeeSound()
-    {
-        PlaySound(weeSound, weeSoundVolume);
-    }
-
-    public void PlayCrashSound()
-    {
-        PlaySound(crashSound, crashSoundVolume);
     }
 
     public void ToggleMusic(bool isMuted)

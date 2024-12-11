@@ -7,7 +7,7 @@ public class StartScreenManager : MonoBehaviour
 
     [SerializeField] private GameObject startScreenCanvas;
     [SerializeField] private GameObject gameCanvas;
-    [SerializeField] private GameObject settingsScreenCanvas; 
+    [SerializeField] private GameObject settingsScreenCanvas;
     [SerializeField] private TMP_Text totalCoinsText;
     [SerializeField] private TMP_Text currentLevelText;
 
@@ -60,7 +60,7 @@ public class StartScreenManager : MonoBehaviour
             settingsScreenCanvas.SetActive(false);
         }
 
-        AudioManager.Instance.PlaySound(GameManager.inst.weeSound, AudioManager.Instance.weeSoundVolume);
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Wee);
         Time.timeScale = 1;
         GameManager.inst.StartNewGame();
     }
