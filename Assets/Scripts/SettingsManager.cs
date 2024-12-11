@@ -12,9 +12,6 @@ public class SettingsManager : MonoBehaviour
     [Header("UI Dropdowns")]
     [SerializeField] private TMP_Dropdown speedUnitDropdown;
 
-    [Header("Navigation")]
-    [SerializeField] private GameObject startScreenCanvas;
-    [SerializeField] private GameObject pauseScreen;
     private GameObject previousMenu;
 
     private void Start()

@@ -17,16 +17,10 @@ public class GameManager : MonoBehaviour
 
     [Header("Speed Settings")]
     [SerializeField] private float baseSpeed = 10f;
-    [SerializeField] private float speedIncreaseAmount = 0.5f;
     [SerializeField] private float timeBetweenSpeedIncreases = 2f;
     [SerializeField] private float timeSpeedIncreaseAmount = 1f;
     [SerializeField] private float maxSpeed = 40f;
     [SerializeField] private float speedLerpRate = 5f;
-
-    [Header("Sound Effects")]
-    [SerializeField] public AudioClip weeSound;
-    [SerializeField] private AudioClip coinSound;
-    [SerializeField] private AudioClip crashSound;
 
     private int totalCoins;
     private int currentLevel = 1;
@@ -85,7 +79,7 @@ public class GameManager : MonoBehaviour
 
         score++;
         coinsText.text = score.ToString();
-        AudioManager.Instance.PlaySound(coinSound, AudioManager.Instance.coinSoundVolume);
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Coin);
     }
 
     public void OnPlayerCrash()
@@ -96,7 +90,7 @@ public class GameManager : MonoBehaviour
         WalletManager.AddCoins(score);
         UpdateUnlockedLevels();
         playerMovement.SetSpeed(0f);
-        AudioManager.Instance.PlaySound(crashSound, AudioManager.Instance.crashSoundVolume);
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Crash);
         StartCoroutine(DelayedStartScreen());
     }
 

@@ -40,10 +40,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float arrowBoostDuration = 2.0f;
     private bool speedBoostActive = false;
 
-    [Header("Sound Effects")]
-    [SerializeField] private AudioClip swipeSound;
-    [SerializeField] private AudioClip jumpSound;
-
     private void Start()
     {
         targetRotation = transform.rotation;
@@ -107,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
             moved = true;
             ApplyLean(-leanAngle);
             RotateHands(-handRotationAngle);
-            PlaySound(swipeSound); 
+            AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2)
         {
@@ -115,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
             moved = true;
             ApplyLean(leanAngle);
             RotateHands(handRotationAngle);
-            PlaySound(swipeSound); 
+            AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
         }
 
         if (Input.touchCount > 0)
@@ -139,7 +135,7 @@ public class PlayerMovement : MonoBehaviour
                         ApplyLean(leanAngle);
                         RotateHands(handRotationAngle);
                         moved = true;
-                        PlaySound(swipeSound); 
+                        AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
                     }
                     else if (swipe.x < 0 && currentLane > 0)
                     {
@@ -147,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
                         ApplyLean(-leanAngle);
                         RotateHands(-handRotationAngle);
                         moved = true;
-                        PlaySound(swipeSound);
+                        AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
                     }
                 }
             }
@@ -208,7 +204,7 @@ public class PlayerMovement : MonoBehaviour
             onRamp = true;
             float newSpeed = speed * rampSpeedMultiplier;
             speed = Mathf.Min(newSpeed, maxSpeed);
-            PlaySound(jumpSound); 
+            AudioManager.Instance.PlaySound(AudioManager.SoundType.Jump);
         }
     }
 
@@ -268,13 +264,5 @@ public class PlayerMovement : MonoBehaviour
     public void SetSpeed(float newSpeed)
     {
         speed = newSpeed;
-    }
-
-    private void PlaySound(AudioClip clip)
-    {
-        if (clip != null)
-        {
-            AudioSource.PlayClipAtPoint(clip, transform.position);
-        }
     }
 }
