@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
         totalCoins = WalletManager.GetTotalCoins();
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
+        RefreshSpeedUnit();
         StartNewGame();
     }
 

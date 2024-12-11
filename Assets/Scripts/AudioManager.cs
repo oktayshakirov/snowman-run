@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Runtime.InteropServices;
 
 public class AudioManager : MonoBehaviour
 {
@@ -28,6 +29,11 @@ public class AudioManager : MonoBehaviour
     private bool isMusicMuted = false;
     private bool isSfxMuted = false;
 
+#if UNITY_IOS && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void SetAVAudioSessionPlayback();
+#endif
+
     public enum SoundType
     {
         Swipe,
@@ -48,6 +54,10 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+#if UNITY_IOS && !UNITY_EDITOR
+        SetAVAudioSessionPlayback();
+#endif
     }
 
     private void Start()
@@ -62,6 +72,8 @@ public class AudioManager : MonoBehaviour
             musicSource.volume = backgroundMusicVolume;
             musicSource.Play();
         }
+
+        LoadSettings();
     }
 
     public void PlaySound(SoundType soundType)
@@ -109,5 +121,14 @@ public class AudioManager : MonoBehaviour
     {
         backgroundMusicVolume = Mathf.Clamp01(volume);
         musicSource.volume = backgroundMusicVolume;
+    }
+
+    private void LoadSettings()
+    {
+        bool musicEnabled = PlayerPrefs.GetInt("MusicEnabled", 1) == 1;
+        ToggleMusic(!musicEnabled);
+
+        bool soundEffectsEnabled = PlayerPrefs.GetInt("SoundEffectsEnabled", 1) == 1;
+        ToggleSFX(!soundEffectsEnabled);
     }
 }
