@@ -62,14 +62,11 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         if (!alive) return;
-
         Vector3 forwardMove = Vector3.forward * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + forwardMove);
-
         Vector3 targetPosition = new Vector3((currentLane - 1) * laneDistance, rb.position.y, rb.position.z);
         Vector3 newPosition = Vector3.MoveTowards(rb.position, targetPosition, laneDistance * Time.fixedDeltaTime * 10);
         rb.MovePosition(new Vector3(newPosition.x, rb.position.y, rb.position.z));
-
         if (!onRamp)
         {
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * leanSpeed);
@@ -97,23 +94,21 @@ public class PlayerMovement : MonoBehaviour
 
         bool moved = false;
 
+        // Keyboard input
         if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0)
         {
             currentLane--;
             moved = true;
-            ApplyLean(-leanAngle);
-            RotateHands(-handRotationAngle);
-            AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
+            HandleLaneChange(-leanAngle, -handRotationAngle);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2)
         {
             currentLane++;
             moved = true;
-            ApplyLean(leanAngle);
-            RotateHands(handRotationAngle);
-            AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
+            HandleLaneChange(leanAngle, handRotationAngle);
         }
 
+        // Touch input
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -132,18 +127,14 @@ public class PlayerMovement : MonoBehaviour
                     if (swipe.x > 0 && currentLane < 2)
                     {
                         currentLane++;
-                        ApplyLean(leanAngle);
-                        RotateHands(handRotationAngle);
                         moved = true;
-                        AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
+                        HandleLaneChange(leanAngle, handRotationAngle);
                     }
                     else if (swipe.x < 0 && currentLane > 0)
                     {
                         currentLane--;
-                        ApplyLean(-leanAngle);
-                        RotateHands(-handRotationAngle);
                         moved = true;
-                        AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
+                        HandleLaneChange(-leanAngle, -handRotationAngle);
                     }
                 }
             }
@@ -154,6 +145,13 @@ public class PlayerMovement : MonoBehaviour
             isMoving = true;
             StartCoroutine(ResetMove());
         }
+    }
+
+    private void HandleLaneChange(float lean, float handRotation)
+    {
+        ApplyLean(lean);
+        RotateHands(handRotation);
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
     }
 
     private void ApplyLean(float angle)
@@ -173,7 +171,7 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         isMoving = false;
-        targetRotation = Quaternion.Euler(0, 0, 0);
+        targetRotation = Quaternion.identity;
         StartCoroutine(ResetHands());
     }
 
@@ -201,10 +199,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.collider.CompareTag("Ramp"))
         {
-            onRamp = true;
-            float newSpeed = speed * rampSpeedMultiplier;
-            speed = Mathf.Min(newSpeed, maxSpeed);
-            AudioManager.Instance.PlaySound(AudioManager.SoundType.Jump);
+            ApplyRampSpeed();
         }
     }
 
@@ -212,9 +207,21 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.collider.CompareTag("Ramp"))
         {
-            onRamp = false;
-            speed /= rampSpeedMultiplier;
+            RemoveRampSpeed();
         }
+    }
+
+    private void ApplyRampSpeed()
+    {
+        onRamp = true;
+        speed = Mathf.Min(speed * rampSpeedMultiplier, maxSpeed);
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Jump);
+    }
+
+    private void RemoveRampSpeed()
+    {
+        onRamp = false;
+        speed /= rampSpeedMultiplier;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -229,8 +236,7 @@ public class PlayerMovement : MonoBehaviour
     {
         speedBoostActive = true;
         float originalSpeed = speed;
-        float newSpeed = speed * arrowSpeedMultiplier;
-        speed = Mathf.Min(newSpeed, maxSpeed);
+        speed = Mathf.Min(speed * arrowSpeedMultiplier, maxSpeed);
         yield return new WaitForSeconds(arrowBoostDuration);
         speed = originalSpeed;
         speedBoostActive = false;
@@ -248,7 +254,7 @@ public class PlayerMovement : MonoBehaviour
             GameManager.inst.OnPlayerCrash();
         }
 
-        Invoke("Restart", 2f);
+        Invoke(nameof(Restart), 2f);
     }
 
     private void Restart()
@@ -263,6 +269,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetSpeed(float newSpeed)
     {
-        speed = newSpeed;
+        speed = Mathf.Clamp(newSpeed, 0, maxSpeed);
     }
 }

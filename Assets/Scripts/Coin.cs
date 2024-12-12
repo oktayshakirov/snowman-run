@@ -2,24 +2,26 @@
 
 public class Coin : MonoBehaviour
 {
-    [SerializeField] private float turnSpeed = 90f;
-
-    private void Update()
-    {
-        transform.Rotate(0, turnSpeed * Time.deltaTime, 0);
-    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<Obstacle>() != null)
+        if (other.gameObject.CompareTag("Obstacle"))
         {
-            Destroy(gameObject);
+            DeactivateCoin();
             return;
         }
         if (other.gameObject.CompareTag("Player"))
         {
-            GameManager.inst.IncrementScore();
-            Destroy(gameObject);
+            if (GameManager.inst != null)
+            {
+                GameManager.inst.IncrementScore();
+            }
+            DeactivateCoin();
         }
+    }
+
+    private void DeactivateCoin()
+    {
+        gameObject.SetActive(false);
     }
 }
