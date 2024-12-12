@@ -18,6 +18,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float handRotationAngle = 25f;
     [SerializeField] private float handRotationSpeed = 5f;
 
+    [Header("Hat Movement Settings")]
+    [SerializeField] private Transform hat;
+    [SerializeField] private float hatTiltAmount = 0.1f;
+    [SerializeField] private float hatReturnSpeed = 2f;
+
     private int currentLane = 1;
     private float laneDistance = 3.0f;
     private bool isMoving = false;
@@ -45,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
         targetRotation = transform.rotation;
         maxSpeed = GameManager.inst.MaxSpeed;
         controlsEnabled = false;
-        StartCoroutine(EnableControlsAfterDelay(2f));
+        StartCoroutine(EnableControlsAfterDelay(1f));
     }
 
     public void InitializeSpeed(float initialSpeed)
@@ -71,6 +76,9 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * leanSpeed);
         }
+
+        // Smoothly return the hat to its original position
+        SmoothHatReset();
     }
 
     private void Update()
@@ -99,13 +107,13 @@ public class PlayerMovement : MonoBehaviour
         {
             currentLane--;
             moved = true;
-            HandleLaneChange(-leanAngle, -handRotationAngle);
+            HandleLaneChange(-leanAngle, -handRotationAngle, -hatTiltAmount);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow) && currentLane < 2)
         {
             currentLane++;
             moved = true;
-            HandleLaneChange(leanAngle, handRotationAngle);
+            HandleLaneChange(leanAngle, handRotationAngle, hatTiltAmount);
         }
 
         // Touch input
@@ -128,13 +136,13 @@ public class PlayerMovement : MonoBehaviour
                     {
                         currentLane++;
                         moved = true;
-                        HandleLaneChange(leanAngle, handRotationAngle);
+                        HandleLaneChange(leanAngle, handRotationAngle, hatTiltAmount);
                     }
                     else if (swipe.x < 0 && currentLane > 0)
                     {
                         currentLane--;
                         moved = true;
-                        HandleLaneChange(-leanAngle, -handRotationAngle);
+                        HandleLaneChange(-leanAngle, -handRotationAngle, -hatTiltAmount);
                     }
                 }
             }
@@ -147,10 +155,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void HandleLaneChange(float lean, float handRotation)
+    private void HandleLaneChange(float lean, float handRotation, float hatTilt)
     {
         ApplyLean(lean);
         RotateHands(handRotation);
+        TiltHat(hatTilt);
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Swipe);
     }
 
@@ -165,6 +174,24 @@ public class PlayerMovement : MonoBehaviour
         float rightHandAngle = angle > 0 ? handRotationAngle : -handRotationAngle;
         leftHand.localRotation = Quaternion.Euler(0, 0, leftHandAngle);
         rightHand.localRotation = Quaternion.Euler(0, 0, rightHandAngle);
+    }
+
+    private void TiltHat(float tilt)
+    {
+        if (hat != null)
+        {
+            Vector3 hatPosition = hat.localPosition;
+            hat.localPosition = new Vector3(hatPosition.x + tilt, hatPosition.y, hatPosition.z);
+        }
+    }
+
+    private void SmoothHatReset()
+    {
+        if (hat != null)
+        {
+            Vector3 hatPosition = hat.localPosition;
+            hat.localPosition = Vector3.Lerp(hatPosition, new Vector3(0, hatPosition.y, hatPosition.z), Time.fixedDeltaTime * hatReturnSpeed);
+        }
     }
 
     private IEnumerator ResetMove()
