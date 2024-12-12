@@ -13,7 +13,6 @@ public class CameraFollow : MonoBehaviour
     {
         if (player == null)
         {
-            Debug.LogError("CameraFollow script requires a player Transform to follow.");
             return;
         }
         defaultOffset = transform.position - player.position;
