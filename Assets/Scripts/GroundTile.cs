@@ -3,31 +3,42 @@ using System.Collections.Generic;
 
 public class GroundTile : MonoBehaviour
 {
-    GroundSpawner groundSpawner;
-    [SerializeField] GameObject coinPrefab;
-    [SerializeField] GameObject obstaclePrefab;
-    [SerializeField] GameObject rampPrefab;
+    private GroundSpawner groundSpawner;
 
-    private HashSet<Vector3> usedPositions = new HashSet<Vector3>();
+    [SerializeField] private GameObject coinPrefab;
+    [SerializeField] private GameObject obstaclePrefab;
+    [SerializeField] private GameObject rampPrefab;
 
-    private void Start()
+    [SerializeField] private float obstacleSpawnProbability = 0.3f;
+    [SerializeField] private float rampSpawnProbability = 0.5f;
+    [SerializeField] private float coinHeight = 1f;
+    [SerializeField] private float laneOffset = 3f;
+
+    private HashSet<Vector2Int> usedPositions = new HashSet<Vector2Int>();
+
+    public void Initialize(GroundSpawner spawner)
     {
-        groundSpawner = GameObject.FindFirstObjectByType<GroundSpawner>();
+        groundSpawner = spawner;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        groundSpawner.SpawnTile(true);
-        Destroy(gameObject, 2);
+        if (groundSpawner != null)
+        {
+            groundSpawner.SpawnTile(true);
+        }
+        Invoke(nameof(DeactivateTile), 3f);
+    }
+
+    private void DeactivateTile()
+    {
+        gameObject.SetActive(false);
     }
 
     public void SpawnObstacle()
     {
-        float rowSpawnProbability = 0.3f;
-        if (Random.value > rowSpawnProbability)
-        {
+        if (Random.value > obstacleSpawnProbability)
             return;
-        }
 
         int lanesWithObstacles = Random.Range(1, 2);
         HashSet<int> usedLanes = new HashSet<int>();
@@ -43,84 +54,62 @@ public class GroundTile : MonoBehaviour
             usedLanes.Add(laneIndex);
 
             Vector3 spawnPosition = new Vector3(
-                (laneIndex - 1) * 3f,
+                (laneIndex - 1) * laneOffset,
                 0f,
                 transform.position.z
             );
 
-            if (!IsPositionOccupied(spawnPosition, obstaclePrefab))
+            if (!IsPositionOccupied(new Vector2Int(laneIndex, Mathf.RoundToInt(transform.position.z))))
             {
                 Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity, transform);
-                usedPositions.Add(spawnPosition);
+                usedPositions.Add(new Vector2Int(laneIndex, Mathf.RoundToInt(transform.position.z)));
             }
         }
     }
 
     public void SpawnRamps()
     {
-        float rampSpawnProbability = 0.5f;
         if (Random.value > rampSpawnProbability)
-        {
             return;
-        }
 
         int laneIndex = Random.Range(0, 3);
         Vector3 spawnPosition = new Vector3(
-            (laneIndex - 1) * 3f,
+            (laneIndex - 1) * laneOffset,
             0f,
             transform.position.z + Random.Range(-2f, 2f)
         );
 
-        if (!IsPositionOccupied(spawnPosition, rampPrefab))
+        if (!IsPositionOccupied(new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z))))
         {
             Instantiate(rampPrefab, spawnPosition, Quaternion.identity, transform);
-            usedPositions.Add(spawnPosition);
+            usedPositions.Add(new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z)));
         }
     }
 
     public void SpawnCoins()
     {
         int coinsToSpawn = Random.Range(1, 4);
-        float laneOffset = 3f;
 
         for (int i = 0; i < coinsToSpawn; i++)
         {
-            int lane = Random.Range(0, 3);
-            float lanePositionX = (lane - 1) * laneOffset;
+            int laneIndex = Random.Range(0, 3);
             Vector3 spawnPosition = new Vector3(
-                lanePositionX + Random.Range(-0.3f, 0.3f),
-                1f,
+                (laneIndex - 1) * laneOffset + Random.Range(-0.3f, 0.3f),
+                coinHeight,
                 transform.position.z + Random.Range(-1f, 1f)
             );
 
-            if (!IsPositionOccupied(spawnPosition, coinPrefab))
+            if (!IsPositionOccupied(new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z))))
             {
-                GameObject temp = Instantiate(coinPrefab, transform);
-                temp.transform.position = spawnPosition;
-                usedPositions.Add(spawnPosition);
+                GameObject coin = Instantiate(coinPrefab, transform);
+                coin.transform.position = spawnPosition;
+                usedPositions.Add(new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z)));
             }
         }
     }
 
-    private bool IsPositionOccupied(Vector3 position, GameObject prefab)
+    private bool IsPositionOccupied(Vector2Int position)
     {
-        float minimumDistance = GetMinimumDistanceForType(prefab);
-
-        foreach (var usedPosition in usedPositions)
-        {
-            if (Vector3.Distance(usedPosition, position) < minimumDistance)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private float GetMinimumDistanceForType(GameObject prefab)
-    {
-        if (prefab == coinPrefab) return 1f;        
-        if (prefab == rampPrefab) return 3f;       
-        if (prefab == obstaclePrefab) return 2f;   
-        return 2f;                               
+        return usedPositions.Contains(position);
     }
 }

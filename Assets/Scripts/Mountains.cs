@@ -1,18 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 
 public class MountainRepeater : MonoBehaviour
 {
-    [SerializeField] GameObject mountainPrefab;
-    [SerializeField] int numberOfMountains = 20; 
-    [SerializeField] float mountainLength = 20f;
-    [SerializeField] float fadeInDuration = 2f;
+    [SerializeField] private GameObject mountainPrefab;
+    [SerializeField] private int numberOfMountains = 20;
+    [SerializeField] private float mountainLength = 20f;
 
+    private Queue<GameObject> mountainPool = new Queue<GameObject>();
     private List<GameObject> activeMountains = new List<GameObject>();
     private Vector3 nextLeftMountainPosition;
     private Vector3 nextRightMountainPosition;
     private Transform playerTransform;
+
+    private float checkInterval = 0.5f;
+    private float nextCheckTime = 0;
 
     private void Start()
     {
@@ -22,15 +24,10 @@ public class MountainRepeater : MonoBehaviour
 
     private void Update()
     {
-        if (playerTransform.position.z > activeMountains[activeMountains.Count - 1].transform.position.z - mountainLength * 10)
+        if (Time.time >= nextCheckTime)
         {
-            SpawnMountainSegment();
-        }
-
-        if (activeMountains[0].transform.position.z < playerTransform.position.z - mountainLength * 12)
-        {
-            Destroy(activeMountains[0]);
-            activeMountains.RemoveAt(0);
+            nextCheckTime = Time.time + checkInterval;
+            CheckAndUpdateMountains();
         }
     }
 
@@ -45,35 +42,51 @@ public class MountainRepeater : MonoBehaviour
         }
     }
 
+    private void CheckAndUpdateMountains()
+    {
+        if (playerTransform.position.z > activeMountains[activeMountains.Count - 1].transform.position.z - mountainLength * 10)
+        {
+            SpawnMountainSegment();
+        }
+
+        if (activeMountains[0].transform.position.z < playerTransform.position.z - mountainLength * 12)
+        {
+            RecycleMountain(activeMountains[0]);
+            activeMountains.RemoveAt(0);
+        }
+    }
+
     private void SpawnMountainSegment()
     {
-        GameObject leftMountain = Instantiate(mountainPrefab, nextLeftMountainPosition, Quaternion.identity, transform);
-        StartCoroutine(FadeIn(leftMountain));
+        GameObject leftMountain = GetMountainFromPool(nextLeftMountainPosition);
         activeMountains.Add(leftMountain);
         nextLeftMountainPosition += Vector3.forward * mountainLength;
 
-        GameObject rightMountain = Instantiate(mountainPrefab, nextRightMountainPosition, Quaternion.identity, transform);
-        StartCoroutine(FadeIn(rightMountain));
+        GameObject rightMountain = GetMountainFromPool(nextRightMountainPosition);
         activeMountains.Add(rightMountain);
         nextRightMountainPosition += Vector3.forward * mountainLength;
     }
 
-    private IEnumerator FadeIn(GameObject mountain)
+    private GameObject GetMountainFromPool(Vector3 position)
     {
-        Material mountainMaterial = mountain.GetComponent<Renderer>().material;
-        Color initialColor = mountainMaterial.color;
-        initialColor.a = 0;
-        mountainMaterial.color = initialColor;
+        GameObject mountain;
 
-        float elapsedTime = 0;
-        while (elapsedTime < fadeInDuration)
+        if (mountainPool.Count > 0)
         {
-            float alpha = Mathf.Lerp(0, 1, elapsedTime / fadeInDuration);
-            mountainMaterial.color = new Color(initialColor.r, initialColor.g, initialColor.b, alpha);
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            mountain = mountainPool.Dequeue();
+            mountain.transform.position = position;
+            mountain.SetActive(true);
         }
+        else
+        {
+            mountain = Instantiate(mountainPrefab, position, Quaternion.identity, transform);
+        }
+        return mountain;
+    }
 
-        mountainMaterial.color = new Color(initialColor.r, initialColor.g, initialColor.b, 1);
+    private void RecycleMountain(GameObject mountain)
+    {
+        mountain.SetActive(false);
+        mountainPool.Enqueue(mountain);
     }
 }

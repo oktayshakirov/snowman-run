@@ -1,23 +1,23 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
-public class Obstacle : MonoBehaviour {
+public class Obstacle : MonoBehaviour
+{
+    [SerializeField] private PlayerMovement playerMovement;
 
-    PlayerMovement playerMovement;
-
-	private void Start () {
-    playerMovement = GameObject.FindFirstObjectByType<PlayerMovement>();
-	}
-
-    private void OnCollisionEnter (Collision collision)
+    [System.Obsolete]
+    private void Start()
     {
-        if (collision.gameObject.name == "Player") {
-            playerMovement.Die();
+        if (playerMovement == null)
+        {
+            playerMovement = FindObjectOfType<PlayerMovement>();
         }
     }
 
-    private void Update () {
-	
-	}
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            playerMovement.Die();
+        }
+    }
 }
