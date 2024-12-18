@@ -22,6 +22,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float maxSpeed = 40f;
     [SerializeField] private float speedLerpRate = 5f;
 
+    [Header("Fog Settings")]
+    [SerializeField] private float minFogDensity = 0.01f;
+    [SerializeField] private float maxFogDensity = 1.75f;
+    private int maxCoinsForFog = 100;
+    private float currentFogDensity;
+
     private int totalCoins;
     private int currentLevel = 1;
     public bool IsGameActive => !isGameOver && Time.timeScale > 0;
@@ -51,6 +57,12 @@ public class GameManager : MonoBehaviour
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
         RefreshSpeedUnit();
+
+        // Initialize fog
+        RenderSettings.fog = true;
+        RenderSettings.fogDensity = minFogDensity;
+        currentFogDensity = minFogDensity;
+
         StartNewGame();
     }
 
@@ -59,6 +71,7 @@ public class GameManager : MonoBehaviour
         if (!isGameOver && !isGamePaused)
         {
             UpdateSpeedUI();
+            SmoothFogTransition();
         }
     }
 
@@ -81,6 +94,25 @@ public class GameManager : MonoBehaviour
         score++;
         coinsText.text = score.ToString();
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Coin);
+        UpdateTargetFogDensity();
+    }
+
+    private void UpdateTargetFogDensity()
+    {
+        float progress = Mathf.Clamp01((float)score / maxCoinsForFog);
+        if (progress <= 0.5f)
+        {
+            currentFogDensity = Mathf.Lerp(minFogDensity, (minFogDensity + maxFogDensity) / 2, progress * 2);
+        }
+        else
+        {
+            currentFogDensity = Mathf.Lerp((minFogDensity + maxFogDensity) / 2, maxFogDensity, (progress - 0.5f) * 2);
+        }
+    }
+
+    private void SmoothFogTransition()
+    {
+        RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, currentFogDensity, Time.deltaTime * 0.5f);
     }
 
     public void OnPlayerCrash()

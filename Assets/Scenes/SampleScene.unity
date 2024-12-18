@@ -14,9 +14,9 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  m_FogMode: 3
+  m_Fog: 1
+  m_FogColor: {r: 1, g: 1, b: 1, a: 1}
+  m_FogMode: 2
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
@@ -6400,6 +6400,8 @@ MonoBehaviour:
   timeSpeedIncreaseAmount: 1
   maxSpeed: 40
   speedLerpRate: 5
+  minFogDensity: 0.01
+  maxFogDensity: 0.2
 --- !u!4 &863502732
 Transform:
   m_ObjectHideFlags: 0
