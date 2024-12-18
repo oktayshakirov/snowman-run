@@ -59,10 +59,12 @@ public class GroundTile : MonoBehaviour
                 transform.position.z
             );
 
-            if (!IsPositionOccupied(new Vector2Int(laneIndex, Mathf.RoundToInt(transform.position.z))))
+            Vector2Int gridPosition = new Vector2Int(laneIndex, Mathf.RoundToInt(transform.position.z));
+
+            if (!IsPositionOccupied(gridPosition))
             {
                 Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity, transform);
-                usedPositions.Add(new Vector2Int(laneIndex, Mathf.RoundToInt(transform.position.z)));
+                MarkPositionOccupied(gridPosition);
             }
         }
     }
@@ -79,10 +81,12 @@ public class GroundTile : MonoBehaviour
             transform.position.z + Random.Range(-2f, 2f)
         );
 
-        if (!IsPositionOccupied(new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z))))
+        Vector2Int gridPosition = new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z));
+
+        if (!IsPositionOccupied(gridPosition))
         {
             Instantiate(rampPrefab, spawnPosition, Quaternion.identity, transform);
-            usedPositions.Add(new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z)));
+            MarkPositionOccupied(gridPosition);
         }
     }
 
@@ -99,11 +103,13 @@ public class GroundTile : MonoBehaviour
                 transform.position.z + Random.Range(-1f, 1f)
             );
 
-            if (!IsPositionOccupied(new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z))))
+            Vector2Int gridPosition = new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z));
+
+            if (!IsPositionOccupied(gridPosition))
             {
                 GameObject coin = Instantiate(coinPrefab, transform);
                 coin.transform.position = spawnPosition;
-                usedPositions.Add(new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z)));
+                MarkPositionOccupied(gridPosition);
             }
         }
     }
@@ -111,5 +117,10 @@ public class GroundTile : MonoBehaviour
     private bool IsPositionOccupied(Vector2Int position)
     {
         return usedPositions.Contains(position);
+    }
+
+    private void MarkPositionOccupied(Vector2Int position)
+    {
+        usedPositions.Add(position);
     }
 }
