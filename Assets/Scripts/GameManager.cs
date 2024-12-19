@@ -124,8 +124,21 @@ public class GameManager : MonoBehaviour
         UpdateUnlockedLevels();
         playerMovement.SetSpeed(0f);
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Crash);
-        StartCoroutine(DelayedStartScreen());
+
+        if (AdManager.Instance != null && AdManager.Instance.IsAdReady())
+        {
+            AdManager.Instance.ShowAd(() =>
+            {
+                StartCoroutine(DelayedStartScreen());
+            });
+        }
+        else
+        {
+            StartCoroutine(DelayedStartScreen());
+        }
     }
+
+
 
     public void SpendCoins(int amount)
     {
