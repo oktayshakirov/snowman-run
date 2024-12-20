@@ -5099,6 +5099,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _testMode: 1
+  _androidGameId: 5755677
+  _iOSGameId: 5755676
+  _androidAdUnitId: Interstitial_Android
+  _iOSAdUnitId: Interstitial_iOS
 --- !u!4 &681303421
 Transform:
   m_ObjectHideFlags: 0
