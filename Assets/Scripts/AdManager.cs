@@ -12,8 +12,8 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
     [SerializeField] private bool _testMode = true;
     [SerializeField] private string _androidGameId = "5755677";
     [SerializeField] private string _iOSGameId = "5755676";
-    [SerializeField] private string _androidAdUnitId = "Interstitial_Android_Bidding";
-    [SerializeField] private string _iOSAdUnitId = "Interstitial_iOS_Bidding";
+    [SerializeField] private string _androidAdUnitId = "Interstitial_Android";
+    [SerializeField] private string _iOSAdUnitId = "Interstitial_iOS";
 
     private void Awake()
     {
@@ -35,7 +35,6 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
 
     private void InitializeAds()
     {
-
         if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
             _gameId = _iOSGameId;
@@ -48,7 +47,6 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
         }
         else
         {
-            Debug.Log("Unity Ads is not supported on this platform.");
             return;
         }
 
@@ -65,6 +63,11 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
 
     public void ShowAd(System.Action onAdComplete)
     {
+        if (!_isAdReady)
+        {
+            LoadAd();
+        }
+
         if (_isAdReady)
         {
             Advertisement.Show(_adUnitId, new UnityAdsShowListener(onAdComplete));
@@ -129,6 +132,10 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
         public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
         {
             if (showCompletionState == UnityAdsShowCompletionState.COMPLETED)
+            {
+                _onAdComplete?.Invoke();
+            }
+            else
             {
                 _onAdComplete?.Invoke();
             }

@@ -55,23 +55,30 @@ public class SnowmanCollision : MonoBehaviour
         {
             GameManager.inst.OnPlayerCrash();
         }
+        if (AdManager.Instance != null && AdManager.Instance.IsAdReady())
+        {
+            AdManager.Instance.ShowAd(() =>
+            {
+                StartScreenManager.Instance.ShowStartScreen();
+            });
+        }
     }
     public void ResetSnowman()
-{
-    isExploded = false;
-    foreach (GameObject part in snowmanParts)
     {
-        Rigidbody rb = part.GetComponent<Rigidbody>();
-        if (rb != null)
+        isExploded = false;
+        foreach (GameObject part in snowmanParts)
         {
-            rb.isKinematic = true;
-           rb.linearVelocity = Vector3.zero;
+            Rigidbody rb = part.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = true;
+                rb.linearVelocity = Vector3.zero;
 
-            rb.angularVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+            part.transform.localPosition = Vector3.zero;
+            part.transform.localRotation = Quaternion.identity;
         }
-        part.transform.localPosition = Vector3.zero;
-        part.transform.localRotation = Quaternion.identity;
     }
-}
 
 }

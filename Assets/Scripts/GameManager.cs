@@ -124,6 +124,7 @@ public class GameManager : MonoBehaviour
         UpdateUnlockedLevels();
         playerMovement.SetSpeed(0f);
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Crash);
+        AdManager.Instance.LoadAd();
 
         if (AdManager.Instance != null && AdManager.Instance.IsAdReady())
         {
