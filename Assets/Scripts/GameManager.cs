@@ -57,8 +57,6 @@ public class GameManager : MonoBehaviour
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
         RefreshSpeedUnit();
-
-        // Initialize fog
         RenderSettings.fog = true;
         RenderSettings.fogDensity = minFogDensity;
         currentFogDensity = minFogDensity;
@@ -125,6 +123,7 @@ public class GameManager : MonoBehaviour
         playerMovement.SetSpeed(0f);
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Crash);
         AdManager.Instance.LoadAd();
+        HapticFeedback.TriggerHapticFeedback();
 
         if (AdManager.Instance != null && AdManager.Instance.IsAdReady())
         {
