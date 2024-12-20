@@ -5101,8 +5101,8 @@ MonoBehaviour:
   _testMode: 1
   _androidGameId: 5755677
   _iOSGameId: 5755676
-  _androidAdUnitId: Interstitial_Android
-  _iOSAdUnitId: Interstitial_iOS
+  _androidAdUnitId: Interstitial_Android_Bidding
+  _iOSAdUnitId: Interstitial_iOS_Bidding
 --- !u!4 &681303421
 Transform:
   m_ObjectHideFlags: 0
