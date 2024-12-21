@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
         targetRotation = transform.rotation;
         maxSpeed = GameManager.inst.MaxSpeed;
         controlsEnabled = false;
-        StartCoroutine(EnableControlsAfterDelay(1f));
+        StartCoroutine(EnableControlsAfterDelay(0.5f));
     }
 
     public void InitializeSpeed(float initialSpeed)
