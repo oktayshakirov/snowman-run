@@ -76,8 +76,6 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * leanSpeed);
         }
-
-        // Smoothly return the hat to its original position
         SmoothHatReset();
     }
 
@@ -101,8 +99,6 @@ public class PlayerMovement : MonoBehaviour
         if (!GameManager.inst.IsGameActive || isMoving) return;
 
         bool moved = false;
-
-        // Keyboard input
         if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0)
         {
             currentLane--;
@@ -115,8 +111,6 @@ public class PlayerMovement : MonoBehaviour
             moved = true;
             HandleLaneChange(leanAngle, handRotationAngle, hatTiltAmount);
         }
-
-        // Touch input
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -262,6 +256,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator ApplySpeedBoost()
     {
         speedBoostActive = true;
+        NativeHaptics.TriggerWarningNotification();
         float originalSpeed = speed;
         speed = Mathf.Min(speed * arrowSpeedMultiplier, maxSpeed);
         yield return new WaitForSeconds(arrowBoostDuration);

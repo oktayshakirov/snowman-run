@@ -88,10 +88,10 @@ public class GameManager : MonoBehaviour
     public void IncrementScore()
     {
         if (isGameOver) return;
-
         score++;
         coinsText.text = score.ToString();
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Coin);
+        NativeHaptics.TriggerMediumHaptic();
         UpdateTargetFogDensity();
     }
 
@@ -116,15 +116,13 @@ public class GameManager : MonoBehaviour
     public void OnPlayerCrash()
     {
         if (isGameOver) return;
-
+        NativeHaptics.TriggerErrorNotification();
         isGameOver = true;
         WalletManager.AddCoins(score);
         UpdateUnlockedLevels();
         playerMovement.SetSpeed(0f);
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Crash);
         AdManager.Instance.LoadAd();
-        HapticFeedback.TriggerHapticFeedback();
-
         if (AdManager.Instance != null && AdManager.Instance.IsAdReady())
         {
             AdManager.Instance.ShowAd(() =>
@@ -137,7 +135,6 @@ public class GameManager : MonoBehaviour
             StartCoroutine(DelayedStartScreen());
         }
     }
-
 
 
     public void SpendCoins(int amount)
@@ -257,7 +254,6 @@ public class GameManager : MonoBehaviour
     {
         float accelerationDuration = 1f;
         float elapsedTime = 0f;
-
         while (elapsedTime < accelerationDuration)
         {
             elapsedTime += Time.deltaTime;
