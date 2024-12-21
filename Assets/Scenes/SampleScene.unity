@@ -5098,11 +5098,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6741daed26281f5498a5e2718c9bb4aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _testMode: 1
+  _testMode: 0
   _androidGameId: 5755677
   _iOSGameId: 5755676
-  _androidAdUnitId: Interstitial_Android
-  _iOSAdUnitId: Interstitial_iOS
+  _androidAdUnitId: GameOver_Android
+  _iOSAdUnitId: GameOver_iOS
 --- !u!4 &681303421
 Transform:
   m_ObjectHideFlags: 0
