@@ -12,8 +12,8 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
     [SerializeField] private bool _testMode = true;
     [SerializeField] private string _androidGameId = "5755677";
     [SerializeField] private string _iOSGameId = "5755676";
-    [SerializeField] private string _androidAdUnitId = "GameOver_Android";
-    [SerializeField] private string _iOSAdUnitId = "GameOver_iOS";
+    [SerializeField] private string _androidAdUnitId = "Interstitial_Android";
+    [SerializeField] private string _iOSAdUnitId = "Interstitial_iOS";
 
     private void Awake()
     {
