@@ -10,11 +10,6 @@
 # Ignore the Build folder
 [Bb]uild/
 [Bb]uildAndroid/
-
-# Exclude Unity-iPhone.xcworkspace from being ignored
-!Build/Unity-iPhone.xcworkspace
-!Build/Unity-iPhone.xcworkspace/*
-
 # Ignore the Logs folder
 [Ll]ogs/
 
