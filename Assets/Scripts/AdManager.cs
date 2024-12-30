@@ -1,21 +1,15 @@
 using UnityEngine;
 using UnityEngine.Advertisements;
 
-public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener
+public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
 {
-    public static AdManager Instance;
+    public static InterstitialAd Instance;
+    [SerializeField] string _androidAdUnitId = "Interstitial_Android";
+    [SerializeField] string _iOsAdUnitId = "Interstitial_iOS";
 
-    private string _gameId;
-    private string _adUnitId;
-    private bool _isAdReady = false;
+    string _adUnitId;
 
-    [SerializeField] private bool _testMode = true;
-    [SerializeField] private string _androidGameId = "5755677";
-    [SerializeField] private string _iOSGameId = "5755676";
-    [SerializeField] private string _androidAdUnitId = "Interstitial_Android";
-    [SerializeField] private string _iOSAdUnitId = "Interstitial_iOS";
-
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -26,128 +20,43 @@ public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityA
         {
             Destroy(gameObject);
         }
+        // Get the Ad Unit ID for the current platform:
+        _adUnitId = (Application.platform == RuntimePlatform.IPhonePlayer)
+            ? _iOsAdUnitId
+            : _androidAdUnitId;
     }
 
-    private void Start()
-    {
-        InitializeAds();
-    }
-
-    private void InitializeAds()
-    {
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            _gameId = _iOSGameId;
-            _adUnitId = _iOSAdUnitId;
-        }
-        else if (Application.platform == RuntimePlatform.Android)
-        {
-            _gameId = _androidGameId;
-            _adUnitId = _androidAdUnitId;
-        }
-        else
-        {
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(_gameId))
-        {
-            Advertisement.Initialize(_gameId, _testMode, this);
-        }
-    }
-
-    public bool IsAdReady()
-    {
-        return _isAdReady;
-    }
-
-    public void ShowAd(System.Action onAdComplete)
-    {
-        if (!_isAdReady)
-        {
-            LoadAd();
-        }
-
-        if (_isAdReady)
-        {
-            Advertisement.Show(_adUnitId, new UnityAdsShowListener(onAdComplete));
-        }
-        else
-        {
-            onAdComplete?.Invoke();
-        }
-    }
-
+    // Load content to the Ad Unit:
     public void LoadAd()
     {
-        if (!string.IsNullOrEmpty(_adUnitId))
-        {
-            Advertisement.Load(_adUnitId, this);
-        }
+        // IMPORTANT! Only load content AFTER initialization (in this example, initialization is handled in a different script).
+        Debug.Log("Loading Ad: " + _adUnitId);
+        Advertisement.Load(_adUnitId, this);
     }
 
-    public void OnInitializationComplete()
-    {
-        LoadAd();
-    }
-
-    public void OnInitializationFailed(UnityAdsInitializationError error, string message) { }
-
+    // Implement Load Listener and Show Listener interface methods: 
     public void OnUnityAdsAdLoaded(string adUnitId)
     {
-        if (adUnitId == _adUnitId)
-        {
-            _isAdReady = true;
-        }
+        // Optionally execute code if the Ad Unit successfully loads content.
+        Debug.Log("Showing Ad: " + _adUnitId);
+        Advertisement.Show(_adUnitId, this);
     }
 
-    public void OnUnityAdsFailedToLoad(string adUnitId, UnityAdsLoadError error, string message)
+    public void OnUnityAdsFailedToLoad(string _adUnitId, UnityAdsLoadError error, string message)
     {
-        _isAdReady = false;
+        Debug.Log($"Error loading Ad Unit: {_adUnitId} - {error.ToString()} - {message}");
+        // Optionally execute code if the Ad Unit fails to load, such as attempting to try again.
     }
 
-    public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
+    public void OnUnityAdsShowFailure(string _adUnitId, UnityAdsShowError error, string message)
     {
-        if (adUnitId == _adUnitId && showCompletionState == UnityAdsShowCompletionState.COMPLETED)
-        {
-            LoadAd();
-        }
+        Debug.Log($"Error showing Ad Unit {_adUnitId}: {error.ToString()} - {message}");
+        // Optionally execute code if the Ad Unit fails to show, such as loading another ad.
     }
 
-    public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message) { }
-
-    public void OnUnityAdsShowStart(string adUnitId) { }
-
-    public void OnUnityAdsShowClick(string adUnitId) { }
-
-    private class UnityAdsShowListener : IUnityAdsShowListener
+    public void OnUnityAdsShowStart(string _adUnitId) { }
+    public void OnUnityAdsShowClick(string _adUnitId) { }
+    public void OnUnityAdsShowComplete(string _adUnitId, UnityAdsShowCompletionState showCompletionState)
     {
-        private readonly System.Action _onAdComplete;
-
-        public UnityAdsShowListener(System.Action onAdComplete)
-        {
-            _onAdComplete = onAdComplete;
-        }
-
-        public void OnUnityAdsShowComplete(string placementId, UnityAdsShowCompletionState showCompletionState)
-        {
-            if (showCompletionState == UnityAdsShowCompletionState.COMPLETED)
-            {
-                _onAdComplete?.Invoke();
-            }
-            else
-            {
-                _onAdComplete?.Invoke();
-            }
-        }
-
-        public void OnUnityAdsShowFailure(string placementId, UnityAdsShowError error, string message)
-        {
-            _onAdComplete?.Invoke();
-        }
-
-        public void OnUnityAdsShowStart(string placementId) { }
-
-        public void OnUnityAdsShowClick(string placementId) { }
     }
 }

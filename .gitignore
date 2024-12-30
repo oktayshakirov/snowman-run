@@ -9,7 +9,7 @@
 
 # Ignore the Build folder
 [Bb]uild/
-
+[Bb]uildAndroid/
 # Ignore the Logs folder
 [Ll]ogs/
 
@@ -87,3 +87,4 @@ node_modules/
 
 # Ignore the results of builds
 [Bb]uilds/
+

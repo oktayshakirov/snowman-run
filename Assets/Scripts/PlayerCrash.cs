@@ -55,13 +55,6 @@ public class SnowmanCollision : MonoBehaviour
         {
             GameManager.inst.OnPlayerCrash();
         }
-        if (AdManager.Instance != null && AdManager.Instance.IsAdReady())
-        {
-            AdManager.Instance.ShowAd(() =>
-            {
-                StartScreenManager.Instance.ShowStartScreen();
-            });
-        }
     }
     public void ResetSnowman()
     {
