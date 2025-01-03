@@ -9,6 +9,7 @@ TagManager:
   - Arrow
   - Obstacle
   - PreviewCamera
+  - Goggles
   layers:
   - Default
   - TransparentFX
