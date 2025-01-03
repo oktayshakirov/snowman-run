@@ -500,6 +500,7 @@ MonoBehaviour:
   hat: {fileID: 1011009532}
   hatTiltAmount: -0.2
   hatReturnSpeed: 1
+  playerGoggles: {fileID: 1402425693}
   leanAngle: 15
   leanSpeed: 10
   rampSpeedMultiplier: 1.2
@@ -518,6 +519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snowmanParts:
+  - {fileID: 1402425693}
   - {fileID: 1804948752}
   - {fileID: 1804500423}
   - {fileID: 1011009526}
@@ -892,9 +894,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &97201500
 BoxCollider:
@@ -1262,6 +1264,8 @@ MonoBehaviour:
   initialTiles: 15
   coinSpawnProbability: 0.5
   rampSpawnProbability: 0.1
+  obstacleSpawnProbability: 0.3
+  gogglesSpawnProbability: 0.1
 --- !u!4 &126221220
 Transform:
   m_ObjectHideFlags: 0
@@ -1895,9 +1899,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &236254153
 BoxCollider:
@@ -2285,6 +2289,10 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4149392523460021751, guid: 668caeef3f091244986846c489fc2dd6,
         type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 1402425694}
+    - targetCorrespondingSourceObject: {fileID: 4149392523460021751, guid: 668caeef3f091244986846c489fc2dd6,
+        type: 3}
       insertIndex: -1
       addedObject: {fileID: 245843648}
     m_AddedComponents:
@@ -2454,9 +2462,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &270799690
 BoxCollider:
@@ -3183,9 +3191,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &402509707
 BoxCollider:
@@ -3401,9 +3409,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &413728945
 BoxCollider:
@@ -3725,9 +3733,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &465147661
 BoxCollider:
@@ -3862,9 +3870,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &494347734
 BoxCollider:
@@ -3974,9 +3982,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &528710611
 BoxCollider:
@@ -4385,6 +4393,74 @@ Transform:
   m_Children: []
   m_Father: {fileID: 682335520}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &598240475
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.23649263
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.06449895
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.058617536
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.73722607
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.67000115
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 84.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 190
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_Name
+      value: TestGoggles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5a3227b269625a944878efc246dbbc99, type: 3}
 --- !u!1 &601005893
 GameObject:
   m_ObjectHideFlags: 0
@@ -5202,9 +5278,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &682335522
 BoxCollider:
@@ -5487,9 +5563,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &723600597
 BoxCollider:
@@ -5674,9 +5750,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &761299076
 BoxCollider:
@@ -6319,9 +6395,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &829813135
 BoxCollider:
@@ -7832,9 +7908,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1086561136
 BoxCollider:
@@ -7944,9 +8020,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1098392457
 BoxCollider:
@@ -8056,9 +8132,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1108966295
 BoxCollider:
@@ -8445,9 +8521,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1184662814
 BoxCollider:
@@ -9338,9 +9414,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1258514292
 BoxCollider:
@@ -10194,9 +10270,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1320413019
 BoxCollider:
@@ -10589,6 +10665,45 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1320413017}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1402425693 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
+    type: 3}
+  m_PrefabInstance: {fileID: 6937668864132507847}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1402425694 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+    type: 3}
+  m_PrefabInstance: {fileID: 6937668864132507847}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &1402425698
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1402425693}
+  serializedVersion: 4
+  m_Mass: 0.5
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1432159059
 GameObject:
   m_ObjectHideFlags: 0
@@ -10738,9 +10853,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1442044375
 BoxCollider:
@@ -10935,9 +11050,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1457834582
 BoxCollider:
@@ -11581,9 +11696,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1507787542
 BoxCollider:
@@ -12281,9 +12396,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1565794499
 BoxCollider:
@@ -12560,9 +12675,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1622586416
 BoxCollider:
@@ -17704,9 +17819,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1634182804
 BoxCollider:
@@ -18532,9 +18647,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1667403188
 BoxCollider:
@@ -19386,9 +19501,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1748310210
 BoxCollider:
@@ -19573,9 +19688,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1771469745
 BoxCollider:
@@ -19900,9 +20015,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &1801279903
 BoxCollider:
@@ -22454,9 +22569,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
+  gogglesPrefab: {fileID: 0}
   coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
 --- !u!65 &2140225688
 BoxCollider:
@@ -22613,7 +22728,7 @@ PrefabInstance:
     - target: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 202954383657033213, guid: 7e240b21aa604c04d92d467352e6c96e,
         type: 3}
@@ -22700,6 +22815,113 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e240b21aa604c04d92d467352e6c96e, type: 3}
+--- !u!1001 &6937668864132507847
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1187858982}
+    m_Modifications:
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.01777778
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.017759845
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.016014552
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.0400004
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.2444454
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7400422
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.6725605
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 84.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_Name
+      value: Goggles
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869443495663148537, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5276703830969384249, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1402425698}
+  m_SourcePrefab: {fileID: 100100000, guid: 5a3227b269625a944878efc246dbbc99, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -22716,3 +22938,4 @@ SceneRoots:
   - {fileID: 1292635936}
   - {fileID: 1311245861}
   - {fileID: 913117994884796248}
+  - {fileID: 598240475}

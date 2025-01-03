@@ -310,4 +310,9 @@ MonoBehaviour:
     type: 3}
   rampPrefab: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
     type: 3}
-  nextTileSpawnPoint: {fileID: 374595906407350880}
+  gogglesPrefab: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
+    type: 3}
+  obstacleSpawnProbability: 0.3
+  rampSpawnProbability: 0.5
+  gogglesSpawnProbability: 0.1
+  laneOffset: 3

@@ -8,10 +8,10 @@ public class GroundTile : MonoBehaviour
     [SerializeField] private GameObject coinPrefab;
     [SerializeField] private GameObject obstaclePrefab;
     [SerializeField] private GameObject rampPrefab;
+    [SerializeField] private GameObject gogglesPrefab;
 
-    [SerializeField] private float obstacleSpawnProbability = 0.3f;
-    [SerializeField] private float rampSpawnProbability = 0.5f;
     [SerializeField] private float coinHeight = 1f;
+    [SerializeField] private float gogglesHeight = 2f;
     [SerializeField] private float laneOffset = 3f;
 
     private HashSet<Vector2Int> usedPositions = new HashSet<Vector2Int>();
@@ -19,6 +19,7 @@ public class GroundTile : MonoBehaviour
     private const float RampZSize = 10f;
     private const float ObstacleZSize = 3f;
     private const float CoinZSize = 1f;
+    private const float GogglesZSize = 1f;
 
     public void Initialize(GroundSpawner spawner)
     {
@@ -41,9 +42,6 @@ public class GroundTile : MonoBehaviour
 
     public void SpawnObstacle()
     {
-        if (Random.value > obstacleSpawnProbability)
-            return;
-
         int lanesWithObstacles = Random.Range(1, 2);
         HashSet<int> usedLanes = new HashSet<int>();
 
@@ -75,9 +73,6 @@ public class GroundTile : MonoBehaviour
 
     public void SpawnRamps()
     {
-        if (Random.value > rampSpawnProbability)
-            return;
-
         int laneIndex = Random.Range(0, 3);
         Vector3 spawnPosition = new Vector3(
             (laneIndex - 1) * laneOffset,
@@ -115,6 +110,25 @@ public class GroundTile : MonoBehaviour
                 coin.transform.position = spawnPosition;
                 MarkPositionOccupied(gridPosition, CoinZSize);
             }
+        }
+    }
+
+    public void SpawnGoggles()
+    {
+        int laneIndex = Random.Range(0, 3);
+        Vector3 spawnPosition = new Vector3(
+            (laneIndex - 1) * laneOffset,
+            gogglesHeight,
+            transform.position.z + Random.Range(2f, 5f)
+        );
+
+        Vector2Int gridPosition = new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z));
+
+        if (!IsPositionOccupied(gridPosition, GogglesZSize))
+        {
+            GameObject goggles = Instantiate(gogglesPrefab, transform);
+            goggles.transform.position = spawnPosition;
+            MarkPositionOccupied(gridPosition, GogglesZSize);
         }
     }
 

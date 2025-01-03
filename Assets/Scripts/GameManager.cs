@@ -113,6 +113,11 @@ public class GameManager : MonoBehaviour
         RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, currentFogDensity, Time.deltaTime * 0.5f);
     }
 
+    public void ActivateGoggles()
+    {
+        Debug.Log("Goggles effect activated");
+    }
+
     public void OnPlayerCrash()
     {
         if (isGameOver) return;
@@ -125,7 +130,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(DelayedStartScreen());
         InterstitialAd.Instance.LoadAd();
     }
-
 
     public void SpendCoins(int amount)
     {
@@ -220,7 +224,6 @@ public class GameManager : MonoBehaviour
         pauseScreen.SetActive(false);
         playerMovement.StartCoroutine(playerMovement.ResumeInputBuffer(0.1f));
     }
-
 
     public void ExitToStartScreen()
     {

@@ -2,7 +2,7 @@
 
 public class Obstacle : MonoBehaviour
 {
-    [SerializeField] private PlayerMovement playerMovement;
+    private PlayerMovement playerMovement;
 
     [System.Obsolete]
     private void Start()

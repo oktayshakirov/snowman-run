@@ -7,8 +7,11 @@ public class GroundSpawner : MonoBehaviour
     [SerializeField] private int initialTiles = 15;
     [SerializeField] private float coinSpawnProbability = 0.5f;
     [SerializeField] private float rampSpawnProbability = 0.1f;
+    [SerializeField] private float obstacleSpawnProbability = 0.3f;
+    [SerializeField] private float gogglesSpawnProbability = 0.01f;
 
     private Vector3 nextSpawnPoint;
+    private bool gogglesActive = false;
 
     public void SpawnTile(bool spawnItems)
     {
@@ -19,17 +22,46 @@ public class GroundSpawner : MonoBehaviour
         if (spawnItems && Application.isPlaying)
         {
             var groundTileScript = temp.GetComponent<GroundTile>();
-            groundTileScript.SpawnObstacle();
-            if (Random.value < coinSpawnProbability)
+
+            if (Random.value < obstacleSpawnProbability)
             {
-                groundTileScript.SpawnCoins();
+                groundTileScript.SpawnObstacle();
             }
             if (Random.value < rampSpawnProbability)
             {
                 groundTileScript.SpawnRamps();
             }
+            if (Random.value < coinSpawnProbability)
+            {
+                groundTileScript.SpawnCoins();
+            }
+            if (!gogglesActive && Random.value < gogglesSpawnProbability)
+            {
+                groundTileScript.SpawnGoggles();
+            }
         }
     }
+
+    public void SetGogglesActive(bool isActive)
+    {
+        gogglesActive = isActive;
+    }
+
+    public void DestroyAllGoggles()
+    {
+        foreach (Transform tile in transform)
+        {
+            foreach (Transform child in tile)
+            {
+                if (child.CompareTag("Goggles"))
+                {
+                    Destroy(child.gameObject);
+                }
+            }
+        }
+    }
+
+
 
     private void Start()
     {

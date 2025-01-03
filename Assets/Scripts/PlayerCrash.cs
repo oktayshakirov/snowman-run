@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class SnowmanCollision : MonoBehaviour
+public class PlayerCrash : MonoBehaviour
 {
     public GameObject[] snowmanParts;
     public float explosionForce = 500f;
