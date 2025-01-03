@@ -16,6 +16,10 @@ public class GroundTile : MonoBehaviour
 
     private HashSet<Vector2Int> usedPositions = new HashSet<Vector2Int>();
 
+    private const float RampZSize = 10f;
+    private const float ObstacleZSize = 3f;
+    private const float CoinZSize = 1f;
+
     public void Initialize(GroundSpawner spawner)
     {
         groundSpawner = spawner;
@@ -56,15 +60,15 @@ public class GroundTile : MonoBehaviour
             Vector3 spawnPosition = new Vector3(
                 (laneIndex - 1) * laneOffset,
                 0f,
-                transform.position.z
+                transform.position.z + Random.Range(5f, 7.5f)
             );
 
-            Vector2Int gridPosition = new Vector2Int(laneIndex, Mathf.RoundToInt(transform.position.z));
+            Vector2Int gridPosition = new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z));
 
-            if (!IsPositionOccupied(gridPosition))
+            if (!IsPositionOccupied(gridPosition, ObstacleZSize))
             {
                 Instantiate(obstaclePrefab, spawnPosition, Quaternion.identity, transform);
-                MarkPositionOccupied(gridPosition);
+                MarkPositionOccupied(gridPosition, ObstacleZSize);
             }
         }
     }
@@ -78,15 +82,15 @@ public class GroundTile : MonoBehaviour
         Vector3 spawnPosition = new Vector3(
             (laneIndex - 1) * laneOffset,
             0f,
-            transform.position.z + Random.Range(-2f, 2f)
+            transform.position.z + Random.Range(10f, 12f)
         );
 
         Vector2Int gridPosition = new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z));
 
-        if (!IsPositionOccupied(gridPosition))
+        if (!IsPositionOccupied(gridPosition, RampZSize))
         {
             Instantiate(rampPrefab, spawnPosition, Quaternion.identity, transform);
-            MarkPositionOccupied(gridPosition);
+            MarkPositionOccupied(gridPosition, RampZSize);
         }
     }
 
@@ -100,27 +104,39 @@ public class GroundTile : MonoBehaviour
             Vector3 spawnPosition = new Vector3(
                 (laneIndex - 1) * laneOffset + Random.Range(-0.3f, 0.3f),
                 coinHeight,
-                transform.position.z + Random.Range(-1f, 1f)
+                transform.position.z + Random.Range(1f, 1.5f)
             );
 
             Vector2Int gridPosition = new Vector2Int(laneIndex, Mathf.RoundToInt(spawnPosition.z));
 
-            if (!IsPositionOccupied(gridPosition))
+            if (!IsPositionOccupied(gridPosition, CoinZSize))
             {
                 GameObject coin = Instantiate(coinPrefab, transform);
                 coin.transform.position = spawnPosition;
-                MarkPositionOccupied(gridPosition);
+                MarkPositionOccupied(gridPosition, CoinZSize);
             }
         }
     }
 
-    private bool IsPositionOccupied(Vector2Int position)
+    private bool IsPositionOccupied(Vector2Int position, float zSize)
     {
-        return usedPositions.Contains(position);
+        for (int zOffset = 0; zOffset < Mathf.CeilToInt(zSize); zOffset++)
+        {
+            Vector2Int checkPosition = new Vector2Int(position.x, position.y + zOffset);
+            if (usedPositions.Contains(checkPosition))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private void MarkPositionOccupied(Vector2Int position)
+    private void MarkPositionOccupied(Vector2Int position, float zSize)
     {
-        usedPositions.Add(position);
+        for (int zOffset = 0; zOffset < Mathf.CeilToInt(zSize); zOffset++)
+        {
+            Vector2Int occupyPosition = new Vector2Int(position.x, position.y + zOffset);
+            usedPositions.Add(occupyPosition);
+        }
     }
 }

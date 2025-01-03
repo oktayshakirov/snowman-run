@@ -218,7 +218,9 @@ public class GameManager : MonoBehaviour
         isGamePaused = false;
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
+        playerMovement.StartCoroutine(playerMovement.ResumeInputBuffer(0.1f));
     }
+
 
     public void ExitToStartScreen()
     {
