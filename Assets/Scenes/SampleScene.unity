@@ -12488,7 +12488,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _androidGameId: 5755677
-  _iOSGameId: 5755676
   _testMode: 0
 --- !u!4 &1577749885
 Transform:
@@ -22614,7 +22613,7 @@ PrefabInstance:
     - target: {fileID: 100924284082402700, guid: 7e240b21aa604c04d92d467352e6c96e,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 202954383657033213, guid: 7e240b21aa604c04d92d467352e6c96e,
         type: 3}
@@ -22649,7 +22648,7 @@ PrefabInstance:
     - target: {fileID: 7597041589169391017, guid: 7e240b21aa604c04d92d467352e6c96e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 23.63
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 7597041589169391017, guid: 7e240b21aa604c04d92d467352e6c96e,
         type: 3}

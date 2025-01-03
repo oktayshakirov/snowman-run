@@ -13,7 +13,7 @@ public class GroundSpawner : MonoBehaviour
     public void SpawnTile(bool spawnItems)
     {
         GameObject temp = Instantiate(groundTile, nextSpawnPoint, Quaternion.identity, transform);
-        temp.GetComponent<GroundTile>().Initialize(this); // Assign GroundSpawner to GroundTile
+        temp.GetComponent<GroundTile>().Initialize(this);
         nextSpawnPoint = temp.transform.GetChild(1).transform.position;
 
         if (spawnItems && Application.isPlaying)

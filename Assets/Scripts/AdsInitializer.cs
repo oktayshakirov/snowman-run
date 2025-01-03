@@ -3,9 +3,12 @@ using UnityEngine.Advertisements;
 
 public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
 {
+#if UNITY_ANDROID
     [SerializeField] private string _androidGameId = "5755677";
+#elif UNITY_IOS
     [SerializeField] private string _iOSGameId = "5755676";
-    [SerializeField] bool _testMode = false;
+#endif
+    [SerializeField] private bool _testMode = false;
     private string _gameId;
 
     void Awake()
@@ -20,14 +23,13 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
 #elif UNITY_ANDROID
         _gameId = _androidGameId;
 #elif UNITY_EDITOR
-            _gameId = _androidGameId; //Unity Testing
+        _gameId = _androidGameId; 
 #endif
         if (!Advertisement.isInitialized && Advertisement.isSupported)
         {
             Advertisement.Initialize(_gameId, _testMode, this);
         }
     }
-
 
     public void OnInitializationComplete()
     {

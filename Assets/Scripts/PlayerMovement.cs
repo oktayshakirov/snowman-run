@@ -44,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float arrowSpeedMultiplier = 1.5f;
     [SerializeField] private float arrowBoostDuration = 2.0f;
     private bool speedBoostActive = false;
+    private bool resumeGame = false;
 
     private void Start()
     {
@@ -62,6 +63,13 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         controlsEnabled = true;
+    }
+
+    public IEnumerator ResumeInputBuffer(float duration)
+    {
+        resumeGame = true;
+        yield return new WaitForSeconds(duration);
+        resumeGame = false;
     }
 
     private void FixedUpdate()
@@ -96,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void DetectInput()
     {
-        if (!GameManager.inst.IsGameActive || isMoving) return;
+        if (!GameManager.inst.IsGameActive || isMoving || resumeGame) return;
 
         bool moved = false;
         if (Input.GetKeyDown(KeyCode.LeftArrow) && currentLane > 0)
@@ -111,6 +119,7 @@ public class PlayerMovement : MonoBehaviour
             moved = true;
             HandleLaneChange(leanAngle, handRotationAngle, hatTiltAmount);
         }
+
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -148,6 +157,7 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(ResetMove());
         }
     }
+
 
     private void HandleLaneChange(float lean, float handRotation, float hatTilt)
     {
