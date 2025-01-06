@@ -8,7 +8,7 @@ public class GroundSpawner : MonoBehaviour
     [SerializeField] private float coinSpawnProbability = 0.5f;
     [SerializeField] private float rampSpawnProbability = 0.1f;
     [SerializeField] private float obstacleSpawnProbability = 0.3f;
-    [SerializeField] private float gogglesSpawnProbability = 0.01f;
+    [SerializeField] private float gogglesSpawnProbability = 0.3f;
 
     private Vector3 nextSpawnPoint;
     private bool gogglesActive = false;

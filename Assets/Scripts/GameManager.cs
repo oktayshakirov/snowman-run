@@ -12,7 +12,6 @@ public class GameManager : MonoBehaviour
 
     [Header("UI Screens")]
     [SerializeField] private GameObject pauseScreen;
-    [SerializeField] private GameObject settingsScreen;
     [SerializeField] private GameObject startScreenCanvas;
 
     [Header("Speed Settings")]
@@ -21,12 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float timeSpeedIncreaseAmount = 1f;
     [SerializeField] private float maxSpeed = 40f;
     [SerializeField] private float speedLerpRate = 5f;
-
-    [Header("Fog Settings")]
-    [SerializeField] private float minFogDensity = 0.01f;
-    [SerializeField] private float maxFogDensity = 1.75f;
-    private int maxCoinsForFog = 100;
-    private float currentFogDensity;
+    [SerializeField] private Boosters boosters;
 
     private int totalCoins;
     private int currentLevel = 1;
@@ -57,19 +51,24 @@ public class GameManager : MonoBehaviour
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
         RefreshSpeedUnit();
-        RenderSettings.fog = true;
-        RenderSettings.fogDensity = minFogDensity;
-        currentFogDensity = minFogDensity;
+        if (Fog.Instance != null)
+        {
+            Fog.Instance.InitializeFog();
+        }
+        else
+        {
+            Debug.LogWarning("Fog instance is null! Make sure there is a Fog component in the scene.");
+        }
 
         StartNewGame();
     }
+
 
     private void Update()
     {
         if (!isGameOver && !isGamePaused)
         {
             UpdateSpeedUI();
-            SmoothFogTransition();
         }
     }
 
@@ -92,30 +91,61 @@ public class GameManager : MonoBehaviour
         coinsText.text = score.ToString();
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Coin);
         NativeHaptics.TriggerMediumHaptic();
-        UpdateTargetFogDensity();
+        Fog.Instance?.IncrementFogDensity();
     }
 
-    private void UpdateTargetFogDensity()
+    public void StartLevel(int level)
     {
-        float progress = Mathf.Clamp01((float)score / maxCoinsForFog);
-        if (progress <= 0.5f)
-        {
-            currentFogDensity = Mathf.Lerp(minFogDensity, (minFogDensity + maxFogDensity) / 2, progress * 2);
-        }
-        else
-        {
-            currentFogDensity = Mathf.Lerp((minFogDensity + maxFogDensity) / 2, maxFogDensity, (progress - 0.5f) * 2);
-        }
+        currentLevel = Mathf.Max(level, PlayerPrefs.GetInt("CurrentLevel", 1));
+        isGameOver = false;
+        isGamePaused = false;
+        score = 0;
+
+        float levelSpeed = baseSpeed + (currentLevel - 1) * 2f;
+        playerMovement.InitializeSpeed(levelSpeed);
+        coinsText.text = score.ToString();
+        playerMovement.gameObject.SetActive(true);
+        StartCoroutine(InitialAcceleration());
+        StartCoroutine(IncreaseSpeedOverTime());
     }
 
-    private void SmoothFogTransition()
+    public void PauseGame()
     {
-        RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, currentFogDensity, Time.deltaTime * 0.5f);
+        if (isGamePaused) return;
+
+        isGamePaused = true;
+        Time.timeScale = 0;
+        pauseScreen.SetActive(true);
     }
 
-    public void ActivateGoggles()
+    public void ResumeGame()
     {
-        Debug.Log("Goggles effect activated");
+        if (!isGamePaused) return;
+
+        isGamePaused = false;
+        Time.timeScale = 1;
+        pauseScreen.SetActive(false);
+        playerMovement.StartCoroutine(playerMovement.ResumeInputBuffer(0.1f));
+    }
+
+    public void ExitToStartScreen()
+    {
+        isGamePaused = false;
+        Time.timeScale = 1;
+        pauseScreen.SetActive(false);
+        startScreenCanvas.SetActive(true);
+    }
+
+    public void RefreshSpeedUnit()
+    {
+        useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
+        UpdateSpeedUI();
+    }
+
+    public void SpendCoins(int amount)
+    {
+        WalletManager.SpendCoins(amount);
+        UpdateUnlockedLevels();
     }
 
     public void OnPlayerCrash()
@@ -131,10 +161,13 @@ public class GameManager : MonoBehaviour
         InterstitialAd.Instance.LoadAd();
     }
 
-    public void SpendCoins(int amount)
+    private void UpdateSpeedUI()
     {
-        WalletManager.SpendCoins(amount);
-        UpdateUnlockedLevels();
+        float playerSpeed = playerMovement.GetSpeed();
+        displayedSpeedLerp = Mathf.Lerp(displayedSpeedLerp, playerSpeed, Time.deltaTime * speedLerpRate);
+        float convertedSpeed = useKmh ? displayedSpeedLerp * 1.2f : displayedSpeedLerp * 0.746f;
+        string unit = useKmh ? "km/h" : "mph";
+        speedText.text = $"{convertedSpeed:F1} {unit}";
     }
 
     private void UpdateUnlockedLevels()
@@ -167,84 +200,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartLevel(int level)
-    {
-        currentLevel = Mathf.Max(level, PlayerPrefs.GetInt("CurrentLevel", 1));
-        isGameOver = false;
-        isGamePaused = false;
-        score = 0;
-
-        float levelSpeed = baseSpeed + (currentLevel - 1) * 2f;
-        playerMovement.InitializeSpeed(levelSpeed);
-        coinsText.text = score.ToString();
-        playerMovement.gameObject.SetActive(true);
-        StartCoroutine(InitialAcceleration());
-        StartCoroutine(IncreaseSpeedOverTime());
-    }
-
-    private IEnumerator DelayedStartScreen()
-    {
-        yield return new WaitForSeconds(2f);
-        if (StartScreenManager.Instance != null)
-        {
-            StartScreenManager.Instance.ShowStartScreen();
-        }
-    }
-
-    private void UpdateSpeedUI()
-    {
-        float playerSpeed = playerMovement.GetSpeed();
-        displayedSpeedLerp = Mathf.Lerp(displayedSpeedLerp, playerSpeed, Time.deltaTime * speedLerpRate);
-        float convertedSpeed = useKmh ? displayedSpeedLerp * 1.2f : displayedSpeedLerp * 0.746f;
-        string unit = useKmh ? "km/h" : "mph";
-        speedText.text = $"{convertedSpeed:F1} {unit}";
-    }
-
-    public void RefreshSpeedUnit()
-    {
-        useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
-        UpdateSpeedUI();
-    }
-
-    public void PauseGame()
-    {
-        if (isGamePaused) return;
-
-        isGamePaused = true;
-        Time.timeScale = 0;
-        pauseScreen.SetActive(true);
-    }
-
-    public void ResumeGame()
-    {
-        if (!isGamePaused) return;
-
-        isGamePaused = false;
-        Time.timeScale = 1;
-        pauseScreen.SetActive(false);
-        playerMovement.StartCoroutine(playerMovement.ResumeInputBuffer(0.1f));
-    }
-
-    public void ExitToStartScreen()
-    {
-        isGamePaused = false;
-        Time.timeScale = 1;
-        pauseScreen.SetActive(false);
-        startScreenCanvas.SetActive(true);
-    }
-
-    public void OpenSettings()
-    {
-        pauseScreen.SetActive(false);
-        settingsScreen.SetActive(true);
-    }
-
-    public void CloseSettings()
-    {
-        settingsScreen.SetActive(false);
-        pauseScreen.SetActive(true);
-    }
-
     private IEnumerator InitialAcceleration()
     {
         float accelerationDuration = 1f;
@@ -264,6 +219,29 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(timeBetweenSpeedIncreases);
             float newSpeed = Mathf.Min(playerMovement.GetSpeed() + timeSpeedIncreaseAmount, maxSpeed);
             playerMovement.SetSpeed(newSpeed);
+        }
+    }
+
+    public void ActivateGoggles()
+    {
+        if (boosters != null)
+        {
+            Debug.Log("Activating goggles via Boosters.");
+            boosters.ActivateGoggles();
+        }
+        else
+        {
+            Debug.LogError("Boosters instance is null in GameManager!");
+        }
+    }
+
+
+    private IEnumerator DelayedStartScreen()
+    {
+        yield return new WaitForSeconds(2f);
+        if (StartScreenManager.Instance != null)
+        {
+            StartScreenManager.Instance.ShowStartScreen();
         }
     }
 }

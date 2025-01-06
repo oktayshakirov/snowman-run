@@ -28,6 +28,7 @@ public class Goggles : MonoBehaviour
         }
     }
 
+
     private void DeactivateGoggles()
     {
         GroundSpawner spawner = Object.FindFirstObjectByType<GroundSpawner>();
