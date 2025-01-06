@@ -6,7 +6,7 @@ public class Fog : MonoBehaviour
     [SerializeField] private float minFogDensity = 0.01f;
     [SerializeField] private float maxFogDensity = 0.15f;
     [SerializeField] private float fogIncrementStep = 0.001f;
-    [SerializeField] private float fogLerpSpeed = 0.5f;
+    [SerializeField] private float fogLerpSpeed = 0.15f;
 
     private float currentFogDensity;
     private bool holdFogIncrement = false;

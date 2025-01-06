@@ -501,7 +501,7 @@ MonoBehaviour:
   hatTiltAmount: -0.2
   hatReturnSpeed: 1
   playerGoggles: {fileID: 1402425693}
-  boosters: {fileID: 0}
+  boosters: {fileID: 421472497}
   leanAngle: 15
   leanSpeed: 10
   rampSpeedMultiplier: 1.2
@@ -1263,10 +1263,10 @@ MonoBehaviour:
   groundTile: {fileID: 6682584033024778767, guid: d1d029f422445b645ba46a23ef8b1fc6,
     type: 3}
   initialTiles: 15
-  coinSpawnProbability: 0.4
-  rampSpawnProbability: 0.05
+  coinSpawnProbability: 0.3
+  rampSpawnProbability: 0.04
   obstacleSpawnProbability: 0.3
-  gogglesSpawnProbability: 0.05
+  gogglesSpawnProbability: 0.03
 --- !u!4 &126221220
 Transform:
   m_ObjectHideFlags: 0
@@ -3840,13 +3840,17 @@ MonoBehaviour:
   coinSound: {fileID: 8300000, guid: af7acc0954a78462580759ce9ae20c86, type: 3}
   weeSound: {fileID: 8300000, guid: 227cc742b08ce463f8c31a116a32eedc, type: 3}
   crashSound: {fileID: 8300000, guid: db12d87acbcd149239bc1eb576bae0f7, type: 3}
+  gogglesSound: {fileID: 8300000, guid: 9303964e26c0f8544916d76f2f084583, type: 3}
+  offSound: {fileID: 8300000, guid: e0f964b310efb574da1c6646268efdc6, type: 3}
   swipeSoundVolume: 1
   jumpSoundVolume: 0.04
   coinSoundVolume: 0.03
   weeSoundVolume: 0.2
   crashSoundVolume: 0.2
+  gogglesSoundVolume: 0.18
+  offSoundVolume: 0.25
   backgroundMusic: {fileID: 8300000, guid: fc90bd1f70ae545069f7f56fc75ece17, type: 3}
-  backgroundMusicVolume: 0.3
+  backgroundMusicVolume: 0.25
 --- !u!4 &489977110
 Transform:
   m_ObjectHideFlags: 0
@@ -4507,7 +4511,7 @@ PrefabInstance:
     - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6473,6 +6477,103 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 0, z: 5}
+--- !u!1 &838233571
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 838233572}
+  - component: {fileID: 838233573}
+  m_Layer: 0
+  m_Name: Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &838233572
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 838233571}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 34, y: 5000, z: -2031}
+  m_LocalScale: {x: 256.9043, y: 257.17905, z: 256.65396}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1402425694}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &838233573
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 838233571}
+  m_Enabled: 1
+  serializedVersion: 11
+  m_Type: 2
+  m_Color: {r: 0.6039216, g: 0.47053003, b: 0, a: 1}
+  m_Intensity: 6
+  m_Range: 18
+  m_SpotAngle: 57.6
+  m_InnerSpotAngle: 19.7
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 1
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
+  m_ShadowRadius: 14.19
+  m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!1 &847889812
 GameObject:
   m_ObjectHideFlags: 0
@@ -23014,7 +23115,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 838233572}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}

@@ -4,10 +4,10 @@ public class GroundSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject groundTile;
     [SerializeField] private int initialTiles = 15;
-    [SerializeField] private float coinSpawnProbability = 0.4f;
-    [SerializeField] private float rampSpawnProbability = 0.05f;
+    [SerializeField] private float coinSpawnProbability = 0.3f;
+    [SerializeField] private float rampSpawnProbability = 0.03f;
     [SerializeField] private float obstacleSpawnProbability = 0.3f;
-    [SerializeField] private float gogglesSpawnProbability = 0.05f;
+    [SerializeField] private float gogglesSpawnProbability = 0.03f;
 
     private Vector3 nextSpawnPoint;
     private bool gogglesActive = false;

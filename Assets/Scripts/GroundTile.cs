@@ -17,7 +17,7 @@ public class GroundTile : MonoBehaviour
     private HashSet<Vector2Int> usedPositions = new HashSet<Vector2Int>();
 
     private const float RampZSize = 20f;
-    private const float ObstacleZSize = 3f;
+    private const float ObstacleZSize = 10f;
     private const float CoinZSize = 1f;
     private const float GogglesZSize = 1f;
 

@@ -222,6 +222,7 @@ public class GameManager : MonoBehaviour
         if (boosters != null)
         {
             boosters.ActivateGoggles();
+            AudioManager.Instance.PlaySound(AudioManager.SoundType.Goggles);
         }
     }
 
