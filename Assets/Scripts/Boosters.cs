@@ -7,6 +7,7 @@ public class Boosters : MonoBehaviour
     [SerializeField] private Fog fog;
     [SerializeField] private float gogglesFogReduction = 0.8f;
     [SerializeField] private float gogglesDuration = 7f;
+    public float GogglesDuration => gogglesDuration;
 
     private bool gogglesActive = false;
     private float fogDensityAtActivation;
@@ -32,5 +33,6 @@ public class Boosters : MonoBehaviour
         {
             spawner.ShowAllGoggles();
         }
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Off);
     }
 }

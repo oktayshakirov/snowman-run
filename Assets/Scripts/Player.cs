@@ -193,7 +193,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Destroy(goggles);
-        StartCoroutine(DeactivateGogglesAfterDuration(10f));
+        float duration = boosters.GogglesDuration;
+        StartCoroutine(DeactivateGogglesAfterDuration(duration));
     }
 
     private IEnumerator DeactivateGogglesAfterDuration(float duration)

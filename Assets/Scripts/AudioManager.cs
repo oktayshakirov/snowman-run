@@ -11,6 +11,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip coinSound;
     public AudioClip weeSound;
     public AudioClip crashSound;
+    public AudioClip gogglesSound;
+    public AudioClip offSound;
 
     [Header("Sound Volumes")]
     [Range(0f, 1f)] public float swipeSoundVolume = 1f;
@@ -18,6 +20,8 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)] public float coinSoundVolume = 1f;
     [Range(0f, 1f)] public float weeSoundVolume = 1f;
     [Range(0f, 1f)] public float crashSoundVolume = 1f;
+    [Range(0f, 1f)] public float gogglesSoundVolume = 1f;
+    [Range(0f, 1f)] public float offSoundVolume = 1f;
 
     [Header("Background Music")]
     public AudioClip backgroundMusic;
@@ -40,7 +44,9 @@ public class AudioManager : MonoBehaviour
         Jump,
         Coin,
         Wee,
-        Crash
+        Crash,
+        Goggles,
+        Off
     }
 
     private void Awake()
@@ -87,6 +93,8 @@ public class AudioManager : MonoBehaviour
             SoundType.Coin => coinSound,
             SoundType.Wee => weeSound,
             SoundType.Crash => crashSound,
+            SoundType.Goggles => gogglesSound,
+            SoundType.Off => offSound,
             _ => null
         };
 
@@ -97,6 +105,8 @@ public class AudioManager : MonoBehaviour
             SoundType.Coin => coinSoundVolume,
             SoundType.Wee => weeSoundVolume,
             SoundType.Crash => crashSoundVolume,
+            SoundType.Goggles => gogglesSoundVolume,
+            SoundType.Off => offSoundVolume,
             _ => 1f
         };
 
