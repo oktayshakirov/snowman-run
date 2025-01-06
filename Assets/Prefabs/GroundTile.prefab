@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8146799664408198217}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ObstacleSpawnRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5461821652878214879}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ObstacleSpawnLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5565483635893223638}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ObstacleSpawnMiddle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7481032795112029572}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NextSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 3636336901950689770}
   - component: {fileID: 1468748048622935252}
   - component: {fileID: 156683511094792828}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 374595906407350880}
   - component: {fileID: 5148572637908866231}
   - component: {fileID: 5184653721730717373}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GroundTile
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -312,7 +312,6 @@ MonoBehaviour:
     type: 3}
   gogglesPrefab: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
     type: 3}
-  obstacleSpawnProbability: 0.3
-  rampSpawnProbability: 0.5
-  gogglesSpawnProbability: 0.1
+  coinHeight: 1
+  gogglesHeight: 2
   laneOffset: 3
