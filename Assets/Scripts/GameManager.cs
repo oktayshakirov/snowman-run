@@ -55,11 +55,6 @@ public class GameManager : MonoBehaviour
         {
             Fog.Instance.InitializeFog();
         }
-        else
-        {
-            Debug.LogWarning("Fog instance is null! Make sure there is a Fog component in the scene.");
-        }
-
         StartNewGame();
     }
 
@@ -226,12 +221,7 @@ public class GameManager : MonoBehaviour
     {
         if (boosters != null)
         {
-            Debug.Log("Activating goggles via Boosters.");
             boosters.ActivateGoggles();
-        }
-        else
-        {
-            Debug.LogError("Boosters instance is null in GameManager!");
         }
     }
 

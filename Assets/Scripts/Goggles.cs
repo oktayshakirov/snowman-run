@@ -20,23 +20,15 @@ public class Goggles : MonoBehaviour
             GroundSpawner spawner = Object.FindFirstObjectByType<GroundSpawner>();
             if (spawner != null)
             {
-                spawner.SetGogglesActive(true);
-                spawner.DestroyAllGoggles();
+                spawner.HideAllGoggles();
             }
 
             DeactivateGoggles();
         }
     }
 
-
     private void DeactivateGoggles()
     {
-        GroundSpawner spawner = Object.FindFirstObjectByType<GroundSpawner>();
-        if (spawner != null)
-        {
-            spawner.SetGogglesActive(false);
-        }
-
         gameObject.SetActive(false);
     }
 }
