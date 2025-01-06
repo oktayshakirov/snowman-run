@@ -12,6 +12,13 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private Rigidbody rb;
 
+    [Header("Jump Settings")]
+    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform groundCheck;
+    private bool isGrounded;
+    private float groundCheckRadius = 0.2f;
+
     [Header("Hand Rotation Settings")]
     [SerializeField] private Transform leftHand;
     [SerializeField] private Transform rightHand;
@@ -84,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         if (!alive) return;
-
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
         Vector3 forwardMove = Vector3.forward * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + forwardMove);
         Vector3 targetPosition = new Vector3((currentLane - 1) * laneDistance, rb.position.y, rb.position.z);
@@ -129,7 +136,10 @@ public class PlayerMovement : MonoBehaviour
             moved = true;
             HandleLaneChange(leanAngle, handRotationAngle, hatTiltAmount);
         }
-
+        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+        {
+            Jump();
+        }
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -158,6 +168,10 @@ public class PlayerMovement : MonoBehaviour
                         HandleLaneChange(-leanAngle, -handRotationAngle, -hatTiltAmount);
                     }
                 }
+                else if (Mathf.Abs(swipe.y) > swipeThreshold && swipe.y > 0 && isGrounded)
+                {
+                    Jump();
+                }
             }
         }
 
@@ -166,6 +180,13 @@ public class PlayerMovement : MonoBehaviour
             isMoving = true;
             StartCoroutine(ResetMove());
         }
+    }
+
+    private void Jump()
+    {
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Jump);
     }
 
     private void OnTriggerEnter(Collider other)
