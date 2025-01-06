@@ -4,8 +4,9 @@ public class Fog : MonoBehaviour
 {
     public static Fog Instance;
     [SerializeField] private float minFogDensity = 0.01f;
-    [SerializeField] private float maxFogDensity = 0.175f;
+    [SerializeField] private float maxFogDensity = 0.15f;
     [SerializeField] private float fogIncrementStep = 0.001f;
+    [SerializeField] private float fogLerpSpeed = 0.5f;
 
     private float currentFogDensity;
     private bool holdFogIncrement = false;
@@ -23,9 +24,13 @@ public class Fog : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        SmoothFogTransition();
+    }
+
     public void InitializeFog()
     {
-        Debug.Log("Initializing fog with density: " + minFogDensity);
         RenderSettings.fog = true;
         RenderSettings.fogDensity = minFogDensity;
         currentFogDensity = minFogDensity;
@@ -35,26 +40,21 @@ public class Fog : MonoBehaviour
     {
         if (holdFogIncrement)
         {
-            Debug.Log("Fog increment is on hold.");
             return;
         }
         currentFogDensity += fogIncrementStep;
         currentFogDensity = Mathf.Clamp(currentFogDensity, minFogDensity, maxFogDensity);
-
-        Debug.Log($"Incrementing fog density to: {currentFogDensity}");
-        RenderSettings.fogDensity = currentFogDensity;
     }
 
     public void ReduceFogDensity(float reductionPercent)
     {
-        currentFogDensity = RenderSettings.fogDensity;
-        RenderSettings.fogDensity *= (1 - reductionPercent);
+        currentFogDensity = RenderSettings.fogDensity * (1 - reductionPercent);
+        currentFogDensity = Mathf.Clamp(currentFogDensity, minFogDensity, maxFogDensity);
     }
 
     public void RestoreFogDensityTo(float previousDensity)
     {
-        currentFogDensity = previousDensity;
-        RenderSettings.fogDensity = currentFogDensity;
+        currentFogDensity = Mathf.Clamp(previousDensity, minFogDensity, maxFogDensity);
     }
 
     public float GetCurrentFogDensity()
@@ -65,13 +65,10 @@ public class Fog : MonoBehaviour
     public void HoldFogIncrement(bool hold)
     {
         holdFogIncrement = hold;
-        if (hold)
-        {
-            Debug.Log("Fog incrementing is now on hold.");
-        }
-        else
-        {
-            Debug.Log("Fog incrementing resumed.");
-        }
+    }
+
+    private void SmoothFogTransition()
+    {
+        RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, currentFogDensity, Time.deltaTime * fogLerpSpeed);
     }
 }

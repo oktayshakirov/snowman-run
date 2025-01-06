@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 
-[ExecuteInEditMode]
 public class GroundSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject groundTile;
     [SerializeField] private int initialTiles = 15;
-    [SerializeField] private float coinSpawnProbability = 0.5f;
-    [SerializeField] private float rampSpawnProbability = 0.1f;
+    [SerializeField] private float coinSpawnProbability = 0.4f;
+    [SerializeField] private float rampSpawnProbability = 0.05f;
     [SerializeField] private float obstacleSpawnProbability = 0.3f;
-    [SerializeField] private float gogglesSpawnProbability = 0.3f;
+    [SerializeField] private float gogglesSpawnProbability = 0.05f;
 
     private Vector3 nextSpawnPoint;
     private bool gogglesActive = false;
@@ -47,7 +46,7 @@ public class GroundSpawner : MonoBehaviour
         gogglesActive = isActive;
     }
 
-    public void DestroyAllGoggles()
+    public void HideAllGoggles()
     {
         foreach (Transform tile in transform)
         {
@@ -55,13 +54,25 @@ public class GroundSpawner : MonoBehaviour
             {
                 if (child.CompareTag("Goggles"))
                 {
-                    Destroy(child.gameObject);
+                    child.gameObject.SetActive(false);
                 }
             }
         }
     }
 
-
+    public void ShowAllGoggles()
+    {
+        foreach (Transform tile in transform)
+        {
+            foreach (Transform child in tile)
+            {
+                if (child.CompareTag("Goggles"))
+                {
+                    child.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
 
     private void Start()
     {
