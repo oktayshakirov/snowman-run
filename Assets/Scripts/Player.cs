@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Goggles")]
     [SerializeField] private GameObject playerGoggles;
+    [SerializeField] private Boosters boosters;
 
     private int currentLane = 1;
     private float laneDistance = 3.0f;
@@ -83,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         if (!alive) return;
+
         Vector3 forwardMove = Vector3.forward * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + forwardMove);
         Vector3 targetPosition = new Vector3((currentLane - 1) * laneDistance, rb.position.y, rb.position.z);
@@ -166,6 +168,43 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Arrow") && !speedBoostActive)
+        {
+            StartCoroutine(ApplySpeedBoost());
+        }
+        else if (other.CompareTag("Goggles"))
+        {
+            ActivateGoggles(other.gameObject);
+        }
+    }
+
+    private void ActivateGoggles(GameObject goggles)
+    {
+        if (playerGoggles != null)
+        {
+            playerGoggles.SetActive(true);
+        }
+
+        if (boosters != null)
+        {
+            boosters.ActivateGoggles();
+        }
+
+        Destroy(goggles);
+        StartCoroutine(DeactivateGogglesAfterDuration(10f));
+    }
+
+    private IEnumerator DeactivateGogglesAfterDuration(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        if (playerGoggles != null)
+        {
+            playerGoggles.SetActive(false);
+        }
+    }
 
     private void HandleLaneChange(float lean, float handRotation, float hatTilt)
     {
@@ -261,23 +300,6 @@ public class PlayerMovement : MonoBehaviour
     {
         onRamp = false;
         speed /= rampSpeedMultiplier;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Arrow") && !speedBoostActive)
-        {
-            StartCoroutine(ApplySpeedBoost());
-        }
-        else if (other.CompareTag("Goggles"))
-        {
-            if (playerGoggles != null)
-            {
-                playerGoggles.SetActive(true);
-            }
-
-            Destroy(other.gameObject);
-        }
     }
 
     private IEnumerator ApplySpeedBoost()

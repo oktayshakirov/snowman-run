@@ -501,6 +501,7 @@ MonoBehaviour:
   hatTiltAmount: -0.2
   hatReturnSpeed: 1
   playerGoggles: {fileID: 1402425693}
+  boosters: {fileID: 0}
   leanAngle: 15
   leanSpeed: 10
   rampSpeedMultiplier: 1.2
@@ -1261,11 +1262,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundTile: {fileID: 6682584033024778767, guid: d1d029f422445b645ba46a23ef8b1fc6,
     type: 3}
-  initialTiles: 15
+  initialTiles: 10
   coinSpawnProbability: 0.5
   rampSpawnProbability: 0.1
   obstacleSpawnProbability: 0.3
-  gogglesSpawnProbability: 0.1
+  gogglesSpawnProbability: 0.5
 --- !u!4 &126221220
 Transform:
   m_ObjectHideFlags: 0
@@ -3434,6 +3435,53 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 0, z: 5}
+--- !u!1 &421472496
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 421472498}
+  - component: {fileID: 421472497}
+  m_Layer: 0
+  m_Name: Boosters
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &421472497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421472496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86d1cd920c3cc40b1852cf95070b6ccb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fog: {fileID: 1521719580}
+  gogglesFogReduction: 0.3
+  gogglesDuration: 10
+--- !u!4 &421472498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421472496}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.385311, y: -1.8375756, z: 38.243214}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &439141251
 GameObject:
   m_ObjectHideFlags: 0
@@ -4455,6 +4503,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TestGoggles
+      objectReference: {fileID: 0}
+    - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6515,15 +6568,13 @@ MonoBehaviour:
   speedText: {fileID: 1229883723}
   playerMovement: {fileID: 41877088}
   pauseScreen: {fileID: 898825397}
-  settingsScreen: {fileID: 1638444912}
   startScreenCanvas: {fileID: 1259244843}
   baseSpeed: 10
   timeBetweenSpeedIncreases: 2
   timeSpeedIncreaseAmount: 1
   maxSpeed: 40
   speedLerpRate: 5
-  minFogDensity: 0.01
-  maxFogDensity: 0.12
+  boosters: {fileID: 421472497}
 --- !u!4 &863502732
 Transform:
   m_ObjectHideFlags: 0
@@ -11889,6 +11940,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515625894}
   m_CullTransparentMesh: 1
+--- !u!1 &1521719579
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1521719581}
+  - component: {fileID: 1521719580}
+  m_Layer: 0
+  m_Name: Fog
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1521719580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521719579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 809be4dd39af74498b0b3306be6ad21b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minFogDensity: 0.01
+  maxFogDensity: 0.175
+  fogIncrementStep: 0.001
+--- !u!4 &1521719581
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521719579}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.385311, y: -1.8375756, z: 38.243214}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1523261039
 GameObject:
   m_ObjectHideFlags: 0
@@ -22901,7 +22999,7 @@ PrefabInstance:
     - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4869443495663148537, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
@@ -22928,10 +23026,12 @@ SceneRoots:
   m_Roots:
   - {fileID: 963194228}
   - {fileID: 705507995}
+  - {fileID: 1521719581}
   - {fileID: 41877086}
   - {fileID: 126221220}
   - {fileID: 1577749885}
   - {fileID: 681303421}
+  - {fileID: 421472498}
   - {fileID: 863502732}
   - {fileID: 489977110}
   - {fileID: 290656423}
