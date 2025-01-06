@@ -3845,14 +3845,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   swipeSound: {fileID: 8300000, guid: 9dd8e31aa278247ef845ebd1ed8c9512, type: 3}
-  jumpSound: {fileID: 8300000, guid: 941dff92da17f41738340a6d95948b35, type: 3}
+  jumpSound: {fileID: 8300000, guid: a0141a11027e749b1bd250bedb71ad16, type: 3}
+  rampSound: {fileID: 8300000, guid: 941dff92da17f41738340a6d95948b35, type: 3}
   coinSound: {fileID: 8300000, guid: af7acc0954a78462580759ce9ae20c86, type: 3}
   weeSound: {fileID: 8300000, guid: 227cc742b08ce463f8c31a116a32eedc, type: 3}
   crashSound: {fileID: 8300000, guid: db12d87acbcd149239bc1eb576bae0f7, type: 3}
   gogglesSound: {fileID: 8300000, guid: 9303964e26c0f8544916d76f2f084583, type: 3}
   offSound: {fileID: 8300000, guid: e0f964b310efb574da1c6646268efdc6, type: 3}
   swipeSoundVolume: 1
-  jumpSoundVolume: 0.04
+  jumpSoundVolume: 0.15
+  rampSoundVolume: 0.04
   coinSoundVolume: 0.03
   weeSoundVolume: 0.2
   crashSoundVolume: 0.2

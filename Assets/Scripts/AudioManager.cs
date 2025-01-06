@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
     [Header("Sound Effects")]
     public AudioClip swipeSound;
     public AudioClip jumpSound;
+    public AudioClip rampSound;
     public AudioClip coinSound;
     public AudioClip weeSound;
     public AudioClip crashSound;
@@ -17,6 +18,7 @@ public class AudioManager : MonoBehaviour
     [Header("Sound Volumes")]
     [Range(0f, 1f)] public float swipeSoundVolume = 1f;
     [Range(0f, 1f)] public float jumpSoundVolume = 1f;
+    [Range(0f, 1f)] public float rampSoundVolume = 1f;
     [Range(0f, 1f)] public float coinSoundVolume = 1f;
     [Range(0f, 1f)] public float weeSoundVolume = 1f;
     [Range(0f, 1f)] public float crashSoundVolume = 1f;
@@ -41,6 +43,7 @@ public class AudioManager : MonoBehaviour
     public enum SoundType
     {
         Swipe,
+        Ramp,
         Jump,
         Coin,
         Wee,
@@ -90,6 +93,7 @@ public class AudioManager : MonoBehaviour
         {
             SoundType.Swipe => swipeSound,
             SoundType.Jump => jumpSound,
+            SoundType.Ramp => rampSound,
             SoundType.Coin => coinSound,
             SoundType.Wee => weeSound,
             SoundType.Crash => crashSound,
@@ -102,6 +106,7 @@ public class AudioManager : MonoBehaviour
         {
             SoundType.Swipe => swipeSoundVolume,
             SoundType.Jump => jumpSoundVolume,
+            SoundType.Ramp => rampSoundVolume,
             SoundType.Coin => coinSoundVolume,
             SoundType.Wee => weeSoundVolume,
             SoundType.Crash => crashSoundVolume,

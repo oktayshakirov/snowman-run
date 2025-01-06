@@ -315,7 +315,7 @@ public class PlayerMovement : MonoBehaviour
     {
         onRamp = true;
         speed = Mathf.Min(speed * rampSpeedMultiplier, maxSpeed);
-        AudioManager.Instance.PlaySound(AudioManager.SoundType.Jump);
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Ramp);
     }
 
     private void RemoveRampSpeed()
