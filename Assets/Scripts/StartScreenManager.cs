@@ -8,6 +8,7 @@ public class StartScreenManager : MonoBehaviour
     [SerializeField] private GameObject startScreenCanvas;
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private GameObject settingsScreenCanvas;
+    [SerializeField] private GameObject shopScreenCanvas;
     [SerializeField] private TMP_Text totalCoinsText;
     [SerializeField] private TMP_Text currentLevelText;
 
@@ -37,6 +38,11 @@ public class StartScreenManager : MonoBehaviour
             settingsScreenCanvas.SetActive(false);
         }
 
+        if (shopScreenCanvas != null)
+        {
+            shopScreenCanvas.SetActive(false);
+        }
+
         Time.timeScale = 0;
         UpdateUI();
 
@@ -58,6 +64,11 @@ public class StartScreenManager : MonoBehaviour
         if (settingsScreenCanvas != null)
         {
             settingsScreenCanvas.SetActive(false);
+        }
+
+        if (shopScreenCanvas != null)
+        {
+            shopScreenCanvas.SetActive(false);
         }
 
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Wee);
@@ -83,6 +94,16 @@ public class StartScreenManager : MonoBehaviour
         }
 
         startScreenCanvas.SetActive(true);
+    }
+
+    public void OpenShop()
+    {
+        if (shopScreenCanvas != null)
+        {
+            shopScreenCanvas.SetActive(true);
+        }
+
+        startScreenCanvas.SetActive(false);
     }
 
     private void UpdateUI()
