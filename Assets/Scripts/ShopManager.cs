@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ShopManager : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private Button boostersTabButton;
     [SerializeField] private GameObject boostersContent;
     [SerializeField] private GameObject itemsContent;
+    [SerializeField] private TMP_Text totalCoinsText;
+    [SerializeField] private TMP_Text currentLevelText;
 
     [Header("Content Settings")]
     [SerializeField] private GameObject boosterCardPrefab;
@@ -36,7 +39,21 @@ public class ShopManager : MonoBehaviour
         boostersTabButton.onClick.AddListener(() => ShowBoostersTab());
         itemsTabButton.onClick.AddListener(() => ShowItemsTab());
         ShowItemsTab();
+        UpdateUI();
     }
+
+
+
+    private void UpdateUI()
+    {
+        int totalCoins = WalletManager.GetTotalCoins();
+        totalCoinsText.text = $"{totalCoins}";
+        int currentLevel = PlayerPrefs.GetInt("UnlockedLevels", 1);
+        currentLevelText.text = $"Level: {currentLevel}";
+    }
+
+
+
 
     public void ShowBoostersTab()
     {
