@@ -6,17 +6,17 @@ public class ShopManager : MonoBehaviour
     public static ShopManager Instance;
 
     [Header("UI References")]
-    [SerializeField] private GameObject shopCanvas; // Shop Canvas
-    [SerializeField] private Button boostersTabButton; // Tab button for Boosters
-    [SerializeField] private Button itemsTabButton; // Tab button for Items
-    [SerializeField] private GameObject boostersContent; // Content container for Boosters
-    [SerializeField] private GameObject itemsContent; // Content container for Items
+    [SerializeField] private GameObject shopCanvas;
+    [SerializeField] private Button styleTabButton;
+    [SerializeField] private Button boostersTabButton;
+    [SerializeField] private GameObject boostersContent;
+    [SerializeField] private GameObject styleContent;
 
     [Header("Content Settings")]
-    [SerializeField] private GameObject boosterCardPrefab; // Prefab for a booster card
-    [SerializeField] private GameObject itemCardPrefab; // Prefab for an item card
-    [SerializeField] private Transform boostersParent; // Parent object for booster cards
-    [SerializeField] private Transform itemsParent; // Parent object for item cards
+    [SerializeField] private GameObject boosterCardPrefab;
+    [SerializeField] private GameObject itemCardPrefab;
+    [SerializeField] private Transform boostersParent;
+    [SerializeField] private Transform styleParent;
 
     private void Awake()
     {
@@ -26,37 +26,36 @@ public class ShopManager : MonoBehaviour
     private void Start()
     {
         boostersTabButton.onClick.AddListener(() => ShowBoostersTab());
-        itemsTabButton.onClick.AddListener(() => ShowItemsTab());
+        styleTabButton.onClick.AddListener(() => ShowStyleTab());
 
-        ShowBoostersTab(); // Default tab
+        ShowBoostersTab();
     }
 
     public void ShowBoostersTab()
     {
-        // Highlight selected tab
         boostersTabButton.interactable = false;
-        itemsTabButton.interactable = true;
+        styleTabButton.interactable = true;
 
-        // Show boosters and hide items
+        // Show boosters and hide Style
         boostersContent.SetActive(true);
-        itemsContent.SetActive(false);
+        styleContent.SetActive(false);
 
         // Load boosters if not already loaded
         LoadBoosters();
     }
 
-    public void ShowItemsTab()
+    public void ShowStyleTab()
     {
         // Highlight selected tab
         boostersTabButton.interactable = true;
-        itemsTabButton.interactable = false;
+        styleTabButton.interactable = false;
 
-        // Show items and hide boosters
-        itemsContent.SetActive(true);
+        // Show Style and hide boosters
+        styleContent.SetActive(true);
         boostersContent.SetActive(false);
 
         // Load items if not already loaded
-        LoadItems();
+        LoadStyle();
     }
 
     private void LoadBoosters()
@@ -72,15 +71,15 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    private void LoadItems()
+    private void LoadStyle()
     {
-        if (itemsParent.childCount > 0) return; // Prevent duplicate loading
+        if (styleParent.childCount > 0) return; // Prevent duplicate loading
 
         // Example items data
         string[] items = { "Snowboard", "Hat", "Goggles" };
         foreach (var item in items)
         {
-            var itemCard = Instantiate(itemCardPrefab, itemsParent);
+            var itemCard = Instantiate(itemCardPrefab, styleParent);
             itemCard.GetComponent<ShopCard>().SetupCard(item, "Buy");
         }
     }
