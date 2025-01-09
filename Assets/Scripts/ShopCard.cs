@@ -1,37 +1,99 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ShopCard : MonoBehaviour
 {
-    [Header("UI References")]
-    [SerializeField] private Text itemNameText;
-    [SerializeField] private Button actionButton;
-    [SerializeField] private Text actionButtonText;
+    [Header("UI Elements")]
+    [SerializeField] public TMP_Text nameText;
+    [SerializeField] public Image itemImage;
+    [SerializeField] public TMP_Text priceText;
+    [SerializeField] public Button actionButton;
+    [SerializeField] public TMP_Text actionButtonText;
+    [SerializeField] public Image coinIcon;
 
     private string itemName;
-    private string actionType;
+    private int itemPrice;
+    private bool isPurchased = false;
+    private bool isBooster = false;
 
-    public void SetupCard(string name, string action)
+    private int upgradeLevel = 0;
+
+    public void SetupCard(string name, Sprite image, int price, bool isBoosterCard)
     {
         itemName = name;
-        actionType = action;
-        itemNameText.text = name;
-        actionButtonText.text = action;
-
+        itemPrice = price;
+        isBooster = isBoosterCard;
+        nameText.text = name;
+        itemImage.sprite = image;
+        priceText.text = itemPrice.ToString();
+        actionButtonText.text = isBooster ? "Upgrade" : "Buy";
         actionButton.onClick.AddListener(() => PerformAction());
+        UpdateButtonState();
     }
 
     private void PerformAction()
     {
-        if (actionType == "Upgrade")
+        if (isBooster)
         {
-            Debug.Log($"Upgraded {itemName}");
-            // Logic for upgrading the booster
+            UpgradeBooster();
         }
-        else if (actionType == "Buy")
+        else
         {
-            Debug.Log($"Bought {itemName}");
-            // Logic for purchasing the item
+            if (!isPurchased)
+            {
+                BuyItem();
+            }
+            else
+            {
+                UseItem();
+            }
+        }
+    }
+
+    private void BuyItem()
+    {
+        if (WalletManager.SpendCoins(itemPrice))
+        {
+            isPurchased = true;
+            Debug.Log($"{itemName} purchased!");
+            UpdateButtonState();
+        }
+        else
+        {
+            Debug.Log("Not enough coins!");
+        }
+    }
+
+    private void UseItem()
+    {
+        Debug.Log($"{itemName} is now in use!");
+    }
+
+    private void UpgradeBooster()
+    {
+        if (WalletManager.SpendCoins(itemPrice))
+        {
+            upgradeLevel++;
+            Debug.Log($"{itemName} upgraded to level {upgradeLevel}!");
+        }
+        else
+        {
+            Debug.Log("Not enough coins!");
+        }
+    }
+
+    private void UpdateButtonState()
+    {
+        if (isBooster)
+        {
+            actionButtonText.text = "Upgrade";
+        }
+        else
+        {
+            actionButtonText.text = isPurchased ? "Use" : "Buy";
+            priceText.gameObject.SetActive(!isPurchased);
+            coinIcon.gameObject.SetActive(!isPurchased);
         }
     }
 }
