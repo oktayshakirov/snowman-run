@@ -7,16 +7,24 @@ public class ShopManager : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private GameObject shopCanvas;
-    [SerializeField] private Button styleTabButton;
+    [SerializeField] private Button itemsTabButton;
     [SerializeField] private Button boostersTabButton;
     [SerializeField] private GameObject boostersContent;
-    [SerializeField] private GameObject styleContent;
+    [SerializeField] private GameObject itemsContent;
 
     [Header("Content Settings")]
     [SerializeField] private GameObject boosterCardPrefab;
     [SerializeField] private GameObject itemCardPrefab;
     [SerializeField] private Transform boostersParent;
-    [SerializeField] private Transform styleParent;
+    [SerializeField] private Transform itemsParent;
+
+    [Header("Data")]
+    [SerializeField] private Sprite[] boosterImages;
+    [SerializeField] private Sprite[] itemImages;
+    [SerializeField] private string[] boosters = { "Speed Boost", "Double Coins", "Shield" };
+    [SerializeField] private int[] boosterPrices = { 1000, 1500, 2000 };
+    [SerializeField] private string[] items = { "Snowboard", "Hat", "Goggles" };
+    [SerializeField] private int[] itemPrices = { 500, 800, 1200 };
 
     private void Awake()
     {
@@ -26,61 +34,55 @@ public class ShopManager : MonoBehaviour
     private void Start()
     {
         boostersTabButton.onClick.AddListener(() => ShowBoostersTab());
-        styleTabButton.onClick.AddListener(() => ShowStyleTab());
-
-        ShowBoostersTab();
+        itemsTabButton.onClick.AddListener(() => ShowItemsTab());
+        ShowItemsTab();
     }
 
     public void ShowBoostersTab()
     {
         boostersTabButton.interactable = false;
-        styleTabButton.interactable = true;
-
-        // Show boosters and hide Style
+        itemsTabButton.interactable = true;
         boostersContent.SetActive(true);
-        styleContent.SetActive(false);
-
-        // Load boosters if not already loaded
+        itemsContent.SetActive(false);
         LoadBoosters();
     }
 
-    public void ShowStyleTab()
+    public void ShowItemsTab()
     {
-        // Highlight selected tab
         boostersTabButton.interactable = true;
-        styleTabButton.interactable = false;
-
-        // Show Style and hide boosters
-        styleContent.SetActive(true);
+        itemsTabButton.interactable = false;
+        itemsContent.SetActive(true);
         boostersContent.SetActive(false);
-
-        // Load items if not already loaded
-        LoadStyle();
+        LoadItems();
     }
 
     private void LoadBoosters()
     {
-        if (boostersParent.childCount > 0) return; // Prevent duplicate loading
-
-        // Example boosters data
-        string[] boosters = { "Speed Boost", "Double Coins", "Shield" };
-        foreach (var booster in boosters)
+        if (boostersParent.childCount > 0) return;
+        for (int i = 0; i < boosters.Length; i++)
         {
             var boosterCard = Instantiate(boosterCardPrefab, boostersParent);
-            boosterCard.GetComponent<ShopCard>().SetupCard(booster, "Upgrade");
+            boosterCard.GetComponent<ShopCard>().SetupCard(
+                boosters[i],
+                boosterImages[i],
+                boosterPrices[i],
+                true
+            );
         }
     }
 
-    private void LoadStyle()
+    private void LoadItems()
     {
-        if (styleParent.childCount > 0) return; // Prevent duplicate loading
-
-        // Example items data
-        string[] items = { "Snowboard", "Hat", "Goggles" };
-        foreach (var item in items)
+        if (itemsParent.childCount > 0) return;
+        for (int i = 0; i < items.Length; i++)
         {
-            var itemCard = Instantiate(itemCardPrefab, styleParent);
-            itemCard.GetComponent<ShopCard>().SetupCard(item, "Buy");
+            var itemCard = Instantiate(itemCardPrefab, itemsParent);
+            itemCard.GetComponent<ShopCard>().SetupCard(
+                items[i],
+                itemImages[i],
+                itemPrices[i],
+                false
+            );
         }
     }
 
