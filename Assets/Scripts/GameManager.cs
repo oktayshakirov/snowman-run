@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TMP_Text coinsText;
     [SerializeField] private TMP_Text speedText;
-    [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private Player playerMovement;
 
     [Header("UI Screens")]
     [SerializeField] private GameObject pauseScreen;
@@ -125,8 +125,7 @@ public class GameManager : MonoBehaviour
 
     public void ExitToStartScreen()
     {
-        isGamePaused = false;
-        Time.timeScale = 1;
+        isGameOver = true;
         pauseScreen.SetActive(false);
         startScreenCanvas.SetActive(true);
     }

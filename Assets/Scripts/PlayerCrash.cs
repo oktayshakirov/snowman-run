@@ -46,9 +46,9 @@ public class PlayerCrash : MonoBehaviour
 
     private IEnumerator HandlePlayerCrash()
     {
-        if (GetComponent<PlayerMovement>() != null)
+        if (GetComponent<Player>() != null)
         {
-            GetComponent<PlayerMovement>().enabled = false;
+            GetComponent<Player>().enabled = false;
         }
         yield return new WaitForSeconds(2f);
         if (GameManager.inst != null)
