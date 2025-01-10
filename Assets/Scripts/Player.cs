@@ -347,6 +347,21 @@ public class Player : MonoBehaviour
         Invoke(nameof(Restart), 2f);
     }
 
+    public void EndGame()
+    {
+        if (!alive) return;
+
+        alive = false;
+        speed = 0f;
+
+        if (GameManager.inst != null)
+        {
+            GameManager.inst.OnPlayerCrash();
+        }
+
+        Restart();
+    }
+
 
     private void Restart()
     {
