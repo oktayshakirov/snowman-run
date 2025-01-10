@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
     private bool alive = true;
 
@@ -62,8 +62,7 @@ public class PlayerMovement : MonoBehaviour
         targetRotation = transform.rotation;
         maxSpeed = GameManager.inst.MaxSpeed;
         controlsEnabled = false;
-        StartCoroutine(EnableControlsAfterDelay(0.5f));
-
+        StartCoroutine(EnableControlsAfterDelay(0.3f));
         if (playerGoggles != null)
         {
             playerGoggles.SetActive(false);
@@ -107,15 +106,13 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         if (!alive) return;
-
-        if (transform.position.y < -5)
-        {
-            Die();
-        }
-
         if (controlsEnabled)
         {
             DetectInput();
+        }
+        if (transform.position.y < -5)
+        {
+            Die();
         }
     }
 
@@ -349,6 +346,7 @@ public class PlayerMovement : MonoBehaviour
 
         Invoke(nameof(Restart), 2f);
     }
+
 
     private void Restart()
     {

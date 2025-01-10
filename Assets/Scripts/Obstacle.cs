@@ -2,14 +2,14 @@
 
 public class Obstacle : MonoBehaviour
 {
-    private PlayerMovement playerMovement;
+    private Player playerMovement;
 
     [System.Obsolete]
     private void Start()
     {
         if (playerMovement == null)
         {
-            playerMovement = FindObjectOfType<PlayerMovement>();
+            playerMovement = FindObjectOfType<Player>();
         }
     }
 
