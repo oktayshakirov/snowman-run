@@ -95,7 +95,6 @@ public class GameManager : MonoBehaviour
         isGameOver = false;
         isGamePaused = false;
         score = 0;
-
         float levelSpeed = baseSpeed + (currentLevel - 1) * 2f;
         playerMovement.InitializeSpeed(levelSpeed);
         coinsText.text = score.ToString();
@@ -128,6 +127,7 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
         pauseScreen.SetActive(false);
         startScreenCanvas.SetActive(true);
+        playerMovement.EndGame();
     }
 
     public void RefreshSpeedUnit()
