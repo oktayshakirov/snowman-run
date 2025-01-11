@@ -102,7 +102,6 @@ public class StartScreenManager : MonoBehaviour
         {
             shopScreenCanvas.SetActive(true);
         }
-
         startScreenCanvas.SetActive(false);
     }
 
