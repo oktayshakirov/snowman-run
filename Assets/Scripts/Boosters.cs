@@ -4,30 +4,34 @@ using System.Collections;
 public class Boosters : MonoBehaviour
 {
     [Header("Booster Settings")]
-    [SerializeField] private Fog fog;
     [SerializeField] private float gogglesFogReduction = 0.8f;
     [SerializeField] private float gogglesDuration = 7f;
     public float GogglesDuration => gogglesDuration;
 
     private bool gogglesActive = false;
     private float fogDensityAtActivation;
+    private Fog Fog => Fog.Instance;
 
     public void ActivateGoggles()
     {
-        if (gogglesActive || fog == null) return;
+        if (gogglesActive || Fog == null)
+        {
+            return;
+        }
         gogglesActive = true;
-        fog.HoldFogIncrement(true);
-        fogDensityAtActivation = fog.GetCurrentFogDensity();
-        fog.ReduceFogDensity(gogglesFogReduction);
+        Fog.HoldFogIncrement(true);
+        fogDensityAtActivation = Fog.GetCurrentFogDensity();
+        Fog.ReduceFogDensity(gogglesFogReduction);
         StartCoroutine(GogglesCooldown());
     }
 
     private IEnumerator GogglesCooldown()
     {
         yield return new WaitForSeconds(gogglesDuration);
-        fog.RestoreFogDensityTo(fogDensityAtActivation);
-        fog.HoldFogIncrement(false);
+        Fog.RestoreFogDensityTo(fogDensityAtActivation);
+        Fog.HoldFogIncrement(false);
         gogglesActive = false;
+
         GroundSpawner spawner = Object.FindFirstObjectByType<GroundSpawner>();
         if (spawner != null)
         {
