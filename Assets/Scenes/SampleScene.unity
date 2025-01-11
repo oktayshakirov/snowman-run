@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 1, g: 1, b: 1, a: 1}
   m_FogMode: 2
   m_FogDensity: 0.01
@@ -1385,7 +1385,7 @@ MonoBehaviour:
   coinSpawnProbability: 0.3
   rampSpawnProbability: 0.04
   obstacleSpawnProbability: 0.3
-  gogglesSpawnProbability: 0.03
+  gogglesSpawnProbability: 0.53
 --- !u!4 &126221220
 Transform:
   m_ObjectHideFlags: 0
@@ -4008,7 +4008,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86d1cd920c3cc40b1852cf95070b6ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fog: {fileID: 1521719580}
   gogglesFogReduction: 0.8
   gogglesDuration: 7
 --- !u!4 &421472498
