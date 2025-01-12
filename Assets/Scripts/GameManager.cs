@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text coinsText;
     [SerializeField] private TMP_Text speedText;
     [SerializeField] private Player playerMovement;
+    [SerializeField] private PlayerCustomization playerCustomization;
 
     [Header("UI Screens")]
     [SerializeField] private GameObject pauseScreen;
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        playerCustomization.LoadCustomization();
         totalCoins = WalletManager.GetTotalCoins();
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;

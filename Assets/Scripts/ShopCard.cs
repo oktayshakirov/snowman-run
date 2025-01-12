@@ -12,42 +12,58 @@ public class ShopCard : MonoBehaviour
     [SerializeField] public TMP_Text actionButtonText;
     [SerializeField] public Image coinIcon;
 
+    [Header("Customization Type")]
+    [SerializeField] private bool isHat;
+    [SerializeField] private bool isGoggles;
+    [SerializeField] private bool isRide;
+
+    private GameObject itemPrefab;
     private string itemName;
     private int itemPrice;
-    private bool isPurchased = false;
-    private bool isBooster = false;
+    private bool isPurchased;
 
-    private int upgradeLevel = 0;
+    private PlayerCustomization playerCustomization;
 
-    public void SetupCard(string name, Sprite image, int price, bool isBoosterCard)
+    private void OnEnable()
+    {
+        PlayerCustomization.OnEquipmentChanged += HandleEquipmentChanged;
+    }
+
+    private void OnDisable()
+    {
+        PlayerCustomization.OnEquipmentChanged -= HandleEquipmentChanged;
+    }
+
+    public void SetupCard(string name, Sprite image, int price, GameObject prefab, PlayerCustomization customization, bool isHatCard, bool isGogglesCard, bool isRideCard, bool isBoosterCard)
     {
         itemName = name;
         itemPrice = price;
-        isBooster = isBoosterCard;
+        itemPrefab = prefab;
+        isHat = isHatCard;
+        isGoggles = isGogglesCard;
+        isRide = isRideCard;
+        playerCustomization = customization;
+
+        isPurchased = PlayerPrefs.GetInt($"Purchased_{itemName}", itemPrice == 0 ? 1 : 0) == 1;
+
         nameText.text = name;
         itemImage.sprite = image;
         priceText.text = itemPrice.ToString();
-        actionButtonText.text = isBooster ? "Upgrade" : "Buy";
+        actionButton.onClick.RemoveAllListeners();
         actionButton.onClick.AddListener(() => PerformAction());
-        UpdateButtonState();
+        UpdateButtonState(playerCustomization.CurrentHatName, playerCustomization.CurrentGogglesName, playerCustomization.CurrentRideName);
     }
+
 
     private void PerformAction()
     {
-        if (isBooster)
+        if (!isPurchased)
         {
-            UpgradeBooster();
+            BuyItem();
         }
         else
         {
-            if (!isPurchased)
-            {
-                BuyItem();
-            }
-            else
-            {
-                UseItem();
-            }
+            UseItem();
         }
     }
 
@@ -56,6 +72,8 @@ public class ShopCard : MonoBehaviour
         if (WalletManager.SpendCoins(itemPrice))
         {
             isPurchased = true;
+            PlayerPrefs.SetInt($"Purchased_{itemName}", 1);
+            PlayerPrefs.Save();
             Debug.Log($"{itemName} purchased!");
             UpdateButtonState();
         }
@@ -67,33 +85,53 @@ public class ShopCard : MonoBehaviour
 
     private void UseItem()
     {
+        if (isHat)
+        {
+            playerCustomization.EquipHat(itemPrefab);
+        }
+        else if (isGoggles)
+        {
+            playerCustomization.EquipGoggles(itemPrefab);
+        }
+        else if (isRide)
+        {
+            playerCustomization.EquipRide(itemPrefab);
+        }
+
         Debug.Log($"{itemName} is now in use!");
     }
 
-    private void UpgradeBooster()
+    private void HandleEquipmentChanged(string currentHat, string currentGoggles, string currentRide)
     {
-        if (WalletManager.SpendCoins(itemPrice))
-        {
-            upgradeLevel++;
-            Debug.Log($"{itemName} upgraded to level {upgradeLevel}!");
-        }
-        else
-        {
-            Debug.Log("Not enough coins!");
-        }
+        UpdateButtonState(currentHat, currentGoggles, currentRide);
     }
 
-    private void UpdateButtonState()
+    private void UpdateButtonState(string currentHat = null, string currentGoggles = null, string currentRide = null)
     {
-        if (isBooster)
+        bool isInUse = (isHat && currentHat == itemName) ||
+                       (isGoggles && currentGoggles == itemName) ||
+                       (isRide && currentRide == itemName);
+
+        if (isInUse)
         {
-            actionButtonText.text = "Upgrade";
+            actionButton.interactable = false;
+            actionButtonText.text = "In Use";
+            priceText.gameObject.SetActive(false);
+            coinIcon.gameObject.SetActive(false);
+        }
+        else if (isPurchased)
+        {
+            actionButton.interactable = true;
+            actionButtonText.text = "Use";
+            priceText.gameObject.SetActive(false);
+            coinIcon.gameObject.SetActive(false);
         }
         else
         {
-            actionButtonText.text = isPurchased ? "Use" : "Buy";
-            priceText.gameObject.SetActive(!isPurchased);
-            coinIcon.gameObject.SetActive(!isPurchased);
+            actionButton.interactable = true;
+            actionButtonText.text = "Buy";
+            priceText.gameObject.SetActive(true);
+            coinIcon.gameObject.SetActive(true);
         }
     }
 }

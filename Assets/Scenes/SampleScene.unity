@@ -405,6 +405,7 @@ GameObject:
   - component: {fileID: 41877087}
   - component: {fileID: 41877088}
   - component: {fileID: 41877089}
+  - component: {fileID: 41877090}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -505,7 +506,7 @@ MonoBehaviour:
   hat: {fileID: 1011009532}
   hatTiltAmount: -0.2
   hatReturnSpeed: 1
-  playerGoggles: {fileID: 1402425693}
+  playerGoggles: {fileID: 95949949}
   boosters: {fileID: 421472497}
   leanAngle: 15
   leanSpeed: 10
@@ -525,10 +526,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snowmanParts:
-  - {fileID: 1402425693}
+  - {fileID: 95949949}
   - {fileID: 1804948752}
   - {fileID: 1804500423}
-  - {fileID: 1011009526}
+  - {fileID: 1384654645}
   - {fileID: 232224583}
   - {fileID: 1868648483}
   - {fileID: 1998154562}
@@ -538,6 +539,24 @@ MonoBehaviour:
   explosionCenter: {fileID: 1804948753}
   snowBurstPrefab: {fileID: 2142974311448359000, guid: 5a767bdf3371ce240a912717302e4e26,
     type: 3}
+--- !u!114 &41877090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41877082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ea0a5551d3f4027bec83d02fd3dbfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hatSlot: {fileID: 1384654646}
+  gogglesSlot: {fileID: 95949950}
+  rideSlot: {fileID: 245843648}
+  defaultHat: {fileID: 1011009526}
+  defaultGoggles: {fileID: 95949949}
+  defaultRide: {fileID: 1653494179}
 --- !u!1 &58217404
 GameObject:
   m_ObjectHideFlags: 0
@@ -958,6 +977,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 93641970}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &95949949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 95949950}
+  m_Layer: 3
+  m_Name: Goggles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &95949950
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95949949}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1402425694}
+  m_Father: {fileID: 1187858982}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &97201497
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,6 +1176,120 @@ Transform:
   m_Children: []
   m_Father: {fileID: 236254151}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &113726360
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 113726361}
+  - component: {fileID: 113726364}
+  - component: {fileID: 113726363}
+  - component: {fileID: 113726362}
+  m_Layer: 3
+  m_Name: Snowboard (Yellow)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &113726361
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113726360}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 245843648}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &113726362
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113726360}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!23 &113726363
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113726360}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: b0ffcc3f9ab484384886bb55ed069ca2, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &113726364
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113726360}
+  m_Mesh: {fileID: 2148708815308909142, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
 --- !u!1 &118868218
 GameObject:
   m_ObjectHideFlags: 0
@@ -2418,6 +2583,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5090330296217927010, guid: 668caeef3f091244986846c489fc2dd6,
         type: 3}
+      propertyPath: m_Name
+      value: Hat (Default)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5090330296217927010, guid: 668caeef3f091244986846c489fc2dd6,
+        type: 3}
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
@@ -2452,7 +2622,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4149392523460021751, guid: 668caeef3f091244986846c489fc2dd6,
         type: 3}
       insertIndex: 0
-      addedObject: {fileID: 1402425694}
+      addedObject: {fileID: 95949950}
     - targetCorrespondingSourceObject: {fileID: 4149392523460021751, guid: 668caeef3f091244986846c489fc2dd6,
         type: 3}
       insertIndex: -1
@@ -3568,6 +3738,120 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385030062}
   m_CullTransparentMesh: 1
+--- !u!1 &386999758
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 386999759}
+  - component: {fileID: 386999762}
+  - component: {fileID: 386999761}
+  - component: {fileID: 386999760}
+  m_Layer: 3
+  m_Name: Snowboard (Red)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &386999759
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386999758}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 245843648}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &386999760
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386999758}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!23 &386999761
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386999758}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: eb1ed2afe4cb3420d82b6ad2030bde39, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &386999762
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386999758}
+  m_Mesh: {fileID: 2148708815308909142, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
 --- !u!1 &387320820
 GameObject:
   m_ObjectHideFlags: 0
@@ -4161,6 +4445,120 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 453389390}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &453803559
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 453803560}
+  - component: {fileID: 453803563}
+  - component: {fileID: 453803562}
+  - component: {fileID: 453803561}
+  m_Layer: 3
+  m_Name: Snowboard (Pink)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &453803560
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453803559}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 245843648}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &453803561
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453803559}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!23 &453803562
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453803559}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 91417c5e64e8b421d8b3cd909b5ee829, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &453803563
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453803559}
+  m_Mesh: {fileID: 2148708815308909142, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
 --- !u!1 &457218417
 GameObject:
   m_ObjectHideFlags: 0
@@ -7930,6 +8328,7 @@ MonoBehaviour:
   coinsText: {fileID: 1854865626}
   speedText: {fileID: 1229883723}
   playerMovement: {fileID: 41877088}
+  playerCustomization: {fileID: 41877090}
   pauseScreen: {fileID: 898825397}
   startScreenCanvas: {fileID: 1259244843}
   baseSpeed: 10
@@ -12009,6 +12408,120 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1293658833}
   m_CullTransparentMesh: 1
+--- !u!1 &1302043543
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1302043544}
+  - component: {fileID: 1302043547}
+  - component: {fileID: 1302043546}
+  - component: {fileID: 1302043545}
+  m_Layer: 3
+  m_Name: Snowboard (Blue)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1302043544
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302043543}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 245843648}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1302043545
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302043543}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!23 &1302043546
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302043543}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: f6e467a7896fd4a6197d18eb78ae6320, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1302043547
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302043543}
+  m_Mesh: {fileID: 2148708815308909142, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
 --- !u!1 &1311245860
 GameObject:
   m_ObjectHideFlags: 0
@@ -12817,6 +13330,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 829813133}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1384654645 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8532549497178749728, guid: 668caeef3f091244986846c489fc2dd6,
+    type: 3}
+  m_PrefabInstance: {fileID: 253689666}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1384654646 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2211499622839705774, guid: 668caeef3f091244986846c489fc2dd6,
+    type: 3}
+  m_PrefabInstance: {fileID: 253689666}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1388010059
 GameObject:
   m_ObjectHideFlags: 0
@@ -13788,16 +14313,38 @@ MonoBehaviour:
     type: 3}
   boostersParent: {fileID: 2133427736}
   itemsParent: {fileID: 1897928902}
+  items:
+  - Snowboard (Default)
+  - Snowboard (Yellow)
+  - Snowboard (Red)
+  - Snowboard (Pink)
+  - Snowboard (Green)
+  - Snowboard (Blue)
+  - Snowboard (Black)
   itemImages:
   - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
-  boosterPrices: e8030000
-  items:
-  - Snowboard
-  boosterImages:
   - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
-  itemPrices: f4010000
+  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  itemPrices: 00000000010000000100000001000000010000000100000001000000
+  itemPrefabs:
+  - {fileID: 1653494179}
+  - {fileID: 113726360}
+  - {fileID: 386999758}
+  - {fileID: 453803559}
+  - {fileID: 1653190808}
+  - {fileID: 1302043543}
+  - {fileID: 1923076561}
+  itemTypes: 02000000020000000200000002000000020000000200000002000000
   boosters:
   - Speed Boost
+  boosterImages:
+  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  boosterPrices: e8030000
+  playerCustomization: {fileID: 41877090}
 --- !u!1 &1490755249
 GameObject:
   m_ObjectHideFlags: 0
@@ -15159,7 +15706,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e73eeb043db48be809b935d73392d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iOSGameId: 5755676
+  _androidGameId: 5755677
   _testMode: 0
 --- !u!4 &1577749885
 Transform:
@@ -20915,6 +21462,153 @@ Transform:
   m_Children: []
   m_Father: {fileID: 413728943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1653190808
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1653190809}
+  - component: {fileID: 1653190812}
+  - component: {fileID: 1653190811}
+  - component: {fileID: 1653190810}
+  m_Layer: 3
+  m_Name: Snowboard (Green)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1653190809
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653190808}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 245843648}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1653190810
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653190808}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!23 &1653190811
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653190808}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 2bf1f4c50ff9b44ecaa85bdd78860919, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1653190812
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653190808}
+  m_Mesh: {fileID: 2148708815308909142, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
+--- !u!1 &1653494179 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5725323435625494873, guid: 1e35bcde24c994e7f9ec762572f7b511,
+    type: 3}
+  m_PrefabInstance: {fileID: 1745945138}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &1653494183
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653494179}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1658343192
 GameObject:
   m_ObjectHideFlags: 0
@@ -22049,7 +22743,7 @@ PrefabInstance:
     - target: {fileID: -5725323435625494873, guid: 1e35bcde24c994e7f9ec762572f7b511,
         type: 3}
       propertyPath: m_Name
-      value: Snowboard
+      value: Snowboard (Default)
       objectReference: {fileID: 0}
     - target: {fileID: -5725323435625494873, guid: 1e35bcde24c994e7f9ec762572f7b511,
         type: 3}
@@ -22075,12 +22769,36 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: -401139108749073995, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
     - {fileID: -6999011963607451238, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1e35bcde24c994e7f9ec762572f7b511,
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e35bcde24c994e7f9ec762572f7b511,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2146434714}
+      addedObject: {fileID: 113726361}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e35bcde24c994e7f9ec762572f7b511,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 386999759}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e35bcde24c994e7f9ec762572f7b511,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 453803560}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e35bcde24c994e7f9ec762572f7b511,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1653190809}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e35bcde24c994e7f9ec762572f7b511,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1302043544}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e35bcde24c994e7f9ec762572f7b511,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1923076562}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -5725323435625494873, guid: 1e35bcde24c994e7f9ec762572f7b511,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1653494183}
   m_SourcePrefab: {fileID: 100100000, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
 --- !u!1 &1748310207
 GameObject:
@@ -24211,6 +24929,120 @@ Transform:
   m_Children: []
   m_Father: {fileID: 829813133}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1923076561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1923076562}
+  - component: {fileID: 1923076565}
+  - component: {fileID: 1923076564}
+  - component: {fileID: 1923076563}
+  m_Layer: 3
+  m_Name: Snowboard (Black)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1923076562
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923076561}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 245843648}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1923076563
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923076561}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!23 &1923076564
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923076561}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 17d58f51cc61a43469f76eb81fa1ea38, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1923076565
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923076561}
+  m_Mesh: {fileID: 2148708815308909142, guid: 1e35bcde24c994e7f9ec762572f7b511, type: 3}
 --- !u!1 &1940594757
 GameObject:
   m_ObjectHideFlags: 0
@@ -26032,33 +26864,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1745945138}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &2146434714
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2146434712}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1001 &913117994884796248
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26168,7 +26973,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1187858982}
+    m_TransformParent: {fileID: 95949950}
     m_Modifications:
     - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
@@ -26198,7 +27003,7 @@ PrefabInstance:
     - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.2
+      value: 1.1999999
       objectReference: {fileID: 0}
     - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
@@ -26213,12 +27018,12 @@ PrefabInstance:
     - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3522149502027110677, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
@@ -26238,7 +27043,7 @@ PrefabInstance:
     - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_Name
-      value: Goggles
+      value: Goggles (Default)
       objectReference: {fileID: 0}
     - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
@@ -26248,7 +27053,7 @@ PrefabInstance:
     - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4869443495663148537, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}

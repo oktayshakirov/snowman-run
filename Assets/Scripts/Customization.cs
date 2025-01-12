@@ -1,41 +1,108 @@
 using UnityEngine;
+using System;
 
 public class PlayerCustomization : MonoBehaviour
 {
     [Header("Customization Slots")]
-    [SerializeField] private Transform hatSlot; // Position for the hat
-    [SerializeField] private Transform rideSlot; // Position for the ride
+    [SerializeField] private Transform hatSlot;
+    [SerializeField] private Transform gogglesSlot;
+    [SerializeField] private Transform rideSlot;
+
+    [Header("Default Items")]
+    [SerializeField] private GameObject defaultHat;
+    [SerializeField] private GameObject defaultGoggles;
+    [SerializeField] private GameObject defaultRide;
 
     private GameObject currentHat;
+    private GameObject currentGoggles;
     private GameObject currentRide;
 
-    public void EquipHat(GameObject hatPrefab)
+    public static event Action<string, string, string> OnEquipmentChanged;
+
+    public string CurrentHatName => currentHat != null ? currentHat.name : null;
+    public string CurrentGogglesName => currentGoggles != null ? currentGoggles.name : null;
+    public string CurrentRideName => currentRide != null ? currentRide.name : null;
+
+    public void EquipHat(GameObject hat)
     {
-        if (currentHat != null)
+        currentHat = hat ?? defaultHat;
+        SetActiveItem(hatSlot, currentHat);
+        SaveItem("SelectedHat", currentHat);
+        OnEquipmentChanged?.Invoke(CurrentHatName, CurrentGogglesName, CurrentRideName);
+    }
+
+    public void EquipGoggles(GameObject goggles)
+    {
+        currentGoggles = goggles ?? defaultGoggles;
+        SetActiveItem(gogglesSlot, currentGoggles);
+        SaveItem("SelectedGoggles", currentGoggles);
+        OnEquipmentChanged?.Invoke(CurrentHatName, CurrentGogglesName, CurrentRideName);
+    }
+
+    public void EquipRide(GameObject ride)
+    {
+        currentRide = ride ?? defaultRide;
+        SetActiveItem(rideSlot, currentRide);
+        SaveItem("SelectedRide", currentRide);
+        OnEquipmentChanged?.Invoke(CurrentHatName, CurrentGogglesName, CurrentRideName);
+    }
+
+    public void SaveCustomization()
+    {
+        SaveItem("SelectedHat", currentHat);
+        SaveItem("SelectedGoggles", currentGoggles);
+        SaveItem("SelectedRide", currentRide);
+    }
+
+    public void LoadCustomization()
+    {
+        currentHat = FindChildByName(hatSlot, PlayerPrefs.GetString("SelectedHat", defaultHat.name)) ?? defaultHat;
+        currentGoggles = FindChildByName(gogglesSlot, PlayerPrefs.GetString("SelectedGoggles", defaultGoggles.name)) ?? defaultGoggles;
+        currentRide = FindChildByName(rideSlot, PlayerPrefs.GetString("SelectedRide", defaultRide.name)) ?? defaultRide;
+
+        SetActiveItem(hatSlot, currentHat);
+        SetActiveItem(gogglesSlot, currentGoggles);
+        SetActiveItem(rideSlot, currentRide);
+
+        OnEquipmentChanged?.Invoke(CurrentHatName, CurrentGogglesName, CurrentRideName);
+    }
+
+
+    private void SaveItem(string key, GameObject item)
+    {
+        if (item != null)
         {
-            Destroy(currentHat); // Remove the old hat
+            PlayerPrefs.SetString(key, item.name);
+        }
+        else
+        {
+            PlayerPrefs.DeleteKey(key);
+        }
+        PlayerPrefs.Save();
+    }
+
+    private void SetActiveItem(Transform parent, GameObject itemToActivate)
+    {
+        foreach (Transform child in parent)
+        {
+            child.gameObject.SetActive(false);
         }
 
-        if (hatPrefab != null)
+        if (itemToActivate != null)
         {
-            currentHat = Instantiate(hatPrefab, hatSlot);
-            currentHat.transform.localPosition = Vector3.zero; // Adjust position
-            currentHat.transform.localRotation = Quaternion.identity;
+            itemToActivate.SetActive(true);
         }
     }
 
-    public void EquipRide(GameObject ridePrefab)
+    private GameObject FindChildByName(Transform parent, string name)
     {
-        if (currentRide != null)
+        foreach (Transform child in parent)
         {
-            Destroy(currentRide); // Remove the old ride
+            if (child.name == name)
+            {
+                return child.gameObject;
+            }
         }
-
-        if (ridePrefab != null)
-        {
-            currentRide = Instantiate(ridePrefab, rideSlot);
-            currentRide.transform.localPosition = Vector3.zero; // Adjust position
-            currentRide.transform.localRotation = Quaternion.identity;
-        }
+        return null;
     }
 }
