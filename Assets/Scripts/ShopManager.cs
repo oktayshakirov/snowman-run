@@ -21,18 +21,46 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private Transform boostersParent;
     [SerializeField] private Transform itemsParent;
 
-    [Header("Data")]
+    [Header("Item Data")]
+    [SerializeField] private string[] items;
     [SerializeField] private Sprite[] itemImages;
-    [SerializeField] private int[] boosterPrices = { };
-    [SerializeField] private string[] items = { };
-    [SerializeField] private Sprite[] boosterImages;
-    [SerializeField] private int[] itemPrices = { };
-    [SerializeField] private string[] boosters = { };
+    [SerializeField] private int[] itemPrices;
+    [SerializeField] private GameObject[] itemPrefabs;
+    [SerializeField] private ItemType[] itemTypes;
 
+    [Header("Booster Data")]
+    [SerializeField] private string[] boosters;
+    [SerializeField] private Sprite[] boosterImages;
+    [SerializeField] private int[] boosterPrices = { };
+
+    [Header("Player Customization")]
+    [SerializeField] private PlayerCustomization playerCustomization;
+
+    public enum ItemType
+    {
+        Hat = 0,
+        Goggles = 1,
+        Ride = 2
+    }
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void OnEnable()
+    {
+        WalletManager.OnCoinsChanged += HandleCoinsChanged;
+    }
+
+    private void OnDisable()
+    {
+        WalletManager.OnCoinsChanged -= HandleCoinsChanged;
+    }
+
+    private void HandleCoinsChanged(int totalCoins)
+    {
+        UpdateUI();
     }
 
     private void Start()
@@ -43,8 +71,6 @@ public class ShopManager : MonoBehaviour
         UpdateUI();
     }
 
-
-
     private void UpdateUI()
     {
         int totalCoins = WalletManager.GetTotalCoins();
@@ -52,9 +78,6 @@ public class ShopManager : MonoBehaviour
         int currentLevel = PlayerPrefs.GetInt("UnlockedLevels", 1);
         currentLevelText.text = $"Level: {currentLevel}";
     }
-
-
-
 
     public void ShowBoostersTab()
     {
@@ -84,6 +107,11 @@ public class ShopManager : MonoBehaviour
                 boosters[i],
                 boosterImages[i],
                 boosterPrices[i],
+                null,
+                playerCustomization,
+                false,
+                false,
+                false,
                 true
             );
         }
@@ -95,10 +123,19 @@ public class ShopManager : MonoBehaviour
         for (int i = 0; i < items.Length; i++)
         {
             var itemCard = Instantiate(itemCardPrefab, itemsParent);
+            bool isHat = itemTypes[i] == ItemType.Hat;
+            bool isGoggles = itemTypes[i] == ItemType.Goggles;
+            bool isRide = itemTypes[i] == ItemType.Ride;
+
             itemCard.GetComponent<ShopCard>().SetupCard(
                 items[i],
                 itemImages[i],
                 itemPrices[i],
+                itemPrefabs[i],
+                playerCustomization,
+                isHat,
+                isGoggles,
+                isRide,
                 false
             );
         }
