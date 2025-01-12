@@ -22,12 +22,13 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private Transform itemsParent;
 
     [Header("Data")]
-    [SerializeField] private Sprite[] boosterImages;
     [SerializeField] private Sprite[] itemImages;
-    [SerializeField] private string[] boosters = { "Speed Boost", "Double Coins", "Shield" };
-    [SerializeField] private int[] boosterPrices = { 1000, 1500, 2000 };
-    [SerializeField] private string[] items = { "Snowboard", "Hat", "Goggles" };
-    [SerializeField] private int[] itemPrices = { 500, 800, 1200 };
+    [SerializeField] private int[] boosterPrices = { };
+    [SerializeField] private string[] items = { };
+    [SerializeField] private Sprite[] boosterImages;
+    [SerializeField] private int[] itemPrices = { };
+    [SerializeField] private string[] boosters = { };
+
 
     private void Awake()
     {

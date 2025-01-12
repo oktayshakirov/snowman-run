@@ -448,8 +448,8 @@ Transform:
   m_LocalScale: {x: 0.9, y: 1, z: 0.9}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1187858982}
   - {fileID: 764689906}
+  - {fileID: 1187858982}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &41877087
@@ -1385,7 +1385,7 @@ MonoBehaviour:
   coinSpawnProbability: 0.3
   rampSpawnProbability: 0.04
   obstacleSpawnProbability: 0.3
-  gogglesSpawnProbability: 0.53
+  gogglesSpawnProbability: 0.035
 --- !u!4 &126221220
 Transform:
   m_ObjectHideFlags: 0
@@ -2457,10 +2457,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 245843648}
-    - targetCorrespondingSourceObject: {fileID: 4149392523460021751, guid: 668caeef3f091244986846c489fc2dd6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1521107208}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2712207739850145466, guid: 668caeef3f091244986846c489fc2dd6,
         type: 3}
@@ -13792,24 +13788,16 @@ MonoBehaviour:
     type: 3}
   boostersParent: {fileID: 2133427736}
   itemsParent: {fileID: 1897928902}
-  boosterImages:
-  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
-  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
-  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
   itemImages:
   - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
-  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
-  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
-  boosters:
-  - Speed Boost
-  - Double Coins
-  - Shield
-  boosterPrices: e8030000dc050000d0070000
+  boosterPrices: e8030000
   items:
   - Snowboard
-  - Hat
-  - Goggles
-  itemPrices: f401000020030000b0040000
+  boosterImages:
+  - {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  itemPrices: f4010000
+  boosters:
+  - Speed Boost
 --- !u!1 &1490755249
 GameObject:
   m_ObjectHideFlags: 0
@@ -14196,37 +14184,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515625894}
   m_CullTransparentMesh: 1
---- !u!1 &1521107207
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1521107208}
-  m_Layer: 3
-  m_Name: GroundCheck
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1521107208
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1521107207}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.6, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 4}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1187858982}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1521719579
 GameObject:
   m_ObjectHideFlags: 0
@@ -15202,7 +15159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e73eeb043db48be809b935d73392d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _androidGameId: 5755677
+  _iOSGameId: 5755676
   _testMode: 0
 --- !u!4 &1577749885
 Transform:
@@ -22098,6 +22055,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -5725323435625494873, guid: 1e35bcde24c994e7f9ec762572f7b511,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 1e35bcde24c994e7f9ec762572f7b511,
         type: 3}
