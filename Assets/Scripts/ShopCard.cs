@@ -16,6 +16,7 @@ public class ShopCard : MonoBehaviour
     [SerializeField] private bool isHat;
     [SerializeField] private bool isGoggles;
     [SerializeField] private bool isRide;
+    [SerializeField] private bool isScarf;
 
     private GameObject itemPrefab;
     private string itemName;
@@ -34,7 +35,7 @@ public class ShopCard : MonoBehaviour
         PlayerCustomization.OnEquipmentChanged -= HandleEquipmentChanged;
     }
 
-    public void SetupCard(string name, Sprite image, int price, GameObject prefab, PlayerCustomization customization, bool isHatCard, bool isGogglesCard, bool isRideCard, bool isBoosterCard)
+    public void SetupCard(string name, Sprite image, int price, GameObject prefab, PlayerCustomization customization, bool isHatCard, bool isGogglesCard, bool isRideCard, bool isScarfCard, bool isBoosterCard)
     {
         itemName = name;
         itemPrice = price;
@@ -42,6 +43,7 @@ public class ShopCard : MonoBehaviour
         isHat = isHatCard;
         isGoggles = isGogglesCard;
         isRide = isRideCard;
+        isScarf = isScarfCard;
         playerCustomization = customization;
 
         isPurchased = PlayerPrefs.GetInt($"Purchased_{itemName}", itemPrice == 0 ? 1 : 0) == 1;
@@ -51,9 +53,8 @@ public class ShopCard : MonoBehaviour
         priceText.text = itemPrice.ToString();
         actionButton.onClick.RemoveAllListeners();
         actionButton.onClick.AddListener(() => PerformAction());
-        UpdateButtonState(playerCustomization.CurrentHatName, playerCustomization.CurrentGogglesName, playerCustomization.CurrentRideName);
+        UpdateButtonState(playerCustomization.CurrentHatName, playerCustomization.CurrentGogglesName, playerCustomization.CurrentRideName, playerCustomization.CurrentScarfName); // Include Scarf
     }
-
 
     private void PerformAction()
     {
@@ -97,20 +98,25 @@ public class ShopCard : MonoBehaviour
         {
             playerCustomization.EquipRide(itemPrefab);
         }
+        else if (isScarf) // Equip Scarf logic
+        {
+            playerCustomization.EquipScarf(itemPrefab);
+        }
 
         Debug.Log($"{itemName} is now in use!");
     }
 
-    private void HandleEquipmentChanged(string currentHat, string currentGoggles, string currentRide)
+    private void HandleEquipmentChanged(string currentHat, string currentGoggles, string currentRide, string currentScarf)
     {
-        UpdateButtonState(currentHat, currentGoggles, currentRide);
+        UpdateButtonState(currentHat, currentGoggles, currentRide, currentScarf);
     }
 
-    private void UpdateButtonState(string currentHat = null, string currentGoggles = null, string currentRide = null)
+    private void UpdateButtonState(string currentHat = null, string currentGoggles = null, string currentRide = null, string currentScarf = null)
     {
         bool isInUse = (isHat && currentHat == itemName) ||
                        (isGoggles && currentGoggles == itemName) ||
-                       (isRide && currentRide == itemName);
+                       (isRide && currentRide == itemName) ||
+                       (isScarf && currentScarf == itemName);
 
         if (isInUse)
         {
