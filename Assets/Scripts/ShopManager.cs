@@ -31,6 +31,7 @@ public class ShopManager : MonoBehaviour
     [Header("Booster Data")]
     [SerializeField] private BoosterData[] boosters;
     [SerializeField] private Boosters boostersController;
+
     [Header("Player Customization")]
     [SerializeField] private PlayerCustomization playerCustomization;
 
@@ -66,6 +67,7 @@ public class ShopManager : MonoBehaviour
     {
         boostersTabButton.onClick.AddListener(() => ShowBoostersTab());
         itemsTabButton.onClick.AddListener(() => ShowItemsTab());
+
         ShowItemsTab();
         UpdateUI();
     }
@@ -74,68 +76,98 @@ public class ShopManager : MonoBehaviour
     {
         int totalCoins = WalletManager.GetTotalCoins();
         totalCoinsText.text = $"{totalCoins}";
+
         int currentLevel = PlayerPrefs.GetInt("UnlockedLevels", 1);
         currentLevelText.text = $"Level: {currentLevel}";
     }
 
     public void ShowBoostersTab()
     {
-        boostersTabButton.interactable = false;
-        itemsTabButton.interactable = true;
-        boostersContent.SetActive(true);
-        itemsContent.SetActive(false);
-        LoadBoosters();
+        SetTabActive(boostersTabButton, itemsTabButton, boostersContent, itemsContent);
+        LoadContent(boostersParent, boosters, boosterCardPrefab, SetupBoosterCard);
     }
 
     public void ShowItemsTab()
     {
-        boostersTabButton.interactable = true;
-        itemsTabButton.interactable = false;
-        itemsContent.SetActive(true);
-        boostersContent.SetActive(false);
-        LoadItems();
+        SetTabActive(itemsTabButton, boostersTabButton, itemsContent, boostersContent);
+        LoadContent(itemsParent, items, itemCardPrefab, SetupItemCard);
     }
 
-    private void LoadBoosters()
+    private void LoadContent<T>(Transform parent, T[] data, GameObject cardPrefab, System.Action<T, GameObject> setupCard)
     {
-        foreach (Transform child in boostersParent)
+        foreach (Transform child in parent)
         {
             Destroy(child.gameObject);
         }
-        foreach (var boosterData in boosters)
+        if (data == null || data.Length == 0)
         {
-            var boosterCard = Instantiate(boosterCardPrefab, boostersParent);
-            boosterCard.GetComponent<ShopCard>().SetupBoosterCard(boosterData, boostersController);
+            Debug.LogWarning("No data available to load content.");
+            return;
+        }
+        foreach (var entry in data)
+        {
+            if (cardPrefab == null)
+            {
+                Debug.LogError("Card prefab is not assigned!");
+                return;
+            }
+
+            var card = Instantiate(cardPrefab, parent);
+            setupCard(entry, card);
         }
     }
 
-    private void LoadItems()
+    private void SetupBoosterCard(BoosterData boosterData, GameObject card)
     {
-        foreach (Transform child in itemsParent)
+        var shopCard = card.GetComponent<ShopCard>();
+        if (shopCard != null)
         {
-            Destroy(child.gameObject);
+            shopCard.SetupBoosterCard(boosterData, boostersController);
         }
-        for (int i = 0; i < items.Length; i++)
+        else
         {
-            var itemCard = Instantiate(itemCardPrefab, itemsParent);
-            bool isHat = itemTypes[i] == ItemType.Hat;
-            bool isGoggles = itemTypes[i] == ItemType.Goggles;
-            bool isRide = itemTypes[i] == ItemType.Ride;
-            bool isScarf = itemTypes[i] == ItemType.Scarf;
+            Debug.LogError("ShopCard component is missing on the booster card prefab!");
+        }
+    }
 
-            itemCard.GetComponent<ShopCard>().SetupCard(
-                items[i],
-                itemImages[i],
-                itemPrices[i],
-                itemPrefabs[i],
+    private void SetupItemCard(string itemName, GameObject card)
+    {
+        int index = System.Array.IndexOf(items, itemName);
+        if (index < 0 || index >= items.Length)
+        {
+            Debug.LogError($"Item {itemName} not found in the items array!");
+            return;
+        }
+
+        var shopCard = card.GetComponent<ShopCard>();
+        if (shopCard != null)
+        {
+            shopCard.SetupCard(
+                items[index],
+                itemImages[index],
+                itemPrices[index],
+                itemPrefabs[index],
                 playerCustomization,
-                isHat,
-                isGoggles,
-                isRide,
-                isScarf,
+                itemTypes[index] == ItemType.Hat,
+                itemTypes[index] == ItemType.Goggles,
+                itemTypes[index] == ItemType.Ride,
+                itemTypes[index] == ItemType.Scarf,
                 false
             );
         }
+        else
+        {
+            Debug.LogError("ShopCard component is missing on the item card prefab!");
+        }
+    }
+
+    private void SetTabActive(Button activeTab, Button inactiveTab, GameObject activeContent, GameObject inactiveContent)
+    {
+        activeTab.interactable = false;
+        inactiveTab.interactable = true;
+
+        activeContent.SetActive(true);
+        inactiveContent.SetActive(false);
     }
 
     public void OpenShop()
