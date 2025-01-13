@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 05a897cf848bc814384a00a22f7aa544
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 212589
+  packageName: Timers Made Easy Lite
+  packageVersion: 1.0.0
+  assetPath: Assets/GolemiteGames/TimersMadeEasyLite/Prefabs/TextTimers/TimerText.prefab
+  uploadId: 478131

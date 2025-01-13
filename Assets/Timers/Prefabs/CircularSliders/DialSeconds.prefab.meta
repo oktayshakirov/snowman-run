@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: feb02cee4119b9e46ad4c354ffb94d96
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 212589
+  packageName: Timers Made Easy Lite
+  packageVersion: 1.0.0
+  assetPath: Assets/GolemiteGames/TimersMadeEasyLite/Prefabs/CircularSliders/DialSeconds.prefab
+  uploadId: 478131

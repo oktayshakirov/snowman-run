@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 0ae392df589f1e8439316f88b61b2776
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 212589
+  packageName: Timers Made Easy Lite
+  packageVersion: 1.0.0
+  assetPath: Assets/GolemiteGames/TimersMadeEasyLite/Scripts/Timer.cs
+  uploadId: 478131
