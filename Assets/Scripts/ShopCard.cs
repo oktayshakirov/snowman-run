@@ -73,6 +73,8 @@ public class ShopCard : MonoBehaviour
         if (WalletManager.SpendCoins(itemPrice))
         {
             isPurchased = true;
+            NativeHaptics.TriggerMediumHaptic();
+            AudioManager.Instance.PlaySound(AudioManager.SoundType.Buy);
             PlayerPrefs.SetInt($"Purchased_{itemName}", 1);
             PlayerPrefs.Save();
             Debug.Log($"{itemName} purchased!");
@@ -98,11 +100,12 @@ public class ShopCard : MonoBehaviour
         {
             playerCustomization.EquipRide(itemPrefab);
         }
-        else if (isScarf) // Equip Scarf logic
+        else if (isScarf)
         {
             playerCustomization.EquipScarf(itemPrefab);
         }
-
+        NativeHaptics.TriggerHeavyHaptic();
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Equip);
         Debug.Log($"{itemName} is now in use!");
     }
 
