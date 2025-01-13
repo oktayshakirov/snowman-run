@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Boosters : MonoBehaviour
 {
+    public static Boosters Instance { get; private set; }
     [Header("Booster Settings")]
     [SerializeField] private float gogglesFogReduction = 0.5f;
     [SerializeField] private float gogglesDuration = 5f;
@@ -14,6 +15,15 @@ public class Boosters : MonoBehaviour
     private float fogDensityAtActivation;
     private Fog Fog => Fog.Instance;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
     private void Start()
     {
         if (circleTimer != null)
@@ -46,6 +56,11 @@ public class Boosters : MonoBehaviour
         fogDensityAtActivation = Fog.GetCurrentFogDensity();
         Fog.ReduceFogDensity(gogglesFogReduction);
         StartCoroutine(GogglesCooldown());
+    }
+
+    public void UpgradeGogglesDuration(float additionalDuration)
+    {
+        gogglesDuration += additionalDuration;
     }
 
     private void OnTimerEnd()
@@ -86,5 +101,18 @@ public class Boosters : MonoBehaviour
             spawner.ShowAllGoggles();
         }
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Off);
+    }
+
+    public void ApplyBoosterUpgrade(BoosterData boosterData)
+    {
+        switch (boosterData.boosterType)
+        {
+            case BoosterData.BoosterType.GogglesDuration:
+                gogglesDuration += boosterData.upgradeIncrement;
+                break;
+            case BoosterData.BoosterType.GogglesFogReduction:
+                gogglesFogReduction += boosterData.upgradeIncrement;
+                break;
+        }
     }
 }
