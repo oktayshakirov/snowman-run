@@ -40,7 +40,8 @@ public class ShopManager : MonoBehaviour
     {
         Hat = 0,
         Goggles = 1,
-        Ride = 2
+        Ride = 2,
+        Scarf = 3
     }
 
     private void Awake()
@@ -112,7 +113,8 @@ public class ShopManager : MonoBehaviour
                 false,
                 false,
                 false,
-                true
+                true,
+                false
             );
         }
     }
@@ -126,18 +128,20 @@ public class ShopManager : MonoBehaviour
             bool isHat = itemTypes[i] == ItemType.Hat;
             bool isGoggles = itemTypes[i] == ItemType.Goggles;
             bool isRide = itemTypes[i] == ItemType.Ride;
+            bool isScarf = itemTypes[i] == ItemType.Scarf;
 
             itemCard.GetComponent<ShopCard>().SetupCard(
-                items[i],
-                itemImages[i],
-                itemPrices[i],
-                itemPrefabs[i],
-                playerCustomization,
-                isHat,
-                isGoggles,
-                isRide,
-                false
-            );
+     items[i],
+     itemImages[i],
+     itemPrices[i],
+     itemPrefabs[i],
+     playerCustomization,
+     isHat,
+     isGoggles,
+     isRide,
+     isScarf,
+     false
+ );
         }
     }
 
