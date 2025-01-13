@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Booster Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 048a547cf4bad469f904332e6fb9f183, type: 2}
-  m_sharedMaterial: {fileID: 2535385833036394359, guid: 048a547cf4bad469f904332e6fb9f183,
+  m_fontAsset: {fileID: 11400000, guid: 674fe9c0c21454966b86f8eeb898ecc5, type: 2}
+  m_sharedMaterial: {fileID: 7708588512816905305, guid: 674fe9c0c21454966b86f8eeb898ecc5,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -697,8 +697,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: UPGRADE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 048a547cf4bad469f904332e6fb9f183, type: 2}
-  m_sharedMaterial: {fileID: 2535385833036394359, guid: 048a547cf4bad469f904332e6fb9f183,
+  m_fontAsset: {fileID: 11400000, guid: 674fe9c0c21454966b86f8eeb898ecc5, type: 2}
+  m_sharedMaterial: {fileID: 7708588512816905305, guid: 674fe9c0c21454966b86f8eeb898ecc5,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -971,7 +971,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: USE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 048a547cf4bad469f904332e6fb9f183, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 674fe9c0c21454966b86f8eeb898ecc5, type: 2}
   m_sharedMaterial: {fileID: 2535385833036394359, guid: 048a547cf4bad469f904332e6fb9f183,
     type: 2}
   m_fontSharedMaterials: []
@@ -1038,7 +1038,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &6845324344941604423
@@ -1217,7 +1217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.99607843, g: 0.050980393, b: 0.007843138, a: 1}
+  m_Color: {r: 0.99215686, g: 0.5529412, b: 0.5294118, a: 0.9607843}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1255,4 +1255,4 @@ MonoBehaviour:
   isHat: 0
   isGoggles: 0
   isRide: 0
-  isBooster: 0
+  isScarf: 0
