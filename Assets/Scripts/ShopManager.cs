@@ -29,10 +29,8 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private ItemType[] itemTypes;
 
     [Header("Booster Data")]
-    [SerializeField] private string[] boosters;
-    [SerializeField] private Sprite[] boosterImages;
-    [SerializeField] private int[] boosterPrices = { };
-
+    [SerializeField] private BoosterData[] boosters;
+    [SerializeField] private Boosters boostersController;
     [Header("Player Customization")]
     [SerializeField] private PlayerCustomization playerCustomization;
 
@@ -100,28 +98,23 @@ public class ShopManager : MonoBehaviour
 
     private void LoadBoosters()
     {
-        if (boostersParent.childCount > 0) return;
-        for (int i = 0; i < boosters.Length; i++)
+        foreach (Transform child in boostersParent)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (var boosterData in boosters)
         {
             var boosterCard = Instantiate(boosterCardPrefab, boostersParent);
-            boosterCard.GetComponent<ShopCard>().SetupCard(
-                boosters[i],
-                boosterImages[i],
-                boosterPrices[i],
-                null,
-                playerCustomization,
-                false,
-                false,
-                false,
-                true,
-                false
-            );
+            boosterCard.GetComponent<ShopCard>().SetupBoosterCard(boosterData, boostersController);
         }
     }
 
     private void LoadItems()
     {
-        if (itemsParent.childCount > 0) return;
+        foreach (Transform child in itemsParent)
+        {
+            Destroy(child.gameObject);
+        }
         for (int i = 0; i < items.Length; i++)
         {
             var itemCard = Instantiate(itemCardPrefab, itemsParent);
@@ -131,17 +124,17 @@ public class ShopManager : MonoBehaviour
             bool isScarf = itemTypes[i] == ItemType.Scarf;
 
             itemCard.GetComponent<ShopCard>().SetupCard(
-     items[i],
-     itemImages[i],
-     itemPrices[i],
-     itemPrefabs[i],
-     playerCustomization,
-     isHat,
-     isGoggles,
-     isRide,
-     isScarf,
-     false
- );
+                items[i],
+                itemImages[i],
+                itemPrices[i],
+                itemPrefabs[i],
+                playerCustomization,
+                isHat,
+                isGoggles,
+                isRide,
+                isScarf,
+                false
+            );
         }
     }
 

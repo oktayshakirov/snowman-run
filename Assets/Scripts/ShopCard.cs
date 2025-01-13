@@ -24,6 +24,9 @@ public class ShopCard : MonoBehaviour
     private bool isPurchased;
 
     private PlayerCustomization playerCustomization;
+    private BoosterData boosterData;
+    private Boosters boostersController;
+    private int currentUpgradeLevel;
 
     private void OnEnable()
     {
@@ -117,9 +120,9 @@ public class ShopCard : MonoBehaviour
     private void UpdateButtonState(string currentHat = null, string currentGoggles = null, string currentRide = null, string currentScarf = null)
     {
         bool isInUse = (isHat && currentHat == itemName) ||
-                       (isGoggles && currentGoggles == itemName) ||
-                       (isRide && currentRide == itemName) ||
-                       (isScarf && currentScarf == itemName);
+        (isGoggles && currentGoggles == itemName) ||
+        (isRide && currentRide == itemName) ||
+        (isScarf && currentScarf == itemName);
 
         if (isInUse)
         {
@@ -143,4 +146,62 @@ public class ShopCard : MonoBehaviour
             coinIcon.gameObject.SetActive(true);
         }
     }
+
+    public void SetupBoosterCard(BoosterData data, Boosters controller)
+    {
+        boosterData = data;
+        boostersController = controller;
+
+        currentUpgradeLevel = PlayerPrefs.GetInt($"{boosterData.boosterName}_UpgradeLevel", 0);
+
+        nameText.text = boosterData.boosterName;
+        itemImage.sprite = boosterData.boosterImage;
+
+        UpdateBoosterUI();
+
+        actionButton.onClick.RemoveAllListeners();
+        actionButton.onClick.AddListener(UpgradeBooster);
+    }
+
+    private void UpgradeBooster()
+    {
+        if (currentUpgradeLevel < boosterData.maxUpgrades)
+        {
+            int upgradeCost = boosterData.basePrice * (int)Mathf.Pow(2, currentUpgradeLevel);
+            if (WalletManager.SpendCoins(upgradeCost))
+            {
+                currentUpgradeLevel++;
+                PlayerPrefs.SetInt($"{boosterData.boosterName}_UpgradeLevel", currentUpgradeLevel);
+                PlayerPrefs.Save();
+                boostersController.ApplyBoosterUpgrade(boosterData);
+                UpdateBoosterUI();
+
+                Debug.Log($"{boosterData.boosterName} upgraded to level {currentUpgradeLevel}!");
+            }
+            else
+            {
+                Debug.Log("Not enough coins!");
+            }
+        }
+    }
+
+    private void UpdateBoosterUI()
+    {
+        if (currentUpgradeLevel < boosterData.maxUpgrades)
+        {
+            int upgradeCost = boosterData.basePrice * (int)Mathf.Pow(2, currentUpgradeLevel);
+            priceText.text = $"{upgradeCost}";
+            actionButtonText.text = "Upgrade";
+            coinIcon.gameObject.SetActive(true);
+            priceText.gameObject.SetActive(true);
+        }
+        else
+        {
+            actionButtonText.text = "Maxed Out";
+            actionButton.interactable = false;
+            coinIcon.gameObject.SetActive(false);
+            priceText.gameObject.SetActive(false);
+        }
+    }
+
 }
