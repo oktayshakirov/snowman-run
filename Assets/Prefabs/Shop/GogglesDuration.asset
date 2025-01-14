@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GogglesDuration
   m_EditorClassIdentifier: 
   boosterName: Goggles Duration
-  boosterImage: {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  boosterImage: {fileID: 21300000, guid: e561fa2f55c634b2abc5d15b0a5dfa03, type: 3}
   basePrice: 1
   upgradeIncrement: 5
   maxUpgrades: 5
