@@ -83,7 +83,7 @@ public class ShopCard : MonoBehaviour
 
     private void UpgradeBooster()
     {
-        while (currentUpgradeLevel < boosterData.maxUpgrades)
+        if (currentUpgradeLevel < boosterData.maxUpgrades)
         {
             int upgradeCost = boosterData.basePrice * (int)Mathf.Pow(2, currentUpgradeLevel);
             if (WalletManager.SpendCoins(upgradeCost))
@@ -100,11 +100,15 @@ public class ShopCard : MonoBehaviour
             }
             else
             {
-                Debug.Log("Not enough coins for further upgrades!");
-                break;
+                Debug.Log("Not enough coins for the upgrade!");
             }
         }
+        else
+        {
+            Debug.Log($"{boosterData.boosterName} is already at max level!");
+        }
     }
+
 
 
     private void UpdateBoosterUI()

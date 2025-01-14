@@ -36,13 +36,6 @@ public static class WalletManager
             return false;
         }
     }
-
-    public static void ResetCoins(int amount = 0, Action<int> callback = null)
-    {
-        amount = Mathf.Max(0, amount);
-        SaveCoins(amount, $"Wallet reset. Total coins: {amount}", callback);
-    }
-
     public static bool HasEnoughCoins(int amount)
     {
         return GetTotalCoins() >= amount;
@@ -56,4 +49,11 @@ public static class WalletManager
         callback?.Invoke(amount);
         Debug.Log(debugMessage);
     }
+
+    public static void AddDeveloperCoins(Action<int> callback = null)
+    {
+        const int DeveloperCoins = 50000;
+        AddCoins(DeveloperCoins, callback);
+    }
+
 }
