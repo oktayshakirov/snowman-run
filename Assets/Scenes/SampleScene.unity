@@ -18426,7 +18426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 809be4dd39af74498b0b3306be6ad21b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minFogDensity: 0.01
+  minFogDensity: 0.1
   maxFogDensity: 0.15
   fogIncrementStep: 0.001
   fogLerpSpeed: 0.5

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GogglesFogReduction
   m_EditorClassIdentifier: 
   boosterName: Goggles Power
-  boosterImage: {fileID: 21300000, guid: 086b56c038a639a49ae469fbc85d6a7b, type: 3}
+  boosterImage: {fileID: 21300000, guid: a64b71496162243999ff8b74ca33ce2a, type: 3}
   basePrice: 1
   upgradeIncrement: 0.1
   maxUpgrades: 5
