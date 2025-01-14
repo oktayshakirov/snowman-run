@@ -8,9 +8,21 @@ public class Boosters : MonoBehaviour
     [Header("Booster Settings")]
     [SerializeField] private float defaultGogglesFogReduction = 0.5f;
     [SerializeField] private float defaultGogglesDuration = 5f;
+    [SerializeField] private float defaultMaxSpeed = 35f;
     private float gogglesFogReduction;
     private float gogglesDuration;
+    private float maxSpeed;
     public float GogglesDuration => gogglesDuration;
+    public float MaxSpeed
+    {
+        get => maxSpeed;
+        set
+        {
+            maxSpeed = value;
+            PlayerPrefs.SetFloat("MaxSpeed", maxSpeed);
+            PlayerPrefs.Save();
+        }
+    }
 
     [Header("Timer Settings")]
     [SerializeField] private Timer circleTimer;
@@ -33,7 +45,7 @@ public class Boosters : MonoBehaviour
     {
         gogglesDuration = PlayerPrefs.GetFloat("GogglesDuration", defaultGogglesDuration);
         gogglesFogReduction = PlayerPrefs.GetFloat("GogglesFogReduction", defaultGogglesFogReduction);
-
+        maxSpeed = PlayerPrefs.GetFloat("MaxSpeed", defaultMaxSpeed);
         if (circleTimer != null)
         {
             circleTimer.gameObject.SetActive(false);
@@ -42,7 +54,7 @@ public class Boosters : MonoBehaviour
             circleTimer.outputType = Timer.OutputType.StandardText;
         }
 
-        Debug.Log($"Loaded Boosters: GogglesDuration={gogglesDuration}, GogglesFogReduction={gogglesFogReduction}");
+        Debug.Log($"Loaded Boosters: GogglesDuration={gogglesDuration}, GogglesFogReduction={gogglesFogReduction}, MaxSpeed={maxSpeed}");
     }
 
     public void ActivateGoggles()
@@ -60,7 +72,7 @@ public class Boosters : MonoBehaviour
             circleTimer.StartTimer();
             circleTimer.onTimerEnd.AddListener(OnTimerEnd);
         }
-
+        AudioManager.Instance.PlaySound(AudioManager.SoundType.Goggles);
         Fog.HoldFogIncrement(true);
         fogDensityAtActivation = Fog.GetCurrentFogDensity();
         Fog.ReduceFogDensity(gogglesFogReduction);
@@ -79,6 +91,12 @@ public class Boosters : MonoBehaviour
         gogglesFogReduction += additionalReduction;
         PlayerPrefs.SetFloat("GogglesFogReduction", gogglesFogReduction);
         PlayerPrefs.Save();
+    }
+
+    public void UpgradeMaxSpeed(float additionalSpeed)
+    {
+        MaxSpeed += additionalSpeed;
+        Debug.Log($"Max speed upgraded to {MaxSpeed}!");
     }
 
     private void OnTimerEnd()
@@ -118,6 +136,7 @@ public class Boosters : MonoBehaviour
         {
             spawner.ShowAllGoggles();
         }
+
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Off);
     }
 
@@ -133,11 +152,13 @@ public class Boosters : MonoBehaviour
                 UpgradeGogglesFogReduction(boosterData.upgradeIncrement);
                 break;
 
+            case BoosterData.BoosterType.MaxSpeed:
+                UpgradeMaxSpeed(boosterData.upgradeIncrement);
+                break;
+
             default:
                 Debug.LogWarning($"Booster type {boosterData.boosterType} not handled!");
                 break;
         }
     }
-
-
 }

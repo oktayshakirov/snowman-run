@@ -14,7 +14,7 @@ public class Goggles : MonoBehaviour
         {
             if (GameManager.inst != null)
             {
-                GameManager.inst.ActivateGoggles();
+                Boosters.Instance.ActivateGoggles();
             }
 
             GroundSpawner spawner = Object.FindFirstObjectByType<GroundSpawner>();

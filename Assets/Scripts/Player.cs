@@ -60,7 +60,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         targetRotation = transform.rotation;
-        maxSpeed = GameManager.inst.MaxSpeed;
+        maxSpeed = Boosters.Instance.MaxSpeed;
         controlsEnabled = false;
         StartCoroutine(EnableControlsAfterDelay(0.3f));
         if (playerGoggles != null)
@@ -90,7 +90,7 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         if (!alive) return;
-        maxSpeed = GameManager.inst.MaxSpeed;
+        maxSpeed = Boosters.Instance.MaxSpeed;
         if (speed > maxSpeed)
         {
             speed = maxSpeed;
@@ -114,7 +114,7 @@ public class Player : MonoBehaviour
 
     public void RefreshMaxSpeed()
     {
-        maxSpeed = GameManager.inst.MaxSpeed;
+        maxSpeed = Boosters.Instance.MaxSpeed;
         Debug.Log($"Player max speed updated to: {maxSpeed}");
     }
 

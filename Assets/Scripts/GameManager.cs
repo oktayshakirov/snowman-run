@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float baseSpeed = 10f;
     [SerializeField] private float timeBetweenSpeedIncreases = 2f;
     [SerializeField] private float timeSpeedIncreaseAmount = 1f;
-    [SerializeField] private float maxSpeed = 32f;
     [SerializeField] private float speedLerpRate = 5f;
     [SerializeField] private Boosters boosters;
 
@@ -30,7 +29,6 @@ public class GameManager : MonoBehaviour
     private bool isGamePaused = false;
     private int score = 0;
     private float displayedSpeedLerp = 0f;
-    public float MaxSpeed => maxSpeed;
 
     private bool useKmh = true;
 
@@ -53,17 +51,18 @@ public class GameManager : MonoBehaviour
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         useKmh = PlayerPrefs.GetInt("SpeedUnit", 0) == 0;
         RefreshSpeedUnit();
+
         if (Fog.Instance != null)
         {
             Fog.Instance.InitializeFog();
         }
+
         StartNewGame();
 
         // Erase All and Add Coins
-        // GameManager.inst.EraseAllData();
-        // WalletManager.AddDeveloperCoins();
+        EraseAllData();
+        WalletManager.AddDeveloperCoins();
     }
-
 
     private void Update()
     {
@@ -88,6 +87,7 @@ public class GameManager : MonoBehaviour
     public void IncrementScore()
     {
         if (isGameOver) return;
+
         score++;
         coinsText.text = score.ToString();
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Coin);
@@ -151,6 +151,7 @@ public class GameManager : MonoBehaviour
     public void OnPlayerCrash()
     {
         if (isGameOver) return;
+
         NativeHaptics.TriggerErrorNotification();
         isGameOver = true;
         WalletManager.AddCoins(score);
@@ -217,20 +218,10 @@ public class GameManager : MonoBehaviour
         while (!isGameOver && !isGamePaused)
         {
             yield return new WaitForSeconds(timeBetweenSpeedIncreases);
-            float newSpeed = Mathf.Min(playerMovement.GetSpeed() + timeSpeedIncreaseAmount, maxSpeed);
+            float newSpeed = Mathf.Min(playerMovement.GetSpeed() + timeSpeedIncreaseAmount, Boosters.Instance.MaxSpeed);
             playerMovement.SetSpeed(newSpeed);
         }
     }
-
-    public void ActivateGoggles()
-    {
-        if (boosters != null)
-        {
-            boosters.ActivateGoggles();
-            AudioManager.Instance.PlaySound(AudioManager.SoundType.Goggles);
-        }
-    }
-
 
     private IEnumerator DelayedStartScreen()
     {
@@ -241,11 +232,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void EraseAllData()
     {
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
     }
-
 }
