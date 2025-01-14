@@ -4,6 +4,7 @@ using System;
 public static class WalletManager
 {
     private const string TotalCoinsKey = "TotalCoins";
+
     public static event Action<int> OnCoinsChanged;
 
     public static int GetTotalCoins()

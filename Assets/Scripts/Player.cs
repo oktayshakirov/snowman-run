@@ -90,18 +90,34 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         if (!alive) return;
+        maxSpeed = GameManager.inst.MaxSpeed;
+        if (speed > maxSpeed)
+        {
+            speed = maxSpeed;
+        }
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
         Vector3 forwardMove = Vector3.forward * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + forwardMove);
+
         Vector3 targetPosition = new Vector3((currentLane - 1) * laneDistance, rb.position.y, rb.position.z);
         Vector3 newPosition = Vector3.MoveTowards(rb.position, targetPosition, laneDistance * Time.fixedDeltaTime * 10);
         rb.MovePosition(new Vector3(newPosition.x, rb.position.y, rb.position.z));
+
         if (!onRamp)
         {
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * leanSpeed);
         }
+
         SmoothHatReset();
     }
+
+    public void RefreshMaxSpeed()
+    {
+        maxSpeed = GameManager.inst.MaxSpeed;
+        Debug.Log($"Player max speed updated to: {maxSpeed}");
+    }
+
 
     private void Update()
     {
