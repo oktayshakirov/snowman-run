@@ -5356,6 +5356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultGogglesFogReduction: 0.5
   defaultGogglesDuration: 5
+  defaultMaxSpeed: 35
   circleTimer: {fileID: 1079396604}
 --- !u!4 &421472498
 Transform:
@@ -6997,7 +6998,7 @@ PrefabInstance:
     - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10339,7 +10340,6 @@ MonoBehaviour:
   baseSpeed: 10
   timeBetweenSpeedIncreases: 2
   timeSpeedIncreaseAmount: 1
-  maxSpeed: 40
   speedLerpRate: 5
   boosters: {fileID: 421472497}
 --- !u!4 &863502732
