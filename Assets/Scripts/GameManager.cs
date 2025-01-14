@@ -58,6 +58,10 @@ public class GameManager : MonoBehaviour
             Fog.Instance.InitializeFog();
         }
         StartNewGame();
+
+        // Erase All and Add Coins
+        // GameManager.inst.EraseAllData();
+        // WalletManager.AddDeveloperCoins();
     }
 
 
@@ -237,16 +241,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void IncreaseMaxSpeed(float additionalSpeed)
+
+    public void EraseAllData()
     {
-        maxSpeed += additionalSpeed;
-        Debug.Log($"Max speed increased to {maxSpeed}");
-
-        if (playerMovement != null)
-        {
-            playerMovement.RefreshMaxSpeed();
-        }
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
     }
-
 
 }

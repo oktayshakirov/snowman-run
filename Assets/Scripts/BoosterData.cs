@@ -27,10 +27,11 @@ public class BoosterData : ScriptableObject
             case BoosterType.GogglesFogReduction:
                 return isNext ? $"{50 + (10 * (upgradeLevel + 1))}%" : $"{50 + (10 * upgradeLevel)}%";
             case BoosterType.MaxSpeed:
-                return isNext ? $"{40 + (10 * (upgradeLevel + 1))} km/h" : $"{40 + (5 * upgradeLevel)} km/h";
+                return isNext ? $"{40 + (5 * (upgradeLevel + 1))} km/h" : $"{40 + (5 * upgradeLevel)} km/h";
             default:
                 return "Unknown";
         }
     }
+
 
 }

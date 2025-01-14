@@ -6997,7 +6997,7 @@ PrefabInstance:
     - target: {fileID: 4299496059850539951, guid: 5a3227b269625a944878efc246dbbc99,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19503,7 +19503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e73eeb043db48be809b935d73392d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _androidGameId: 5755677
+  _iOSGameId: 5755676
   _testMode: 0
 --- !u!4 &1577749885
 Transform:
