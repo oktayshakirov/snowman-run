@@ -84,10 +84,9 @@ public class ShopCard : MonoBehaviour
                 currentUpgradeLevel++;
                 PlayerPrefs.SetInt($"{boosterData.boosterName}_UpgradeLevel", currentUpgradeLevel);
                 PlayerPrefs.Save();
-
                 boostersController.ApplyBoosterUpgrade(boosterData);
                 UpdateBoosterUI();
-
+                AudioManager.Instance.PlaySound(AudioManager.SoundType.Buy);
                 Debug.Log($"{boosterData.boosterName} upgraded to level {currentUpgradeLevel}!");
             }
             else
