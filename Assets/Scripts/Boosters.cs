@@ -81,6 +81,11 @@ public class Boosters : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public void UpgradeMaxSpeed(float additionalSpeed)
+    {
+        GameManager.inst.IncreaseMaxSpeed(additionalSpeed);
+    }
+
     private void OnTimerEnd()
     {
         Debug.Log("Timer finished!");
@@ -133,9 +138,15 @@ public class Boosters : MonoBehaviour
                 UpgradeGogglesFogReduction(boosterData.upgradeIncrement);
                 break;
 
+            case BoosterData.BoosterType.MaxSpeed:
+                UpgradeMaxSpeed(boosterData.upgradeIncrement);
+                break;
+
             default:
                 Debug.LogWarning($"Booster type {boosterData.boosterType} not handled!");
                 break;
         }
     }
+
+
 }

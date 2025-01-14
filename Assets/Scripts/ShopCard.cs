@@ -11,6 +11,8 @@ public class ShopCard : MonoBehaviour
     [SerializeField] public Button actionButton;
     [SerializeField] public TMP_Text actionButtonText;
     [SerializeField] public Image coinIcon;
+    [SerializeField] public TMP_Text descriptionText;
+    [SerializeField] public TMP_Text boosterStateText;
 
     [Header("Customization Type")]
     [SerializeField] private bool isHat;
@@ -21,8 +23,8 @@ public class ShopCard : MonoBehaviour
     private GameObject itemPrefab;
     private string itemName;
     private int itemPrice;
-    private bool isPurchased;
 
+    private bool isPurchased;
     private PlayerCustomization playerCustomization;
     private BoosterData boosterData;
     private Boosters boostersController;
@@ -68,15 +70,20 @@ public class ShopCard : MonoBehaviour
         nameText.text = boosterData.boosterName;
         itemImage.sprite = boosterData.boosterImage;
 
+        // Display the description
+        descriptionText.text = boosterData.description;
+
+        // Update the booster UI
         UpdateBoosterUI();
 
         actionButton.onClick.RemoveAllListeners();
         actionButton.onClick.AddListener(UpgradeBooster);
     }
 
+
     private void UpgradeBooster()
     {
-        if (currentUpgradeLevel < boosterData.maxUpgrades)
+        while (currentUpgradeLevel < boosterData.maxUpgrades)
         {
             int upgradeCost = boosterData.basePrice * (int)Mathf.Pow(2, currentUpgradeLevel);
             if (WalletManager.SpendCoins(upgradeCost))
@@ -85,19 +92,30 @@ public class ShopCard : MonoBehaviour
                 PlayerPrefs.SetInt($"{boosterData.boosterName}_UpgradeLevel", currentUpgradeLevel);
                 PlayerPrefs.Save();
                 boostersController.ApplyBoosterUpgrade(boosterData);
-                UpdateBoosterUI();
+                NativeHaptics.TriggerHeavyHaptic();
                 AudioManager.Instance.PlaySound(AudioManager.SoundType.Buy);
+                UpdateBoosterUI();
+
                 Debug.Log($"{boosterData.boosterName} upgraded to level {currentUpgradeLevel}!");
             }
             else
             {
-                Debug.Log("Not enough coins!");
+                Debug.Log("Not enough coins for further upgrades!");
+                break;
             }
         }
     }
 
+
     private void UpdateBoosterUI()
     {
+        string actualState = boosterData.GetBoosterState(currentUpgradeLevel);
+        string nextState = currentUpgradeLevel < boosterData.maxUpgrades
+            ? boosterData.GetBoosterState(currentUpgradeLevel, true)
+            : null;
+        boosterStateText.text = $"Actual: {actualState}" +
+                                (nextState != null ? $"\nNext: {nextState}" : "");
+
         if (currentUpgradeLevel < boosterData.maxUpgrades)
         {
             int upgradeCost = boosterData.basePrice * (int)Mathf.Pow(2, currentUpgradeLevel);
@@ -114,6 +132,8 @@ public class ShopCard : MonoBehaviour
             priceText.gameObject.SetActive(false);
         }
     }
+
+
 
     private void PerformAction()
     {

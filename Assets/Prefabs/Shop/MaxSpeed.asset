@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1d22209542f0584ab1ee92829d1dea7, type: 3}
-  m_Name: GogglesFogReduction
+  m_Name: MaxSpeed
   m_EditorClassIdentifier: 
-  boosterName: Goggles Power
-  boosterImage: {fileID: 21300000, guid: a64b71496162243999ff8b74ca33ce2a, type: 3}
-  basePrice: 200
-  upgradeIncrement: 0.1
+  boosterName: Max Speed
+  boosterImage: {fileID: 21300000, guid: 145562684600526489da79e16579138e, type: 3}
+  basePrice: 250
+  upgradeIncrement: 5
   maxUpgrades: 5
-  boosterType: 1
-  description: Reduces fog visibility by 50% by default, with each upgrade increasing
-    the reduction by an additional 10% when the Goggles are active.
+  boosterType: 2
+  description: Increases the default maximum speed of 40 km/h, adding an extra 5
+    km/h per upgrade to boost the player's top speed.

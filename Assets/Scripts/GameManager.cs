@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float baseSpeed = 10f;
     [SerializeField] private float timeBetweenSpeedIncreases = 2f;
     [SerializeField] private float timeSpeedIncreaseAmount = 1f;
-    [SerializeField] private float maxSpeed = 40f;
+    [SerializeField] private float maxSpeed = 32f;
     [SerializeField] private float speedLerpRate = 5f;
     [SerializeField] private Boosters boosters;
 
@@ -236,4 +236,17 @@ public class GameManager : MonoBehaviour
             StartScreenManager.Instance.ShowStartScreen();
         }
     }
+
+    public void IncreaseMaxSpeed(float additionalSpeed)
+    {
+        maxSpeed += additionalSpeed;
+        Debug.Log($"Max speed increased to {maxSpeed}");
+
+        if (playerMovement != null)
+        {
+            playerMovement.RefreshMaxSpeed();
+        }
+    }
+
+
 }
