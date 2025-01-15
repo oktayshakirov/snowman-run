@@ -14,11 +14,7 @@ public class Player : MonoBehaviour
 
     [Header("Jump Settings")]
     [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Transform groundCheck;
-    private bool isGrounded;
-    private float groundCheckRadius = 0.2f;
-
+    private bool canJump = true;
     [Header("Hand Rotation Settings")]
     [SerializeField] private Transform leftHand;
     [SerializeField] private Transform rightHand;
@@ -96,7 +92,6 @@ public class Player : MonoBehaviour
             speed = maxSpeed;
         }
 
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
         Vector3 forwardMove = Vector3.forward * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + forwardMove);
 
@@ -117,7 +112,6 @@ public class Player : MonoBehaviour
         maxSpeed = Boosters.Instance.MaxSpeed;
         Debug.Log($"Player max speed updated to: {maxSpeed}");
     }
-
 
     private void Update()
     {
@@ -149,7 +143,7 @@ public class Player : MonoBehaviour
             moved = true;
             HandleLaneChange(leanAngle, handRotationAngle, hatTiltAmount);
         }
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.UpArrow) && canJump)
         {
             Jump();
         }
@@ -181,7 +175,7 @@ public class Player : MonoBehaviour
                         HandleLaneChange(-leanAngle, -handRotationAngle, -hatTiltAmount);
                     }
                 }
-                else if (Mathf.Abs(swipe.y) > swipeThreshold && swipe.y > 0 && isGrounded)
+                else if (Mathf.Abs(swipe.y) > swipeThreshold && swipe.y > 0 && canJump) // Jump on swipe
                 {
                     Jump();
                 }
@@ -200,6 +194,15 @@ public class Player : MonoBehaviour
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Jump);
+
+        canJump = false;
+        StartCoroutine(JumpCooldown());
+    }
+
+    private IEnumerator JumpCooldown()
+    {
+        yield return new WaitForSeconds(2f);
+        canJump = true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -377,7 +380,6 @@ public class Player : MonoBehaviour
 
         Restart();
     }
-
 
     private void Restart()
     {
