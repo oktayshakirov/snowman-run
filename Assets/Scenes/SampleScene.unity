@@ -6018,7 +6018,7 @@ MonoBehaviour:
   coinSoundVolume: 0.03
   weeSoundVolume: 0.2
   crashSoundVolume: 0.2
-  gogglesSoundVolume: 0.18
+  gogglesSoundVolume: 0.16
   offSoundVolume: 0.25
   buySoundVolume: 0.255
   equipSoundVolume: 0.28
