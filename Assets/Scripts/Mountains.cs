@@ -13,7 +13,7 @@ public class MountainRepeater : MonoBehaviour
     private Vector3 nextRightMountainPosition;
     private Transform playerTransform;
 
-    private float checkInterval = 0.5f;
+    private float checkInterval = 0.1f;
     private float nextCheckTime = 0;
 
     private void Start()

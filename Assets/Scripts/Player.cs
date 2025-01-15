@@ -201,7 +201,7 @@ public class Player : MonoBehaviour
 
     private IEnumerator JumpCooldown()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
         canJump = true;
     }
 
