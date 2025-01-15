@@ -495,10 +495,6 @@ MonoBehaviour:
   speed: 10
   rb: {fileID: 41877087}
   jumpForce: 5
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  groundCheck: {fileID: 245843648}
   leftHand: {fileID: 613587911}
   rightHand: {fileID: 2145851507}
   handRotationAngle: 25

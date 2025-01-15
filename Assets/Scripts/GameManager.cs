@@ -60,8 +60,8 @@ public class GameManager : MonoBehaviour
         StartNewGame();
 
         // Erase All and Add Coins
-        EraseAllData();
-        WalletManager.AddDeveloperCoins();
+        // EraseAllData();
+        // WalletManager.AddDeveloperCoins();
     }
 
     private void Update()
@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
     {
         float playerSpeed = playerMovement.GetSpeed();
         displayedSpeedLerp = Mathf.Lerp(displayedSpeedLerp, playerSpeed, Time.deltaTime * speedLerpRate);
-        float convertedSpeed = useKmh ? displayedSpeedLerp * 1.2f : displayedSpeedLerp * 0.746f;
+        float convertedSpeed = useKmh ? displayedSpeedLerp * 1f : displayedSpeedLerp * 0.7f;
         string unit = useKmh ? "km/h" : "mph";
         speedText.text = $"{convertedSpeed:F1} {unit}";
     }
