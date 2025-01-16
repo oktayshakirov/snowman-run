@@ -1,43 +1,92 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Advertisements;
+using UnityEngine.Events;
 
 public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
 {
+    public static AdsInitializer Instance;
+
 #if UNITY_ANDROID
     [SerializeField] private string _androidGameId = "5755677";
 #elif UNITY_IOS
     [SerializeField] private string _iOSGameId = "5755676";
 #endif
     [SerializeField] private bool _testMode = false;
-    private string _gameId;
 
-    void Awake()
+    [Header("Secondary Splash Screen")]
+    [SerializeField] private GameObject splashScreenCanvas;
+
+    public UnityEvent OnInitializationCompleteEvent; // Event for initialization complete
+
+    private string _gameId;
+    private bool _isInitialized = false;
+
+    private void Awake()
     {
-        InitializeAds();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    public void InitializeAds()
+    private void Start()
+    {
+        if (splashScreenCanvas != null)
+        {
+            splashScreenCanvas.SetActive(true);
+        }
+        StartCoroutine(InitializeAdsCoroutine());
+    }
+
+    private IEnumerator InitializeAdsCoroutine()
     {
 #if UNITY_IOS
         _gameId = _iOSGameId;
 #elif UNITY_ANDROID
         _gameId = _androidGameId;
 #elif UNITY_EDITOR
-        _gameId = _androidGameId; 
+        _gameId = "testGameId";
 #endif
+
         if (!Advertisement.isInitialized && Advertisement.isSupported)
         {
             Advertisement.Initialize(_gameId, _testMode, this);
         }
+        while (!Advertisement.isInitialized)
+        {
+            yield return null;
+        }
+        if (splashScreenCanvas != null)
+        {
+            splashScreenCanvas.SetActive(false);
+        }
+
+        _isInitialized = true;
+        OnInitializationComplete(); // Trigger the event
+    }
+
+    public bool IsInitialized()
+    {
+        return _isInitialized;
     }
 
     public void OnInitializationComplete()
     {
-        Debug.Log("Unity Ads initialization complete.");
+        _isInitialized = true;
+        OnInitializationCompleteEvent?.Invoke(); // Notify listeners
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
     {
-        Debug.Log($"Unity Ads Initialization Failed: {error.ToString()} - {message}");
+        if (splashScreenCanvas != null)
+        {
+            splashScreenCanvas.SetActive(false);
+        }
     }
 }

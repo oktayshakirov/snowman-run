@@ -35,6 +35,7 @@ public class AudioManager : MonoBehaviour
 
     private AudioSource sfxSource;
     private AudioSource musicSource;
+    private bool isInitialized = false;
 
     private bool isMusicMuted = false;
     private bool isSfxMuted = false;
@@ -77,6 +78,16 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        if (AdsInitializer.Instance != null)
+        {
+            AdsInitializer.Instance.OnInitializationCompleteEvent.AddListener(InitializeAudioManager);
+        }
+    }
+
+    private void InitializeAudioManager()
+    {
+        if (isInitialized) return;
+
         sfxSource = gameObject.AddComponent<AudioSource>();
         musicSource = gameObject.AddComponent<AudioSource>();
 
@@ -89,6 +100,7 @@ public class AudioManager : MonoBehaviour
         }
 
         LoadSettings();
+        isInitialized = true;
     }
 
     public void PlaySound(SoundType soundType)
