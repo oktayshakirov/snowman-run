@@ -17,7 +17,7 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
     [Header("Secondary Splash Screen")]
     [SerializeField] private GameObject splashScreenCanvas;
 
-    public UnityEvent OnInitializationCompleteEvent; // Event for initialization complete
+    public UnityEvent OnInitializationCompleteEvent;
 
     private string _gameId;
     private bool _isInitialized = false;
@@ -68,7 +68,7 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
         }
 
         _isInitialized = true;
-        OnInitializationComplete(); // Trigger the event
+        OnInitializationComplete();
     }
 
     public bool IsInitialized()
@@ -79,7 +79,7 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
     public void OnInitializationComplete()
     {
         _isInitialized = true;
-        OnInitializationCompleteEvent?.Invoke(); // Notify listeners
+        OnInitializationCompleteEvent?.Invoke();
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
