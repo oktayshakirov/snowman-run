@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     [Header("UI Screens")]
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private GameObject startScreenCanvas;
+    [SerializeField] private GameObject gameScreenCanvas;
+
 
     [Header("Speed Settings")]
     [SerializeField] private float baseSpeed = 10f;
@@ -56,9 +58,7 @@ public class GameManager : MonoBehaviour
         {
             Fog.Instance.InitializeFog();
         }
-
-        StartNewGame();
-
+        gameScreenCanvas.SetActive(false);
         // Erase All and Add Coins
         // EraseAllData();
         // WalletManager.AddDeveloperCoins();
@@ -80,6 +80,7 @@ public class GameManager : MonoBehaviour
         coinsText.text = score.ToString();
         playerMovement.gameObject.SetActive(true);
         playerMovement.InitializeSpeed(baseSpeed);
+        gameScreenCanvas.SetActive(true);
         StartCoroutine(InitialAcceleration());
         StartCoroutine(IncreaseSpeedOverTime());
     }
@@ -116,6 +117,7 @@ public class GameManager : MonoBehaviour
         isGamePaused = true;
         Time.timeScale = 0;
         pauseScreen.SetActive(true);
+        gameScreenCanvas.SetActive(false);
     }
 
     public void ResumeGame()
@@ -125,6 +127,7 @@ public class GameManager : MonoBehaviour
         isGamePaused = false;
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
+        gameScreenCanvas.SetActive(true);
         playerMovement.StartCoroutine(playerMovement.ResumeInputBuffer(0.1f));
     }
 
@@ -132,6 +135,7 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = true;
         pauseScreen.SetActive(false);
+        gameScreenCanvas.SetActive(false);
         startScreenCanvas.SetActive(true);
         playerMovement.EndGame();
     }
@@ -157,6 +161,7 @@ public class GameManager : MonoBehaviour
         WalletManager.AddCoins(score);
         UpdateUnlockedLevels();
         playerMovement.SetSpeed(0f);
+        gameScreenCanvas.SetActive(false);
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Crash);
         StartCoroutine(DelayedStartScreen());
         InterstitialAd.Instance.LoadAd();
