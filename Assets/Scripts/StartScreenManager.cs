@@ -24,7 +24,7 @@ public class StartScreenManager : MonoBehaviour
     {
         if (gameCanvas != null)
         {
-            gameCanvas.SetActive(false); // Ensure it's off by default
+            gameCanvas.SetActive(false);
         }
         ShowStartScreen();
     }
