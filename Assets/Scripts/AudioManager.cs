@@ -78,6 +78,7 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        InitializeAudioManager();
         if (AdsInitializer.Instance != null)
         {
             AdsInitializer.Instance.OnInitializationCompleteEvent.AddListener(InitializeAudioManager);

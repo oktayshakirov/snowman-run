@@ -175,7 +175,7 @@ public class Player : MonoBehaviour
                         HandleLaneChange(-leanAngle, -handRotationAngle, -hatTiltAmount);
                     }
                 }
-                else if (Mathf.Abs(swipe.y) > swipeThreshold && swipe.y > 0 && canJump) // Jump on swipe
+                else if (Mathf.Abs(swipe.y) > swipeThreshold && swipe.y > 0 && canJump)
                 {
                     Jump();
                 }
@@ -201,7 +201,7 @@ public class Player : MonoBehaviour
 
     private IEnumerator JumpCooldown()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         canJump = true;
     }
 
