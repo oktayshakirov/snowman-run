@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 37289813}
   - component: {fileID: 37289815}
   - component: {fileID: 37289814}
+  - component: {fileID: 37289816}
   m_Layer: 5
   m_Name: PlayerStats
   m_TagString: Untagged
@@ -392,6 +393,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 37289812}
   m_CullTransparentMesh: 1
+--- !u!95 &37289816
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37289812}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5705e5e325a4779458438de78b859fd4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 2
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &41877082
 GameObject:
   m_ObjectHideFlags: 0
@@ -1437,7 +1460,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -59, y: 44.98}
+  m_AnchoredPosition: {x: -59, y: 45}
   m_SizeDelta: {x: 934.386, y: 114.4158}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!111 &100853940
@@ -18296,13 +18319,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1508416502}
+  - component: {fileID: 1508416504}
+  - component: {fileID: 1508416503}
+  - component: {fileID: 1508416505}
   m_Layer: 5
   m_Name: SplashScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1508416502
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18324,6 +18350,59 @@ RectTransform:
   m_AnchoredPosition: {x: -0.0010070801, y: -36.9359}
   m_SizeDelta: {x: 1080, y: 1993.8235}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &1508416503
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508416501}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!95 &1508416504
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508416501}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a40497d57449939438e6346d9291272e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 2
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1508416505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508416501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7e73eeb043db48be809b935d73392d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _iOSGameId: 5755676
+  _testMode: 0
+  splashScreenCanvas: {fileID: 1508416501}
+  splashScreenAnimator: {fileID: 1508416504}
+  OnInitializationCompleteEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1511714561
 GameObject:
   m_ObjectHideFlags: 0
@@ -19751,56 +19830,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1576888774}
   m_CullTransparentMesh: 1
---- !u!1 &1577749883
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1577749885}
-  - component: {fileID: 1577749884}
-  m_Layer: 0
-  m_Name: AdsInitializer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1577749884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1577749883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7e73eeb043db48be809b935d73392d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _iOSGameId: 5755676
-  _testMode: 0
-  splashScreenCanvas: {fileID: 1508416501}
-  OnInitializationCompleteEvent:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!4 &1577749885
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1577749883}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 508.6424, y: 1405.7034, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1578281535
 GameObject:
   m_ObjectHideFlags: 0
@@ -28271,7 +28300,7 @@ RectTransform:
   m_GameObject: {fileID: 1833602048}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 247944963}
@@ -32785,7 +32814,6 @@ SceneRoots:
   - {fileID: 1521719581}
   - {fileID: 41877086}
   - {fileID: 126221220}
-  - {fileID: 1577749885}
   - {fileID: 681303421}
   - {fileID: 421472498}
   - {fileID: 863502732}

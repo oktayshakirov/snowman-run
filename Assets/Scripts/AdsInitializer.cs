@@ -16,6 +16,7 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
 
     [Header("Secondary Splash Screen")]
     [SerializeField] private GameObject splashScreenCanvas;
+    [SerializeField] private Animator splashScreenAnimator;
 
     public UnityEvent OnInitializationCompleteEvent;
 
@@ -27,7 +28,6 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -41,11 +41,13 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
         {
             splashScreenCanvas.SetActive(true);
         }
+
         StartCoroutine(InitializeAdsCoroutine());
     }
 
     private IEnumerator InitializeAdsCoroutine()
     {
+        Debug.Log("Starting Ads initialization...");
 #if UNITY_IOS
         _gameId = _iOSGameId;
 #elif UNITY_ANDROID
@@ -58,18 +60,16 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
         {
             Advertisement.Initialize(_gameId, _testMode, this);
         }
+
         while (!Advertisement.isInitialized)
         {
             yield return null;
         }
-        if (splashScreenCanvas != null)
-        {
-            splashScreenCanvas.SetActive(false);
-        }
 
-        _isInitialized = true;
+        Debug.Log("Ads initialization complete!");
         OnInitializationComplete();
     }
+
 
     public bool IsInitialized()
     {
@@ -80,13 +80,32 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
     {
         _isInitialized = true;
         OnInitializationCompleteEvent?.Invoke();
+
+        if (splashScreenAnimator != null && splashScreenCanvas != null)
+        {
+            splashScreenAnimator.SetTrigger("Hide");
+        }
+        else if (splashScreenCanvas != null)
+        {
+            splashScreenCanvas.SetActive(false);
+        }
     }
 
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)
+    {
+        Debug.LogError($"Unity Ads Initialization Failed: {message}");
+        if (splashScreenCanvas != null)
+        {
+            splashScreenCanvas.SetActive(false);
+        }
+    }
+
+    public void DisableCanvas()
     {
         if (splashScreenCanvas != null)
         {
             splashScreenCanvas.SetActive(false);
         }
     }
+
 }
