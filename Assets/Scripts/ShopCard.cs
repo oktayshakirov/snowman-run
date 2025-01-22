@@ -69,11 +69,8 @@ public class ShopCard : MonoBehaviour
 
         nameText.text = boosterData.boosterName;
         itemImage.sprite = boosterData.boosterImage;
-
-        // Display the description
         descriptionText.text = boosterData.description;
 
-        // Update the booster UI
         UpdateBoosterUI();
 
         actionButton.onClick.RemoveAllListeners();
