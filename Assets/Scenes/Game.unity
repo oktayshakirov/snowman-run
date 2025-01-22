@@ -18491,7 +18491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e73eeb043db48be809b935d73392d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iOSGameId: 5755676
+  _androidGameId: 5755677
   _testMode: 0
   splashScreenCanvas: {fileID: 1508416501}
   splashScreenAnimator: {fileID: 1508416504}
@@ -29528,7 +29528,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1903977138
 RectTransform:
   m_ObjectHideFlags: 0
