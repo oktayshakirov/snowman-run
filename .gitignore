@@ -70,6 +70,17 @@ TestResults/
 # Exclude large auto-generated Unity assets that are not critical for version control
 [Ll]ightingData.asset
 
+# Ignore LFS lock files
+*.lock
+
+# Ignore Yarn and NPM packages
+node_modules/
+.yarn/
+
+# Ignore signing keys and certificates
+upload.keystore
+upload_certificate.pem
+
 # Ignore common build files for multiple platforms
 *.apk
 *.aab
@@ -78,13 +89,5 @@ TestResults/
 *.xcodeproj
 *.ipa
 
-# Ignore LFS lock files
-*.lock
-
-# Ignore Yarn and NPM packages
-node_modules/
-.yarn/
-
 # Ignore the results of builds
 [Bb]uilds/
-
