@@ -42,7 +42,7 @@ Whether you’re a casual gamer or a competitive thrill-seeker, Snowman Run: Esc
 
 ## 📜 License & Copyright 📜
 
-**© 2024 Oktay Shakirov. All Rights Reserved.** *(Please update the year if major development or release was in a different year, e.g., 2025)*
+**© 2024 Oktay Shakirov. All Rights Reserved.** 
 
 This project is **proprietary and not open source**.
 
