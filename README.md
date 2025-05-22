@@ -40,9 +40,13 @@ Whether you’re a casual gamer or a competitive thrill-seeker, Snowman Run: Esc
 * **Development:** Solo Development
 * **Status:** Complete Build
 
+## 🔒 Privacy Policy 🔒
+
+Your privacy is important to us. Please review our [Privacy Policy for Snowman Run](https://oktayshakirov.com/privacy-policy/snowman-run) to understand how we collect, use, and protect your data.
+
 ## 📜 License & Copyright 📜
 
-**© 2024 Oktay Shakirov. All Rights Reserved.** 
+**© 2025 Oktay Shakirov. All Rights Reserved.**
 
 This project is **proprietary and not open source**.
 
