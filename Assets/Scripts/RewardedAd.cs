@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
 {
@@ -12,8 +13,9 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     [SerializeField] private string _iOsAdUnitId = "Rewarded_iOS";
     private string _adUnitId;
 
-    [Header("Button Name")]
-    [SerializeField] private string _buttonName = "WatchAd";
+    [Header("Rewarded Ad Buttons")]
+    [SerializeField] private string _startScreenButtonName = "WatchAd";
+    [SerializeField] private string _shopScreenButtonName = "WatchAd";
 
     [Header("Retry Settings")]
     [SerializeField] private float _retryDelay = 3f;
@@ -151,51 +153,77 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
 
     private void UpdateButtonVisibility()
     {
-        Button button = FindButton();
-        if (button != null)
+        UpdateAllButtons();
+    }
+
+    private void UpdateAllButtons()
+    {
+        Button[] buttons = FindAllRewardedAdButtons();
+        foreach (Button button in buttons)
         {
-            button.gameObject.SetActive(true);
-            button.interactable = _adLoaded;
+            if (button != null)
+            {
+                button.gameObject.SetActive(true);
+                button.interactable = _adLoaded;
+            }
         }
     }
 
-    private Button FindButton()
+    private Button[] FindAllRewardedAdButtons()
     {
-        GameObject buttonObj = GameObject.Find(_buttonName);
-        if (buttonObj == null)
+        List<Button> buttons = new List<Button>();
+
+        Button startButton = FindButtonInCanvas(_startScreenButtonName, "StartScreen");
+        if (startButton != null)
         {
-            buttonObj = GameObject.Find("WatchAd") ?? GameObject.Find("RewardAd") ?? GameObject.Find("RewardedAd");
+            SetupButton(startButton);
+            buttons.Add(startButton);
         }
 
-        if (buttonObj != null)
+        Button shopButton = FindButtonInCanvas(_shopScreenButtonName, "Shop");
+        if (shopButton != null)
         {
-            Button button = buttonObj.GetComponent<Button>();
-            if (button != null)
-            {
-                button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(ShowAd);
-                return button;
-            }
+            SetupButton(shopButton);
+            buttons.Add(shopButton);
         }
 
+        return buttons.ToArray();
+    }
+
+    private Button FindButtonInCanvas(string buttonName, string canvasName)
+    {
         Button[] allButtons = FindObjectsOfType<Button>(true);
-        string buttonNameLower = _buttonName.ToLower();
+        string buttonNameLower = buttonName.ToLower();
+        string canvasNameLower = canvasName.ToLower();
+
         foreach (Button btn in allButtons)
         {
-            if (btn != null)
+            if (btn == null) continue;
+
+            if (btn.name.ToLower().Contains(buttonNameLower))
             {
-                string btnNameLower = btn.name.ToLower();
-                if (btn.name == _buttonName || btn.name == "WatchAd" ||
-                    btnNameLower.Contains("watchad") || btnNameLower.Contains("reward"))
+                Transform parent = btn.transform.parent;
+                while (parent != null)
                 {
-                    btn.onClick.RemoveAllListeners();
-                    btn.onClick.AddListener(ShowAd);
-                    return btn;
+                    if (parent.name.ToLower().Contains(canvasNameLower))
+                    {
+                        return btn;
+                    }
+                    parent = parent.parent;
                 }
             }
         }
 
         return null;
+    }
+
+    private void SetupButton(Button button)
+    {
+        if (button != null)
+        {
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(ShowAd);
+        }
     }
 
     public void RefreshButtonVisibility()
