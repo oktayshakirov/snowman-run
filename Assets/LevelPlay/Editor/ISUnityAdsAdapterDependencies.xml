@@ -17,5 +17,10 @@
         <source>https://github.com/CocoaPods/Specs</source>
       </sources>
     </iosPod>
+    <iosPod name="UnityAds" version="4.16.3">
+      <sources>
+        <source>https://github.com/CocoaPods/Specs</source>
+      </sources>
+    </iosPod>
   </iosPods>
 </dependencies>

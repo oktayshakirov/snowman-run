@@ -29,6 +29,21 @@ public class StartScreenManager : MonoBehaviour
         ShowStartScreen();
     }
 
+    private void OnEnable()
+    {
+        WalletManager.OnCoinsChanged += HandleCoinsChanged;
+    }
+
+    private void OnDisable()
+    {
+        WalletManager.OnCoinsChanged -= HandleCoinsChanged;
+    }
+
+    private void HandleCoinsChanged(int totalCoins)
+    {
+        UpdateUI();
+    }
+
     public void ShowStartScreen()
     {
         startScreenCanvas.SetActive(true);
@@ -114,6 +129,6 @@ public class StartScreenManager : MonoBehaviour
         int totalCoins = WalletManager.GetTotalCoins();
         totalCoinsText.text = $"{totalCoins}";
         int currentLevel = PlayerPrefs.GetInt("UnlockedLevels", 1);
-        currentLevelText.text = $"Level: {currentLevel}";
+        currentLevelText.text = $"Level {currentLevel}";
     }
 }

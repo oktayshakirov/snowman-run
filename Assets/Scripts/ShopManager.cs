@@ -48,16 +48,6 @@ public class ShopManager : MonoBehaviour
         Instance = this;
     }
 
-    private void OnEnable()
-    {
-        WalletManager.OnCoinsChanged += HandleCoinsChanged;
-    }
-
-    private void OnDisable()
-    {
-        WalletManager.OnCoinsChanged -= HandleCoinsChanged;
-    }
-
     private void HandleCoinsChanged(int totalCoins)
     {
         UpdateUI();
@@ -65,11 +55,17 @@ public class ShopManager : MonoBehaviour
 
     private void Start()
     {
+        WalletManager.OnCoinsChanged += HandleCoinsChanged;
         boostersTabButton.onClick.AddListener(() => ShowBoostersTab());
         itemsTabButton.onClick.AddListener(() => ShowItemsTab());
 
         ShowItemsTab();
         UpdateUI();
+    }
+
+    private void OnDestroy()
+    {
+        WalletManager.OnCoinsChanged -= HandleCoinsChanged;
     }
 
     private void UpdateUI()
@@ -78,7 +74,7 @@ public class ShopManager : MonoBehaviour
         totalCoinsText.text = $"{totalCoins}";
 
         int currentLevel = PlayerPrefs.GetInt("UnlockedLevels", 1);
-        currentLevelText.text = $"Level: {currentLevel}";
+        currentLevelText.text = $"Level {currentLevel}";
     }
 
     public void ShowBoostersTab()
@@ -173,5 +169,6 @@ public class ShopManager : MonoBehaviour
     public void OpenShop()
     {
         shopCanvas.SetActive(true);
+        UpdateUI();
     }
 }

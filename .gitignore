@@ -89,5 +89,8 @@ upload_certificate.pem
 *.xcodeproj
 *.ipa
 
+# Ignore iOS build directory
+iOS/
+
 # Ignore the results of builds
 [Bb]uilds/
