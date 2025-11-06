@@ -163,8 +163,11 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
         {
             if (button != null)
             {
-                button.gameObject.SetActive(true);
-                button.interactable = _adLoaded;
+                button.gameObject.SetActive(_adLoaded);
+                if (_adLoaded)
+                {
+                    button.interactable = true;
+                }
             }
         }
     }
