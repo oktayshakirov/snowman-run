@@ -12,8 +12,8 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     [SerializeField] private string _iOsAdUnitId = "Rewarded_iOS";
     private string _adUnitId;
 
-    [Header("Optional UI")]
-    [SerializeField] private Button _showAdButton;
+    [Header("Button Name")]
+    [SerializeField] private string _buttonName = "WatchAd";
 
     [Header("Retry Settings")]
     [SerializeField] private float _retryDelay = 3f;
@@ -69,17 +69,14 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
 
         _isLoading = true;
         _retryCount = 0;
-        Debug.Log($"Loading Rewarded Ad: {_adUnitId}");
         Advertisement.Load(_adUnitId, this);
     }
 
     public void OnUnityAdsAdLoaded(string adUnitId)
     {
-        Debug.Log($"Rewarded Ad Loaded: {adUnitId}");
         _adLoaded = true;
         _isLoading = false;
         _retryCount = 0;
-
         UpdateButtonVisibility();
     }
 
@@ -92,12 +89,10 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
         if (_retryCount < _maxRetries)
         {
             _retryCount++;
-            Debug.Log($"Retrying to load ad (attempt {_retryCount}/{_maxRetries})...");
             StartCoroutine(RetryLoadAd());
         }
         else
         {
-            Debug.LogWarning("Max retries reached. Will retry later.");
             _retryCount = 0;
             StartCoroutine(RetryLoadAdAfterDelay(_retryDelay * 2));
         }
@@ -119,7 +114,6 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     {
         if (!_adLoaded)
         {
-            Debug.Log("Rewarded ad not ready yet. Loading now...");
             if (!_isLoading && !IsAnyAdShowing())
             {
                 LoadAd();
@@ -129,18 +123,14 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
 
         if (_isShowing || IsAnyAdShowing())
         {
-            Debug.Log("Another ad is currently showing. Please wait.");
             return;
         }
 
-        Debug.Log($"Showing Rewarded Ad: {_adUnitId}");
         _isShowing = true;
         _adLoaded = false;
-
         UpdateButtonVisibility();
 
         Advertisement.Show(_adUnitId, this);
-
         LoadAd();
     }
 
@@ -156,18 +146,65 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
 
     private bool IsAnyAdShowing()
     {
-        if (InterstitialAd.Instance != null && InterstitialAd.Instance.IsAdShowing())
-        {
-            return true;
-        }
-        return false;
+        return InterstitialAd.Instance != null && InterstitialAd.Instance.IsAdShowing();
     }
 
     private void UpdateButtonVisibility()
     {
-        if (_showAdButton != null)
+        Button button = FindButton();
+        if (button != null)
         {
-            _showAdButton.gameObject.SetActive(_adLoaded);
+            button.gameObject.SetActive(true);
+            button.interactable = _adLoaded;
+        }
+    }
+
+    private Button FindButton()
+    {
+        GameObject buttonObj = GameObject.Find(_buttonName);
+        if (buttonObj == null)
+        {
+            buttonObj = GameObject.Find("WatchAd") ?? GameObject.Find("RewardAd") ?? GameObject.Find("RewardedAd");
+        }
+
+        if (buttonObj != null)
+        {
+            Button button = buttonObj.GetComponent<Button>();
+            if (button != null)
+            {
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(ShowAd);
+                return button;
+            }
+        }
+
+        Button[] allButtons = FindObjectsOfType<Button>(true);
+        string buttonNameLower = _buttonName.ToLower();
+        foreach (Button btn in allButtons)
+        {
+            if (btn != null)
+            {
+                string btnNameLower = btn.name.ToLower();
+                if (btn.name == _buttonName || btn.name == "WatchAd" ||
+                    btnNameLower.Contains("watchad") || btnNameLower.Contains("reward"))
+                {
+                    btn.onClick.RemoveAllListeners();
+                    btn.onClick.AddListener(ShowAd);
+                    return btn;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void RefreshButtonVisibility()
+    {
+        UpdateButtonVisibility();
+
+        if (!_adLoaded && !_isLoading && Advertisement.isInitialized && !IsAnyAdShowing())
+        {
+            LoadAd();
         }
     }
 
@@ -175,19 +212,12 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     {
         Debug.LogError($"Error showing Rewarded Ad {adUnitId}: {error} - {message}");
         _isShowing = false;
-
         LoadAd();
     }
 
-    public void OnUnityAdsShowStart(string adUnitId)
-    {
-        Debug.Log("Rewarded ad started...");
-    }
+    public void OnUnityAdsShowStart(string adUnitId) { }
 
-    public void OnUnityAdsShowClick(string adUnitId)
-    {
-        Debug.Log("Rewarded ad clicked.");
-    }
+    public void OnUnityAdsShowClick(string adUnitId) { }
 
     public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
     {
@@ -195,12 +225,7 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
 
         if (showCompletionState == UnityAdsShowCompletionState.COMPLETED)
         {
-            Debug.Log("✅ User watched full ad — grant reward!");
             GrantReward();
-        }
-        else
-        {
-            Debug.Log("Ad not completed — no reward.");
         }
 
         LoadAd();

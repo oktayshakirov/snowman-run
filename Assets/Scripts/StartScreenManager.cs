@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class StartScreenManager : MonoBehaviour
 {
@@ -69,6 +70,19 @@ public class StartScreenManager : MonoBehaviour
         {
             previewCamera.ResetCameraPosition();
             previewCamera.MoveCameraToPreviewPosition();
+        }
+
+        StartCoroutine(RefreshRewardedAdButtonDelayed());
+    }
+
+    private IEnumerator RefreshRewardedAdButtonDelayed()
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+
+        if (RewardedAdButton.Instance != null)
+        {
+            RewardedAdButton.Instance.RefreshButtonVisibility();
         }
     }
 

@@ -40,13 +40,11 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
         }
 
         _isLoading = true;
-        Debug.Log("Loading Interstitial Ad: " + _adUnitId);
         Advertisement.Load(_adUnitId, this);
     }
 
     public void OnUnityAdsAdLoaded(string adUnitId)
     {
-        Debug.Log("Interstitial Ad Loaded: " + adUnitId);
         _adLoaded = true;
         _isLoading = false;
 
@@ -58,7 +56,7 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
 
     public void OnUnityAdsFailedToLoad(string adUnitId, UnityAdsLoadError error, string message)
     {
-        Debug.LogError($"Failed to load Interstitial Ad {adUnitId}: {error.ToString()} - {message}");
+        Debug.LogError($"Failed to load Interstitial Ad {adUnitId}: {error} - {message}");
         _isLoading = false;
     }
 
@@ -66,23 +64,18 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     {
         if (!_adLoaded)
         {
-            Debug.Log("Interstitial ad not loaded yet.");
             LoadAd();
             return;
         }
 
         if (_isShowing || IsAnyAdShowing())
         {
-            Debug.Log("Another ad is already showing.");
             return;
         }
 
-        Debug.Log("Showing Interstitial Ad: " + _adUnitId);
         _isShowing = true;
         _adLoaded = false;
-
         NotifyRewardedAdToReload();
-
         Advertisement.Show(_adUnitId, this);
     }
 
@@ -96,24 +89,17 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
 
     public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
     {
-        Debug.LogError($"Error showing Interstitial Ad {adUnitId}: {error.ToString()} - {message}");
+        Debug.LogError($"Error showing Interstitial Ad {adUnitId}: {error} - {message}");
         _isShowing = false;
         NotifyRewardedAdToReload();
     }
 
-    public void OnUnityAdsShowStart(string adUnitId)
-    {
-        Debug.Log("Interstitial ad started...");
-    }
+    public void OnUnityAdsShowStart(string adUnitId) { }
 
-    public void OnUnityAdsShowClick(string adUnitId)
-    {
-        Debug.Log("Interstitial ad clicked.");
-    }
+    public void OnUnityAdsShowClick(string adUnitId) { }
 
     public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
     {
-        Debug.Log($"Interstitial ad completed: {showCompletionState}");
         _isShowing = false;
         NotifyRewardedAdToReload();
     }
@@ -125,10 +111,6 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
 
     private bool IsAnyAdShowing()
     {
-        if (RewardedAdButton.Instance != null && RewardedAdButton.Instance.IsAdShowing())
-        {
-            return true;
-        }
-        return false;
+        return RewardedAdButton.Instance != null && RewardedAdButton.Instance.IsAdShowing();
     }
 }

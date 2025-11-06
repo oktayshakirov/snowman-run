@@ -8369,7 +8369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RewardedAdButton
   _androidAdUnitId: Rewarded_Android
   _iOsAdUnitId: Rewarded_iOS
-  _showAdButton: {fileID: 1087325235}
+  _buttonName: WatchAd
   _retryDelay: 3
   _maxRetries: 5
 --- !u!1 &681863018
@@ -13439,7 +13439,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1087325234
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19369,7 +19369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e73eeb043db48be809b935d73392d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iOSGameId: 5755676
+  _androidGameId: 5755677
   _testMode: 0
   splashScreenCanvas: {fileID: 1508416501}
   splashScreenAnimator: {fileID: 1508416504}
