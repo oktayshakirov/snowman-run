@@ -77,6 +77,11 @@ TestResults/
 node_modules/
 .yarn/
 
+# RevenueCat public SDK keys (generated from .env — do not commit)
+.env
+Assets/StreamingAssets/revenuecat_keys.json
+Assets/StreamingAssets/revenuecat_keys.json.meta
+
 # Ignore signing keys and certificates
 upload.keystore
 upload_certificate.pem

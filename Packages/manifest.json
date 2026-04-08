@@ -1,5 +1,20 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.openupm",
+        "com.revenuecat.purchases-unity",
+        "com.revenuecat.purchases-ui-unity",
+        "com.google.external-dependency-manager"
+      ]
+    }
+  ],
   "dependencies": {
+    "com.google.external-dependency-manager": "1.2.187",
+    "com.revenuecat.purchases-unity": "8.9.0",
+    "com.revenuecat.purchases-ui-unity": "8.9.0",
     "com.unity.2d.animation": "12.0.2",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.spriteshape": "12.0.1",

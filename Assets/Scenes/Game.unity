@@ -18928,6 +18928,7 @@ MonoBehaviour:
   - {fileID: 479696358}
   itemTypes: 02000000020000000200000002000000020000000200000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000001000000010000000100000001000000010000000100000000000000000000000000000000000000000000000000000000000000020000000200000002000000020000000200000002000000020000000200000002000000030000000300000003000000
   boosters:
+  - {fileID: 11400000, guid: d9e0f7a106a7f456a8f083a6777bf733, type: 2}
   - {fileID: 11400000, guid: e42ad3b67049e104283e8c1ffeb4b122, type: 2}
   - {fileID: 11400000, guid: 48df6bf8033abcb4cb9589ee19270f9b, type: 2}
   - {fileID: 11400000, guid: 2dd42f8a01b0041e2b34acad002ac48e, type: 2}
@@ -27040,6 +27041,94 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1457834580}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1666756859
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1666756860}
+  - component: {fileID: 1666756863}
+  - component: {fileID: 1666756862}
+  - component: {fileID: 1666756861}
+  m_Layer: 0
+  m_Name: RevenueCatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1666756860
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666756859}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 508.6424, y: 1405.7034, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1666756861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666756859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a7d3294f2bcb4324b866f69453b468e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevenueCatManager
+  offeringIdentifier: 
+  shopPaywallDelaySeconds: 1
+--- !u!114 &1666756862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666756859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5e1a83f3bc1d4543b6cfde23f3018af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SnowmanPurchasesListener
+--- !u!114 &1666756863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1666756859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98e401cc5a2ed4a7ba02f2e6ef35c6f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: revenuecat.purchases-unity::Purchases
+  useRuntimeSetup: 0
+  revenueCatAPIKeyApple: 
+  revenueCatAPIKeyGoogle: 
+  revenueCatAPIKeyAmazon: 
+  useAmazon: 0
+  autoSyncPurchases: 1
+  appUserID: 
+  productIdentifiers: []
+  listener: {fileID: 0}
+  userDefaultsSuiteName: 
+  purchasesAreCompletedBy: 0
+  storeKitVersion: 2
+  shouldShowInAppMessagesAutomatically: 1
+  entitlementVerificationMode: 1
+  pendingTransactionsForPrepaidPlansEnabled: 0
+  proxyURL: 
 --- !u!1 &1667403185
 GameObject:
   m_ObjectHideFlags: 0
@@ -34184,6 +34273,7 @@ SceneRoots:
   - {fileID: 41877086}
   - {fileID: 126221220}
   - {fileID: 681303421}
+  - {fileID: 1666756860}
   - {fileID: 421472498}
   - {fileID: 863502732}
   - {fileID: 489977110}

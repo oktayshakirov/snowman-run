@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using TMPro;
 using System.Collections;
 
@@ -164,7 +164,8 @@ public class GameManager : MonoBehaviour
         gameScreenCanvas.SetActive(false);
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Crash);
         StartCoroutine(DelayedStartScreen());
-        InterstitialAd.Instance.LoadAd();
+        if (InterstitialAd.Instance != null && !Boosters.IsGameOverInterstitialSuppressed())
+            InterstitialAd.Instance.LoadAd();
     }
 
     private void UpdateSpeedUI()

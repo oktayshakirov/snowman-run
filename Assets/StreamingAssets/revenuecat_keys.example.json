@@ -1,0 +1,4 @@
+{
+  "ios": "appl_your_ios_public_sdk_key",
+  "android": "goog_your_android_public_sdk_key"
+}

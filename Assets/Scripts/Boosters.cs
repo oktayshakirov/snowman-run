@@ -5,6 +5,8 @@ public class Boosters : MonoBehaviour
 {
     public static Boosters Instance { get; private set; }
 
+    public const string GameOverInterstitialSuppressedKey = "SuppressGameOverInterstitial";
+
     [Header("Booster Settings")]
     [SerializeField] private float defaultGogglesFogReduction = 0.5f;
     [SerializeField] private float defaultGogglesDuration = 5f;
@@ -99,6 +101,18 @@ public class Boosters : MonoBehaviour
         Debug.Log($"Max speed upgraded to {MaxSpeed}!");
     }
 
+    public void EnableNoAdsBoost()
+    {
+        PlayerPrefs.SetInt(GameOverInterstitialSuppressedKey, 1);
+        PlayerPrefs.Save();
+        Debug.Log("No Ads: game over interstitials disabled (rewarded ads unchanged).");
+    }
+
+    public static bool IsGameOverInterstitialSuppressed()
+    {
+        return PlayerPrefs.GetInt(GameOverInterstitialSuppressedKey, 0) != 0;
+    }
+
     private void OnTimerEnd()
     {
         Debug.Log("Timer finished!");
@@ -154,6 +168,10 @@ public class Boosters : MonoBehaviour
 
             case BoosterData.BoosterType.MaxSpeed:
                 UpgradeMaxSpeed(boosterData.upgradeIncrement);
+                break;
+
+            case BoosterData.BoosterType.NoAds:
+                EnableNoAdsBoost();
                 break;
 
             default:

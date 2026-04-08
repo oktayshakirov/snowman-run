@@ -136,6 +136,9 @@ public class StartScreenManager : MonoBehaviour
             shopScreenCanvas.SetActive(true);
         }
         startScreenCanvas.SetActive(false);
+
+        if (RevenueCatManager.Instance != null)
+            RevenueCatManager.Instance.PresentCoinPaywallAfterShopOpened();
     }
 
     private void UpdateUI()

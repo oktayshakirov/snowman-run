@@ -77,6 +77,34 @@ public class ShopCard : MonoBehaviour
         actionButton.onClick.AddListener(UpgradeBooster);
     }
 
+    public void RefreshFromPrefs(PlayerCustomization pc)
+    {
+        if (boosterData != null && boostersController != null)
+        {
+            currentUpgradeLevel = PlayerPrefs.GetInt($"{boosterData.boosterName}_UpgradeLevel", 0);
+            UpdateBoosterUI();
+            return;
+        }
+
+        if (string.IsNullOrEmpty(itemName))
+            return;
+
+        playerCustomization = pc;
+        isPurchased = PlayerPrefs.GetInt($"Purchased_{itemName}", itemPrice == 0 ? 1 : 0) == 1;
+
+        if (playerCustomization != null)
+        {
+            UpdateButtonState(
+                playerCustomization.CurrentHatName,
+                playerCustomization.CurrentGogglesName,
+                playerCustomization.CurrentRideName,
+                playerCustomization.CurrentScarfName);
+        }
+        else
+        {
+            UpdateButtonState();
+        }
+    }
 
     private void UpgradeBooster()
     {
@@ -119,6 +147,7 @@ public class ShopCard : MonoBehaviour
 
         if (currentUpgradeLevel < boosterData.maxUpgrades)
         {
+            actionButton.interactable = true;
             int upgradeCost = boosterData.basePrice * (int)Mathf.Pow(2, currentUpgradeLevel);
             priceText.text = $"{upgradeCost}";
             actionButtonText.text = "Upgrade";

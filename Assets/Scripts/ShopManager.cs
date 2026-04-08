@@ -35,6 +35,9 @@ public class ShopManager : MonoBehaviour
     [Header("Player Customization")]
     [SerializeField] private PlayerCustomization playerCustomization;
 
+    private bool _itemsContentBuilt;
+    private bool _boostersContentBuilt;
+
     public enum ItemType
     {
         Hat = 0,
@@ -80,36 +83,70 @@ public class ShopManager : MonoBehaviour
     public void ShowBoostersTab()
     {
         SetTabActive(boostersTabButton, itemsTabButton, boostersContent, itemsContent);
-        LoadContent(boostersParent, boosters, boosterCardPrefab, SetupBoosterCard);
+        EnsureBoostersBuilt();
     }
 
     public void ShowItemsTab()
     {
         SetTabActive(itemsTabButton, boostersTabButton, itemsContent, boostersContent);
-        LoadContent(itemsParent, items, itemCardPrefab, SetupItemCard);
+        EnsureItemsBuilt();
     }
 
-    private void LoadContent<T>(Transform parent, T[] data, GameObject cardPrefab, System.Action<T, GameObject> setupCard)
+    private void EnsureItemsBuilt()
     {
-        foreach (Transform child in parent)
+        if (_itemsContentBuilt || items == null || items.Length == 0)
+            return;
+        if (itemCardPrefab == null)
         {
-            Destroy(child.gameObject);
-        }
-        if (data == null || data.Length == 0)
-        {
-            Debug.LogWarning("No data available to load content.");
+            Debug.LogError("Card prefab is not assigned!");
             return;
         }
-        foreach (var entry in data)
-        {
-            if (cardPrefab == null)
-            {
-                Debug.LogError("Card prefab is not assigned!");
-                return;
-            }
 
-            var card = Instantiate(cardPrefab, parent);
-            setupCard(entry, card);
+        foreach (string entry in items)
+        {
+            GameObject card = Instantiate(itemCardPrefab, itemsParent);
+            SetupItemCard(entry, card);
+        }
+
+        _itemsContentBuilt = true;
+        RewardedAdButton.Instance?.NotifyShopWatchAdUiMayExist();
+    }
+
+    private void EnsureBoostersBuilt()
+    {
+        if (_boostersContentBuilt || boosters == null || boosters.Length == 0)
+            return;
+        if (boosterCardPrefab == null)
+        {
+            Debug.LogError("Booster card prefab is not assigned!");
+            return;
+        }
+
+        foreach (BoosterData bd in boosters)
+        {
+            GameObject card = Instantiate(boosterCardPrefab, boostersParent);
+            SetupBoosterCard(bd, card);
+        }
+
+        _boostersContentBuilt = true;
+        RewardedAdButton.Instance?.NotifyShopWatchAdUiMayExist();
+    }
+
+    private void RefreshAllShopCardsFromPrefs()
+    {
+        RefreshChildrenShopCards(itemsParent);
+        RefreshChildrenShopCards(boostersParent);
+    }
+
+    private void RefreshChildrenShopCards(Transform parent)
+    {
+        if (parent == null)
+            return;
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            ShopCard card = parent.GetChild(i).GetComponent<ShopCard>();
+            if (card != null)
+                card.RefreshFromPrefs(playerCustomization);
         }
     }
 
@@ -170,5 +207,10 @@ public class ShopManager : MonoBehaviour
     {
         shopCanvas.SetActive(true);
         UpdateUI();
+        RefreshAllShopCardsFromPrefs();
+        RewardedAdButton.Instance?.NotifyShopWatchAdUiMayExist();
+
+        if (RevenueCatManager.Instance != null)
+            RevenueCatManager.Instance.PresentCoinPaywallAfterShopOpened();
     }
 }

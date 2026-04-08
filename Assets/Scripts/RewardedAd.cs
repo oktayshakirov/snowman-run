@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.Advertisements;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
 {
@@ -25,6 +24,11 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     private bool _isLoading = false;
     private bool _isShowing = false;
     private int _retryCount = 0;
+
+    private Button _cachedStartWatchButton;
+    private Button _cachedShopWatchButton;
+    private bool _shopWatchLocateIdle;
+    private bool _pendingShopWatchResolve;
 
     void Awake()
     {
@@ -158,66 +162,98 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
 
     private void UpdateAllButtons()
     {
-        Button[] buttons = FindAllRewardedAdButtons();
-        foreach (Button button in buttons)
+        ResolveRewardedWatchButtonsIfNeeded();
+
+        ApplyVisibilityToButton(_cachedStartWatchButton);
+        ApplyVisibilityToButton(_cachedShopWatchButton);
+    }
+
+    public void NotifyShopWatchAdUiMayExist()
+    {
+        _cachedShopWatchButton = null;
+        _pendingShopWatchResolve = true;
+        _shopWatchLocateIdle = false;
+    }
+
+    private void ApplyVisibilityToButton(Button button)
+    {
+        if (button == null)
+            return;
+
+        button.gameObject.SetActive(_adLoaded);
+        if (_adLoaded)
+            button.interactable = true;
+    }
+
+    private void ResolveRewardedWatchButtonsIfNeeded()
+    {
+        if (_cachedStartWatchButton == null || !_cachedStartWatchButton)
         {
-            if (button != null)
-            {
-                button.gameObject.SetActive(_adLoaded);
-                if (_adLoaded)
-                {
-                    button.interactable = true;
-                }
-            }
+            _cachedStartWatchButton = null;
+            _cachedShopWatchButton = null;
+            _shopWatchLocateIdle = false;
+            ScanWatchButtons(assignStart: true, assignShop: true);
+            if (_cachedShopWatchButton == null)
+                _shopWatchLocateIdle = true;
+            _pendingShopWatchResolve = false;
+            return;
+        }
+
+        bool shopGone = _cachedShopWatchButton == null || !_cachedShopWatchButton;
+        if (_pendingShopWatchResolve || (shopGone && !_shopWatchLocateIdle))
+        {
+            if (shopGone)
+                _cachedShopWatchButton = null;
+            ScanWatchButtons(assignStart: false, assignShop: true);
+            _shopWatchLocateIdle = _cachedShopWatchButton == null;
+            _pendingShopWatchResolve = false;
         }
     }
 
-    private Button[] FindAllRewardedAdButtons()
+    private void ScanWatchButtons(bool assignStart, bool assignShop)
     {
-        List<Button> buttons = new List<Button>();
+        string startBn = _startScreenButtonName.ToLower();
+        string shopBn = _shopScreenButtonName.ToLower();
+        const string startCv = "startscreen";
+        const string shopCv = "shop";
 
-        Button startButton = FindButtonInCanvas(_startScreenButtonName, "StartScreen");
-        if (startButton != null)
-        {
-            SetupButton(startButton);
-            buttons.Add(startButton);
-        }
-
-        Button shopButton = FindButtonInCanvas(_shopScreenButtonName, "Shop");
-        if (shopButton != null)
-        {
-            SetupButton(shopButton);
-            buttons.Add(shopButton);
-        }
-
-        return buttons.ToArray();
-    }
-
-    private Button FindButtonInCanvas(string buttonName, string canvasName)
-    {
         Button[] allButtons = FindObjectsOfType<Button>(true);
-        string buttonNameLower = buttonName.ToLower();
-        string canvasNameLower = canvasName.ToLower();
-
         foreach (Button btn in allButtons)
         {
-            if (btn == null) continue;
+            if (btn == null)
+                continue;
 
-            if (btn.name.ToLower().Contains(buttonNameLower))
+            string n = btn.name.ToLower();
+            if (assignStart && !n.Contains(startBn) && assignShop && !n.Contains(shopBn))
+                continue;
+            if (assignStart && !assignShop && !n.Contains(startBn))
+                continue;
+            if (!assignStart && assignShop && !n.Contains(shopBn))
+                continue;
+
+            bool underStart = false;
+            bool underShop = false;
+            for (Transform p = btn.transform.parent; p != null; p = p.parent)
             {
-                Transform parent = btn.transform.parent;
-                while (parent != null)
-                {
-                    if (parent.name.ToLower().Contains(canvasNameLower))
-                    {
-                        return btn;
-                    }
-                    parent = parent.parent;
-                }
+                string pn = p.name.ToLower();
+                if (pn.Contains(startCv))
+                    underStart = true;
+                if (pn.Contains(shopCv))
+                    underShop = true;
+            }
+
+            if (assignStart && n.Contains(startBn) && underStart && _cachedStartWatchButton == null)
+            {
+                _cachedStartWatchButton = btn;
+                SetupButton(btn);
+            }
+
+            if (assignShop && n.Contains(shopBn) && underShop && _cachedShopWatchButton == null)
+            {
+                _cachedShopWatchButton = btn;
+                SetupButton(btn);
             }
         }
-
-        return null;
     }
 
     private void SetupButton(Button button)
