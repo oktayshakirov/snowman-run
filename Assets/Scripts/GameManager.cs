@@ -34,6 +34,20 @@ public class GameManager : MonoBehaviour
 
     private bool useKmh = true;
 
+    private const float SpeedUiInterval = 0.1f;
+    private float nextSpeedUiTime;
+    private float lastSpeedUiTime;
+
+    private GroundSpawner groundSpawner;
+    private CameraFollow cameraFollow;
+    // The scene has one repeater per side of the road; every one must be reset.
+    private MountainRepeater[] mountainRepeaters;
+
+    // Tracked so a soft reset can stop them; without a scene reload, stale
+    // coroutines from the previous run would keep running and stack up.
+    private Coroutine initialAccelerationRoutine;
+    private Coroutine speedIncreaseRoutine;
+
     private void Awake()
     {
         if (inst == null)
@@ -44,10 +58,18 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // Mobile platforms default to 30 FPS unless a target is set explicitly.
+        Application.targetFrameRate = 60;
+        UIAnimatorAutoDisable.AttachToFinishedUIAnimators();
     }
 
     private void Start()
     {
+        groundSpawner = FindFirstObjectByType<GroundSpawner>();
+        cameraFollow = FindFirstObjectByType<CameraFollow>(FindObjectsInactive.Include);
+        mountainRepeaters = FindObjectsByType<MountainRepeater>(FindObjectsSortMode.None);
+
         playerCustomization.LoadCustomization();
         totalCoins = WalletManager.GetTotalCoins();
         currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
@@ -66,8 +88,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!isGameOver && !isGamePaused)
+        // Updating the text every frame allocates a string per frame; ~10 Hz is
+        // visually identical and removes the GC churn.
+        if (!isGameOver && !isGamePaused && Time.time >= nextSpeedUiTime)
         {
+            nextSpeedUiTime = Time.time + SpeedUiInterval;
             UpdateSpeedUI();
         }
     }
@@ -81,8 +106,15 @@ public class GameManager : MonoBehaviour
         playerMovement.gameObject.SetActive(true);
         playerMovement.InitializeSpeed(baseSpeed);
         gameScreenCanvas.SetActive(true);
-        StartCoroutine(InitialAcceleration());
-        StartCoroutine(IncreaseSpeedOverTime());
+        RestartSpeedRoutines();
+    }
+
+    private void RestartSpeedRoutines()
+    {
+        if (initialAccelerationRoutine != null) StopCoroutine(initialAccelerationRoutine);
+        if (speedIncreaseRoutine != null) StopCoroutine(speedIncreaseRoutine);
+        initialAccelerationRoutine = StartCoroutine(InitialAcceleration());
+        speedIncreaseRoutine = StartCoroutine(IncreaseSpeedOverTime());
     }
 
     public void IncrementScore()
@@ -106,8 +138,7 @@ public class GameManager : MonoBehaviour
         playerMovement.InitializeSpeed(levelSpeed);
         coinsText.text = score.ToString();
         playerMovement.gameObject.SetActive(true);
-        StartCoroutine(InitialAcceleration());
-        StartCoroutine(IncreaseSpeedOverTime());
+        RestartSpeedRoutines();
     }
 
     public void PauseGame()
@@ -136,8 +167,56 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
         pauseScreen.SetActive(false);
         gameScreenCanvas.SetActive(false);
-        startScreenCanvas.SetActive(true);
         playerMovement.EndGame();
+        ResetRun();
+
+        if (StartScreenManager.Instance != null)
+        {
+            StartScreenManager.Instance.ShowStartScreen();
+        }
+        else
+        {
+            startScreenCanvas.SetActive(true);
+        }
+    }
+
+    // Soft reset instead of reloading the scene: puts the player, tiles, fog and
+    // camera back to their initial state so a new run can start instantly.
+    private void ResetRun()
+    {
+        score = 0;
+        displayedSpeedLerp = 0f;
+        coinsText.text = "0";
+
+        if (initialAccelerationRoutine != null) StopCoroutine(initialAccelerationRoutine);
+        if (speedIncreaseRoutine != null) StopCoroutine(speedIncreaseRoutine);
+
+        if (Boosters.Instance != null)
+        {
+            Boosters.Instance.CancelGoggles();
+        }
+
+        playerMovement.ResetForNewRun();
+
+        if (groundSpawner != null)
+        {
+            groundSpawner.ResetRun();
+        }
+
+        foreach (MountainRepeater repeater in mountainRepeaters)
+        {
+            repeater.ResetRun();
+        }
+
+        if (Fog.Instance != null)
+        {
+            Fog.Instance.InitializeFog();
+        }
+
+        if (cameraFollow != null)
+        {
+            cameraFollow.ResetZoom();
+        }
     }
 
     public void RefreshSpeedUnit()
@@ -171,7 +250,9 @@ public class GameManager : MonoBehaviour
     private void UpdateSpeedUI()
     {
         float playerSpeed = playerMovement.GetSpeed();
-        displayedSpeedLerp = Mathf.Lerp(displayedSpeedLerp, playerSpeed, Time.deltaTime * speedLerpRate);
+        float elapsed = Mathf.Max(Time.time - lastSpeedUiTime, Time.deltaTime);
+        lastSpeedUiTime = Time.time;
+        displayedSpeedLerp = Mathf.Lerp(displayedSpeedLerp, playerSpeed, elapsed * speedLerpRate);
         float convertedSpeed = useKmh ? displayedSpeedLerp * 1f : displayedSpeedLerp * 0.7f;
         string unit = useKmh ? "km/h" : "mph";
         speedText.text = $"{convertedSpeed:F1} {unit}";
@@ -232,6 +313,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator DelayedStartScreen()
     {
         yield return new WaitForSeconds(2f);
+        ResetRun();
         if (StartScreenManager.Instance != null)
         {
             StartScreenManager.Instance.ShowStartScreen();

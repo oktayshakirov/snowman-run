@@ -39,9 +39,6 @@ public class ShopManager : MonoBehaviour
     [Header("Performance")]
     [SerializeField] private int cardsPerFrame = 6;
 
-    private Animator _openAnimator;
-    private float _openAnimationLength = 1.5f;
-
     private int _itemCardsBuilt;
     private int _boosterCardsBuilt;
     private bool _itemsBuildRunning;
@@ -58,13 +55,6 @@ public class ShopManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
-        _openAnimator = shopCanvas.GetComponent<Animator>();
-        if (_openAnimator != null && _openAnimator.runtimeAnimatorController != null)
-        {
-            foreach (AnimationClip clip in _openAnimator.runtimeAnimatorController.animationClips)
-                _openAnimationLength = Mathf.Max(_openAnimationLength, clip.length);
-        }
 
         IsolateShopCanvas();
         OptimizeScrollMasks();
@@ -88,13 +78,6 @@ public class ShopManager : MonoBehaviour
     {
         UpdateUI();
         RefreshAllShopCardsFromPrefs();
-        RewardedAdButton.Instance?.NotifyShopWatchAdUiMayExist();
-
-        if (_openAnimator != null)
-        {
-            _openAnimator.enabled = true;
-            StartCoroutine(DisableAnimatorWhenDone());
-        }
 
         if (_itemCardsBuilt > 0 && items != null && _itemCardsBuilt < items.Length)
             EnsureItemsBuilt();
@@ -138,15 +121,6 @@ public class ShopManager : MonoBehaviour
             if (maskObject.GetComponent<RectMask2D>() == null)
                 maskObject.AddComponent<RectMask2D>();
         }
-    }
-
-    // Once the open animation finishes, a still-enabled Animator keeps writing the
-    // same values every frame, dirtying the canvas and forcing constant rebuilds.
-    private IEnumerator DisableAnimatorWhenDone()
-    {
-        yield return new WaitForSecondsRealtime(_openAnimationLength + 0.1f);
-        if (_openAnimator != null)
-            _openAnimator.enabled = false;
     }
 
     private void UpdateUI()
@@ -215,7 +189,6 @@ public class ShopManager : MonoBehaviour
         }
 
         _itemsBuildRunning = false;
-        RewardedAdButton.Instance?.NotifyShopWatchAdUiMayExist();
     }
 
     private IEnumerator BuildBoosterCards()
@@ -235,7 +208,6 @@ public class ShopManager : MonoBehaviour
         }
 
         _boostersBuildRunning = false;
-        RewardedAdButton.Instance?.NotifyShopWatchAdUiMayExist();
     }
 
     private void RefreshAllShopCardsFromPrefs()

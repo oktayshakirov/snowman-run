@@ -19,6 +19,12 @@ public class CameraFollow : MonoBehaviour
         initialOffset = defaultOffset * zoomFactor;
     }
 
+    // Replays the intro zoom on the next run (soft reset instead of scene reload).
+    public void ResetZoom()
+    {
+        elapsedTime = 0f;
+    }
+
     private void LateUpdate()
     {
         if (player == null) return;

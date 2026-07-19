@@ -15,29 +15,61 @@ public class GroundTile : MonoBehaviour
     [SerializeField] private float laneOffset = 3f;
 
     private HashSet<Vector2Int> usedPositions = new HashSet<Vector2Int>();
+    private int initialChildCount;
 
     private const float RampZSize = 20f;
     private const float ObstacleZSize = 10f;
     private const float CoinZSize = 1f;
     private const float GogglesZSize = 1f;
 
+    private void Awake()
+    {
+        initialChildCount = transform.childCount;
+    }
+
     public void Initialize(GroundSpawner spawner)
     {
         groundSpawner = spawner;
+    }
+
+    // Called when this tile is taken from the pool for reuse.
+    public void PrepareForReuse()
+    {
+        usedPositions.Clear();
+        CancelInvoke(nameof(DeactivateTile));
+    }
+
+    // Destroys the coins/obstacles/ramps spawned onto this tile, keeping only the
+    // prefab's original children. Called while the tile is inactive.
+    public void ClearSpawnedItems()
+    {
+        for (int i = transform.childCount - 1; i >= initialChildCount; i--)
+        {
+            GameObject item = transform.GetChild(i).gameObject;
+            item.SetActive(false);
+            Destroy(item);
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (groundSpawner != null)
         {
-            groundSpawner.SpawnTile(true);
+            groundSpawner.RequestNextTile();
         }
         Invoke(nameof(DeactivateTile), 3f);
     }
 
     private void DeactivateTile()
     {
-        gameObject.SetActive(false);
+        if (groundSpawner != null)
+        {
+            groundSpawner.RecycleTile(this);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void SpawnObstacle()

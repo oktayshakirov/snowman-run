@@ -69,6 +69,10 @@ public class Fog : MonoBehaviour
 
     private void SmoothFogTransition()
     {
-        RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, currentFogDensity, Time.deltaTime * fogLerpSpeed);
+        float current = RenderSettings.fogDensity;
+        if (Mathf.Abs(current - currentFogDensity) < 0.00005f)
+            return;
+
+        RenderSettings.fogDensity = Mathf.Lerp(current, currentFogDensity, Time.deltaTime * fogLerpSpeed);
     }
 }

@@ -11,6 +11,22 @@ public class PlayerCrash : MonoBehaviour
 
     private bool isExploded = false;
 
+    // Parts do not sit at local zero; their authored offsets must be cached so
+    // ResetSnowman can restore the exact original pose after an explosion.
+    private Vector3[] initialLocalPositions;
+    private Quaternion[] initialLocalRotations;
+
+    void Awake()
+    {
+        initialLocalPositions = new Vector3[snowmanParts.Length];
+        initialLocalRotations = new Quaternion[snowmanParts.Length];
+        for (int i = 0; i < snowmanParts.Length; i++)
+        {
+            initialLocalPositions[i] = snowmanParts[i].transform.localPosition;
+            initialLocalRotations[i] = snowmanParts[i].transform.localRotation;
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Obstacle") && !isExploded)
@@ -59,18 +75,21 @@ public class PlayerCrash : MonoBehaviour
     public void ResetSnowman()
     {
         isExploded = false;
-        foreach (GameObject part in snowmanParts)
+        for (int i = 0; i < snowmanParts.Length; i++)
         {
+            GameObject part = snowmanParts[i];
             Rigidbody rb = part.GetComponent<Rigidbody>();
             if (rb != null)
             {
+                if (!rb.isKinematic)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                }
                 rb.isKinematic = true;
-                rb.linearVelocity = Vector3.zero;
-
-                rb.angularVelocity = Vector3.zero;
             }
-            part.transform.localPosition = Vector3.zero;
-            part.transform.localRotation = Quaternion.identity;
+            part.transform.localPosition = initialLocalPositions[i];
+            part.transform.localRotation = initialLocalRotations[i];
         }
     }
 

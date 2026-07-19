@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+using System.Collections.Generic;
 
 public class GroundSpawner : MonoBehaviour
 {
@@ -10,35 +11,95 @@ public class GroundSpawner : MonoBehaviour
     [SerializeField] private float gogglesSpawnProbability = 0.03f;
 
     private Vector3 nextSpawnPoint;
+    private Vector3 initialSpawnPoint;
     private bool gogglesActive = false;
+    private bool isResetting = false;
+
+    private readonly Queue<GroundTile> tilePool = new Queue<GroundTile>();
+
+    // Trigger-exit driven spawning; ignored while a reset is recycling tiles,
+    // since deactivating a tile under the player can fire its OnTriggerExit.
+    public void RequestNextTile()
+    {
+        if (isResetting)
+            return;
+
+        SpawnTile(true);
+    }
 
     public void SpawnTile(bool spawnItems)
     {
-        GameObject temp = Instantiate(groundTile, nextSpawnPoint, Quaternion.identity, transform);
-        temp.GetComponent<GroundTile>().Initialize(this);
-        nextSpawnPoint = temp.transform.GetChild(1).transform.position;
+        GroundTile tile;
+        if (tilePool.Count > 0)
+        {
+            tile = tilePool.Dequeue();
+            tile.PrepareForReuse();
+            tile.transform.position = nextSpawnPoint;
+            tile.gameObject.SetActive(true);
+        }
+        else
+        {
+            GameObject temp = Instantiate(groundTile, nextSpawnPoint, Quaternion.identity, transform);
+            tile = temp.GetComponent<GroundTile>();
+            tile.Initialize(this);
+        }
+
+        nextSpawnPoint = tile.transform.GetChild(1).position;
 
         if (spawnItems && Application.isPlaying)
         {
-            var groundTileScript = temp.GetComponent<GroundTile>();
-
             if (Random.value < obstacleSpawnProbability)
             {
-                groundTileScript.SpawnObstacle();
+                tile.SpawnObstacle();
             }
             if (Random.value < rampSpawnProbability)
             {
-                groundTileScript.SpawnRamps();
+                tile.SpawnRamps();
             }
             if (Random.value < coinSpawnProbability)
             {
-                groundTileScript.SpawnCoins();
+                tile.SpawnCoins();
             }
             if (!gogglesActive && Random.value < gogglesSpawnProbability)
             {
-                groundTileScript.SpawnGoggles();
+                tile.SpawnGoggles();
             }
         }
+    }
+
+    public void RecycleTile(GroundTile tile)
+    {
+        if (!tile.gameObject.activeSelf)
+            return;
+
+        tile.gameObject.SetActive(false);
+        tile.ClearSpawnedItems();
+        tilePool.Enqueue(tile);
+    }
+
+    // Recycles every active tile and rebuilds the starting stretch, so a new run
+    // can begin without reloading the scene.
+    public void ResetRun()
+    {
+        isResetting = true;
+
+        foreach (Transform child in transform)
+        {
+            GroundTile tile = child.GetComponent<GroundTile>();
+            if (tile != null)
+            {
+                RecycleTile(tile);
+            }
+        }
+
+        gogglesActive = false;
+        nextSpawnPoint = initialSpawnPoint;
+        for (int i = 0; i < initialTiles; i++)
+        {
+            SpawnTile(i >= 3);
+        }
+
+        isResetting = false;
     }
 
     public void SetGogglesActive(bool isActive)
@@ -79,6 +140,7 @@ public class GroundSpawner : MonoBehaviour
         if (Application.isPlaying)
         {
             ClearTiles();
+            initialSpawnPoint = nextSpawnPoint;
             for (int i = 0; i < initialTiles; i++)
             {
                 SpawnTile(i >= 3);

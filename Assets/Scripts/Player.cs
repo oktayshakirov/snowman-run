@@ -1,10 +1,11 @@
 ﻿﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class Player : MonoBehaviour
 {
     private bool alive = true;
+    private Vector3 initialPosition;
 
     [Header("Speed Settings")]
     [SerializeField] private float speed;
@@ -39,6 +40,12 @@ public class Player : MonoBehaviour
     private Vector2 endTouchPosition;
     private float swipeThreshold = 50f;
 
+    [Header("Tap Jump Settings")]
+    [SerializeField] private float tapMoveThreshold = 30f;
+    [SerializeField] private float maxTapDuration = 0.25f;
+    private float touchStartTime;
+    private bool touchStartedOverUI;
+
     [Header("Lean Settings")]
     [SerializeField] private float leanAngle = 15f;
     [SerializeField] private float leanSpeed = 10f;
@@ -52,6 +59,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float arrowBoostDuration = 2.0f;
     private bool speedBoostActive = false;
     private bool resumeGame = false;
+
+    private void Awake()
+    {
+        initialPosition = transform.position;
+    }
 
     private void Start()
     {
@@ -154,6 +166,8 @@ public class Player : MonoBehaviour
             if (touch.phase == TouchPhase.Began)
             {
                 startTouchPosition = touch.position;
+                touchStartTime = Time.unscaledTime;
+                touchStartedOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId);
             }
             else if (touch.phase == TouchPhase.Ended)
             {
@@ -176,6 +190,14 @@ public class Player : MonoBehaviour
                     }
                 }
                 else if (Mathf.Abs(swipe.y) > swipeThreshold && swipe.y > 0 && canJump)
+                {
+                    Jump();
+                }
+                else if (!touchStartedOverUI
+                         && Mathf.Abs(swipe.x) < tapMoveThreshold
+                         && Mathf.Abs(swipe.y) < tapMoveThreshold
+                         && Time.unscaledTime - touchStartTime <= maxTapDuration
+                         && canJump)
                 {
                     Jump();
                 }
@@ -362,28 +384,48 @@ public class Player : MonoBehaviour
         {
             GameManager.inst.OnPlayerCrash();
         }
-
-        Invoke(nameof(Restart), 2f);
     }
 
     public void EndGame()
     {
-        if (!alive) return;
-
         alive = false;
         speed = 0f;
-
-        if (GameManager.inst != null)
-        {
-            GameManager.inst.OnPlayerCrash();
-        }
-
-        Restart();
     }
 
-    private void Restart()
+    // Restores the player to its initial state so a new run can start without
+    // reloading the scene.
+    public void ResetForNewRun()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StopAllCoroutines();
+
+        alive = true;
+        speed = 0f;
+        currentLane = 1;
+        isMoving = false;
+        onRamp = false;
+        speedBoostActive = false;
+        resumeGame = false;
+        canJump = true;
+        controlsEnabled = false;
+        targetRotation = Quaternion.identity;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        transform.SetPositionAndRotation(initialPosition, Quaternion.identity);
+        rb.position = initialPosition;
+
+        if (leftHand != null) leftHand.localRotation = Quaternion.identity;
+        if (rightHand != null) rightHand.localRotation = Quaternion.identity;
+        if (playerGoggles != null) playerGoggles.SetActive(false);
+
+        PlayerCrash crash = GetComponent<PlayerCrash>();
+        if (crash != null)
+        {
+            crash.ResetSnowman();
+        }
+
+        enabled = true;
+        StartCoroutine(EnableControlsAfterDelay(0.3f));
     }
 
     public float GetSpeed()

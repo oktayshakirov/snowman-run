@@ -42,6 +42,19 @@ public class MountainRepeater : MonoBehaviour
         }
     }
 
+    // Rebuilds the mountains around the start position for a new run; without
+    // this, a soft reset leaves them parked far ahead where the last run ended.
+    public void ResetRun()
+    {
+        foreach (GameObject mountain in activeMountains)
+        {
+            RecycleMountain(mountain);
+        }
+        activeMountains.Clear();
+
+        InitializeMountains();
+    }
+
     private void CheckAndUpdateMountains()
     {
         if (playerTransform.position.z > activeMountains[activeMountains.Count - 1].transform.position.z - mountainLength * 10)

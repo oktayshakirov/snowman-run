@@ -8369,8 +8369,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RewardedAdButton
   _androidAdUnitId: Rewarded_Android
   _iOsAdUnitId: Rewarded_iOS
-  _startScreenButtonName: WatchAd
-  _shopScreenButtonName: WatchAd
+  _startScreenWatchButton: {fileID: 1087325235}
+  _shopScreenWatchButton: {fileID: 499217368}
   _retryDelay: 3
   _maxRetries: 5
 --- !u!1 &681863018

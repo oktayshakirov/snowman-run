@@ -113,6 +113,29 @@ public class Boosters : MonoBehaviour
         return PlayerPrefs.GetInt(GameOverInterstitialSuppressedKey, 0) != 0;
     }
 
+    // Cancels an in-progress goggles effect during a soft reset, so it cannot
+    // leak into the next run (the scene reload used to clear this implicitly).
+    public void CancelGoggles()
+    {
+        if (!gogglesActive)
+            return;
+
+        StopAllCoroutines();
+
+        if (circleTimer != null)
+        {
+            circleTimer.StopTimer();
+            circleTimer.gameObject.SetActive(false);
+        }
+
+        if (Fog != null)
+        {
+            Fog.HoldFogIncrement(false);
+        }
+
+        gogglesActive = false;
+    }
+
     private void OnTimerEnd()
     {
         Debug.Log("Timer finished!");

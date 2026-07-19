@@ -13,8 +13,8 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     private string _adUnitId;
 
     [Header("Rewarded Ad Buttons")]
-    [SerializeField] private string _startScreenButtonName = "WatchAd";
-    [SerializeField] private string _shopScreenButtonName = "WatchAd";
+    [SerializeField] private Button _startScreenWatchButton;
+    [SerializeField] private Button _shopScreenWatchButton;
 
     [Header("Retry Settings")]
     [SerializeField] private float _retryDelay = 3f;
@@ -24,11 +24,6 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     private bool _isLoading = false;
     private bool _isShowing = false;
     private int _retryCount = 0;
-
-    private Button _cachedStartWatchButton;
-    private Button _cachedShopWatchButton;
-    private bool _shopWatchLocateIdle;
-    private bool _pendingShopWatchResolve;
 
     void Awake()
     {
@@ -48,6 +43,8 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
         _adUnitId = _androidAdUnitId;
 #endif
 
+        SetupButton(_startScreenWatchButton);
+        SetupButton(_shopScreenWatchButton);
         UpdateButtonVisibility();
     }
 
@@ -157,22 +154,8 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
 
     private void UpdateButtonVisibility()
     {
-        UpdateAllButtons();
-    }
-
-    private void UpdateAllButtons()
-    {
-        ResolveRewardedWatchButtonsIfNeeded();
-
-        ApplyVisibilityToButton(_cachedStartWatchButton);
-        ApplyVisibilityToButton(_cachedShopWatchButton);
-    }
-
-    public void NotifyShopWatchAdUiMayExist()
-    {
-        _cachedShopWatchButton = null;
-        _pendingShopWatchResolve = true;
-        _shopWatchLocateIdle = false;
+        ApplyVisibilityToButton(_startScreenWatchButton);
+        ApplyVisibilityToButton(_shopScreenWatchButton);
     }
 
     private void ApplyVisibilityToButton(Button button)
@@ -183,77 +166,6 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
         button.gameObject.SetActive(_adLoaded);
         if (_adLoaded)
             button.interactable = true;
-    }
-
-    private void ResolveRewardedWatchButtonsIfNeeded()
-    {
-        if (_cachedStartWatchButton == null || !_cachedStartWatchButton)
-        {
-            _cachedStartWatchButton = null;
-            _cachedShopWatchButton = null;
-            _shopWatchLocateIdle = false;
-            ScanWatchButtons(assignStart: true, assignShop: true);
-            if (_cachedShopWatchButton == null)
-                _shopWatchLocateIdle = true;
-            _pendingShopWatchResolve = false;
-            return;
-        }
-
-        bool shopGone = _cachedShopWatchButton == null || !_cachedShopWatchButton;
-        if (_pendingShopWatchResolve || (shopGone && !_shopWatchLocateIdle))
-        {
-            if (shopGone)
-                _cachedShopWatchButton = null;
-            ScanWatchButtons(assignStart: false, assignShop: true);
-            _shopWatchLocateIdle = _cachedShopWatchButton == null;
-            _pendingShopWatchResolve = false;
-        }
-    }
-
-    private void ScanWatchButtons(bool assignStart, bool assignShop)
-    {
-        string startBn = _startScreenButtonName.ToLower();
-        string shopBn = _shopScreenButtonName.ToLower();
-        const string startCv = "startscreen";
-        const string shopCv = "shop";
-
-        Button[] allButtons = FindObjectsOfType<Button>(true);
-        foreach (Button btn in allButtons)
-        {
-            if (btn == null)
-                continue;
-
-            string n = btn.name.ToLower();
-            if (assignStart && !n.Contains(startBn) && assignShop && !n.Contains(shopBn))
-                continue;
-            if (assignStart && !assignShop && !n.Contains(startBn))
-                continue;
-            if (!assignStart && assignShop && !n.Contains(shopBn))
-                continue;
-
-            bool underStart = false;
-            bool underShop = false;
-            for (Transform p = btn.transform.parent; p != null; p = p.parent)
-            {
-                string pn = p.name.ToLower();
-                if (pn.Contains(startCv))
-                    underStart = true;
-                if (pn.Contains(shopCv))
-                    underShop = true;
-            }
-
-            if (assignStart && n.Contains(startBn) && underStart && _cachedStartWatchButton == null)
-            {
-                _cachedStartWatchButton = btn;
-                SetupButton(btn);
-            }
-
-            if (assignShop && n.Contains(shopBn) && underShop && _cachedShopWatchButton == null)
-            {
-                _cachedShopWatchButton = btn;
-                SetupButton(btn);
-            }
-        }
     }
 
     private void SetupButton(Button button)
