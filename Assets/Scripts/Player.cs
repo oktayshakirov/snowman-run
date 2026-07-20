@@ -70,7 +70,6 @@ public class Player : MonoBehaviour
         targetRotation = transform.rotation;
         maxSpeed = Boosters.Instance.MaxSpeed;
         controlsEnabled = false;
-        StartCoroutine(EnableControlsAfterDelay(0.3f));
         if (playerGoggles != null)
         {
             playerGoggles.SetActive(false);
@@ -82,10 +81,10 @@ public class Player : MonoBehaviour
         speed = initialSpeed;
     }
 
-    private IEnumerator EnableControlsAfterDelay(float delay)
+    // Controls are unlocked by GameManager when the start countdown hits GO.
+    public void SetControlsEnabled(bool value)
     {
-        yield return new WaitForSeconds(delay);
-        controlsEnabled = true;
+        controlsEnabled = value;
     }
 
     public IEnumerator ResumeInputBuffer(float duration)
@@ -424,7 +423,6 @@ public class Player : MonoBehaviour
         }
 
         enabled = true;
-        StartCoroutine(EnableControlsAfterDelay(0.3f));
     }
 
     public float GetSpeed()

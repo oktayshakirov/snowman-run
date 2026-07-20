@@ -38,6 +38,7 @@ MonoBehaviour:
     - com.revenuecat.purchases-unity
     - com.revenuecat.purchases-ui-unity
     - com.google.external-dependency-manager
+    - com.google.ads.mobile
     m_IsDefault: 0
     m_Capabilities: 0
     m_ConfigSource: 4

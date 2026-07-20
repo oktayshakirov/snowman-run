@@ -24,6 +24,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float speedLerpRate = 5f;
     [SerializeField] private Boosters boosters;
 
+    [Header("Start Countdown")]
+    [SerializeField] private float countdownStepSeconds = 1f;
+    [SerializeField] private float countdownGoSeconds = 0.7f;
+    [SerializeField] private float countdownFontSize = 210f;
+
     private int totalCoins;
     private int currentLevel = 1;
     public bool IsGameActive => !isGameOver && Time.timeScale > 0;
@@ -47,6 +52,13 @@ public class GameManager : MonoBehaviour
     // coroutines from the previous run would keep running and stack up.
     private Coroutine initialAccelerationRoutine;
     private Coroutine speedIncreaseRoutine;
+    private Coroutine countdownRoutine;
+    private TMP_Text countdownText;
+
+    // Set when a run pushes the player past a level threshold; the celebration
+    // is shown once the start screen returns.
+    private int pendingLevelUpLevel;
+    private int pendingLevelUpReward;
 
     private void Awake()
     {
@@ -115,6 +127,71 @@ public class GameManager : MonoBehaviour
         if (speedIncreaseRoutine != null) StopCoroutine(speedIncreaseRoutine);
         initialAccelerationRoutine = StartCoroutine(InitialAcceleration());
         speedIncreaseRoutine = StartCoroutine(IncreaseSpeedOverTime());
+
+        if (countdownRoutine != null) StopCoroutine(countdownRoutine);
+        countdownRoutine = StartCoroutine(RunStartCountdown());
+    }
+
+    // Blocks input for the first ~3 seconds of a run and shows 3-2-1-GO!
+    // in the middle of the screen; controls unlock on GO.
+    private IEnumerator RunStartCountdown()
+    {
+        playerMovement.SetControlsEnabled(false);
+        EnsureCountdownText();
+        countdownText.gameObject.SetActive(true);
+
+        for (int step = 3; step >= 1; step--)
+        {
+            yield return CountdownTick(step.ToString(), countdownStepSeconds);
+        }
+
+        playerMovement.SetControlsEnabled(true);
+        yield return CountdownTick("GO!", countdownGoSeconds);
+
+        countdownText.gameObject.SetActive(false);
+        countdownRoutine = null;
+    }
+
+    private IEnumerator CountdownTick(string value, float duration)
+    {
+        countdownText.text = value;
+
+        Transform textTransform = countdownText.transform;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float pop = Mathf.Clamp01(elapsed / 0.25f);
+            textTransform.localScale = Vector3.one * Mathf.Lerp(1.35f, 1f, pop);
+            yield return null;
+        }
+        textTransform.localScale = Vector3.one;
+    }
+
+    private void EnsureCountdownText()
+    {
+        if (countdownText != null)
+            return;
+
+        GameObject go = new GameObject("Countdown", typeof(RectTransform));
+        go.transform.SetParent(gameScreenCanvas.transform, false);
+
+        RectTransform rect = (RectTransform)go.transform;
+        rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = new Vector2(0f, 470f);
+        rect.sizeDelta = new Vector2(700f, 320f);
+
+        // Same font, color, and default material as the speed/coins HUD texts.
+        TextMeshProUGUI text = go.AddComponent<TextMeshProUGUI>();
+        text.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/Numbers SDF");
+        text.fontSize = countdownFontSize;
+        text.alignment = TextAlignmentOptions.Center;
+        text.raycastTarget = false;
+        text.color = new Color(0.05882353f, 0.05882353f, 0.05882353f, 1f);
+        countdownText = text;
+
+        go.SetActive(false);
     }
 
     public void IncrementScore()
@@ -190,6 +267,15 @@ public class GameManager : MonoBehaviour
 
         if (initialAccelerationRoutine != null) StopCoroutine(initialAccelerationRoutine);
         if (speedIncreaseRoutine != null) StopCoroutine(speedIncreaseRoutine);
+        if (countdownRoutine != null)
+        {
+            StopCoroutine(countdownRoutine);
+            countdownRoutine = null;
+        }
+        if (countdownText != null)
+        {
+            countdownText.gameObject.SetActive(false);
+        }
 
         if (Boosters.Instance != null)
         {
@@ -285,6 +371,14 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("UnlockedLevels", unlockedLevels);
             PlayerPrefs.SetInt("CurrentLevel", unlockedLevels);
             PlayerPrefs.Save();
+
+            // Small, level-scaled bonus: well under one rewarded ad (300) and
+            // far below the smallest coin pack (2500), so it stays a treat.
+            for (int level = currentStoredLevel + 1; level <= unlockedLevels; level++)
+            {
+                pendingLevelUpReward += Mathf.Min(25 * level, 250);
+            }
+            pendingLevelUpLevel = unlockedLevels;
         }
     }
 
@@ -317,6 +411,13 @@ public class GameManager : MonoBehaviour
         if (StartScreenManager.Instance != null)
         {
             StartScreenManager.Instance.ShowStartScreen();
+
+            if (pendingLevelUpLevel > 0)
+            {
+                StartScreenManager.Instance.ShowLevelUpCelebration(pendingLevelUpLevel, pendingLevelUpReward);
+                pendingLevelUpLevel = 0;
+                pendingLevelUpReward = 0;
+            }
         }
     }
 
