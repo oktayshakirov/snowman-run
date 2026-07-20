@@ -16,7 +16,7 @@ public static class WalletManager
     {
         if (amount <= 0) return;
         int totalCoins = GetTotalCoins() + amount;
-        SaveCoins(totalCoins, $"Added {amount} coins. Total: {totalCoins}", callback);
+        SaveCoins(totalCoins, callback);
     }
 
     public static bool SpendCoins(int amount, Action<int> callback = null)
@@ -27,27 +27,24 @@ public static class WalletManager
         if (totalCoins >= amount)
         {
             totalCoins -= amount;
-            SaveCoins(totalCoins, $"Spent {amount} coins. Remaining: {totalCoins}", callback);
+            SaveCoins(totalCoins, callback);
             return true;
         }
-        else
-        {
-            Debug.LogWarning("Not enough coins to complete the transaction.");
-            return false;
-        }
+
+        return false;
     }
+
     public static bool HasEnoughCoins(int amount)
     {
         return GetTotalCoins() >= amount;
     }
 
-    private static void SaveCoins(int amount, string debugMessage, Action<int> callback = null)
+    private static void SaveCoins(int amount, Action<int> callback = null)
     {
         PlayerPrefs.SetInt(TotalCoinsKey, amount);
         PlayerPrefs.Save();
         OnCoinsChanged?.Invoke(amount);
         callback?.Invoke(amount);
-        Debug.Log(debugMessage);
     }
 
     public static void AddDeveloperCoins(Action<int> callback = null)
@@ -55,5 +52,4 @@ public static class WalletManager
         const int DeveloperCoins = 50000;
         AddCoins(DeveloperCoins, callback);
     }
-
 }

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5606017c703842dcb20cae425c760f0, type: 3}
   m_Name: IronSourceMediationSettings
   m_EditorClassIdentifier: Unity.LevelPlay::IronSourceMediationSettings
-  AndroidAppKey: 
-  IOSAppKey: 
+  AndroidAppKey: 273ef13bd
+  IOSAppKey: 273eeda35
   EnableIronsourceSDKInitAPI: 0
-  AddIronsourceSkadnetworkID: 0
+  AddIronsourceSkadnetworkID: 1
   DeclareAD_IDPermission: 0
   EnableAdapterDebug: 0
   EnableIntegrationHelper: 0

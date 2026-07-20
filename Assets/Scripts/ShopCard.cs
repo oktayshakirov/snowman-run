@@ -121,16 +121,7 @@ public class ShopCard : MonoBehaviour
                 AudioManager.Instance.PlaySound(AudioManager.SoundType.Buy);
                 UpdateBoosterUI();
 
-                Debug.Log($"{boosterData.boosterName} upgraded to level {currentUpgradeLevel}!");
             }
-            else
-            {
-                Debug.Log("Not enough coins for the upgrade!");
-            }
-        }
-        else
-        {
-            Debug.Log($"{boosterData.boosterName} is already at max level!");
         }
     }
 
@@ -186,12 +177,7 @@ public class ShopCard : MonoBehaviour
             AudioManager.Instance.PlaySound(AudioManager.SoundType.Buy);
             PlayerPrefs.SetInt($"Purchased_{itemName}", 1);
             PlayerPrefs.Save();
-            Debug.Log($"{itemName} purchased!");
             UpdateButtonState();
-        }
-        else
-        {
-            Debug.Log("Not enough coins!");
         }
     }
 
@@ -215,7 +201,6 @@ public class ShopCard : MonoBehaviour
         }
         NativeHaptics.TriggerHeavyHaptic();
         AudioManager.Instance.PlaySound(AudioManager.SoundType.Equip);
-        Debug.Log($"{itemName} is now in use!");
     }
 
     private void HandleEquipmentChanged(string currentHat, string currentGoggles, string currentRide, string currentScarf)

@@ -1,16 +1,23 @@
-using UnityEngine;
-using UnityEngine.Advertisements;
-using UnityEngine.UI;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+using Unity.Services.LevelPlay;
 
-public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
+// LevelPlay 8.x still types its public events with the deprecated
+// com.unity3d.mediation aliases, so referencing them is unavoidable here.
+#pragma warning disable 0618
+
+public class RewardedAdButton : MonoBehaviour
 {
     public static RewardedAdButton Instance;
 
-    [Header("Rewarded Ad IDs")]
-    [SerializeField] private string _androidAdUnitId = "Rewarded_Android";
-    [SerializeField] private string _iOsAdUnitId = "Rewarded_iOS";
-    private string _adUnitId;
+    [Header("LevelPlay Rewarded Ad Unit IDs")]
+    [SerializeField] private string _androidRewardedAdUnitId = "nvjpzi3lio9ymvc1";
+    [SerializeField] private string _iOsRewardedAdUnitId = "9wyg2x5zcbjyva2f";
+
+    [Header("Reward Settings")]
+    [Tooltip("Used if the dashboard does not supply a reward amount.")]
+    [SerializeField] private int _fallbackRewardAmount = 300;
 
     [Header("Rewarded Ad Buttons")]
     [SerializeField] private Button _startScreenWatchButton;
@@ -20,6 +27,7 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     [SerializeField] private float _retryDelay = 3f;
     [SerializeField] private int _maxRetries = 5;
 
+    private LevelPlayRewardedAd _rewardedAd;
     private bool _adLoaded = false;
     private bool _isLoading = false;
     private bool _isShowing = false;
@@ -35,13 +43,8 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
         else
         {
             Destroy(gameObject);
+            return;
         }
-
-#if UNITY_IOS
-        _adUnitId = _iOsAdUnitId;
-#else
-        _adUnitId = _androidAdUnitId;
-#endif
 
         SetupButton(_startScreenWatchButton);
         SetupButton(_shopScreenWatchButton);
@@ -60,22 +63,41 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
             yield return null;
         }
 
+        CreateRewardedAd();
         LoadAd();
+    }
+
+    private void CreateRewardedAd()
+    {
+        if (_rewardedAd != null)
+            return;
+
+#if UNITY_IOS
+        string adUnitId = _iOsRewardedAdUnitId;
+#else
+        string adUnitId = _androidRewardedAdUnitId;
+#endif
+
+        _rewardedAd = new LevelPlayRewardedAd(adUnitId);
+        _rewardedAd.OnAdLoaded += OnAdLoaded;
+        _rewardedAd.OnAdLoadFailed += OnAdLoadFailed;
+        _rewardedAd.OnAdDisplayFailed += OnAdDisplayFailed;
+        _rewardedAd.OnAdRewarded += OnAdRewarded;
+        _rewardedAd.OnAdClosed += OnAdClosed;
     }
 
     public void LoadAd()
     {
-        if (_isLoading || _adLoaded || IsAnyAdShowing())
+        if (_rewardedAd == null || _isLoading || _adLoaded || _isShowing || IsAnyAdShowing())
         {
             return;
         }
 
         _isLoading = true;
-        _retryCount = 0;
-        Advertisement.Load(_adUnitId, this);
+        _rewardedAd.LoadAd();
     }
 
-    public void OnUnityAdsAdLoaded(string adUnitId)
+    private void OnAdLoaded(com.unity3d.mediation.LevelPlayAdInfo adInfo)
     {
         _adLoaded = true;
         _isLoading = false;
@@ -83,41 +105,45 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
         UpdateButtonVisibility();
     }
 
-    public void OnUnityAdsFailedToLoad(string adUnitId, UnityAdsLoadError error, string message)
+    private void OnAdLoadFailed(com.unity3d.mediation.LevelPlayAdError error)
     {
-        Debug.LogError($"Failed to load Rewarded Ad {adUnitId}: {error} - {message}");
         _isLoading = false;
         UpdateButtonVisibility();
 
         if (_retryCount < _maxRetries)
         {
             _retryCount++;
-            StartCoroutine(RetryLoadAd());
+            StartCoroutine(RetryLoadAd(_retryDelay));
         }
         else
         {
             _retryCount = 0;
-            StartCoroutine(RetryLoadAdAfterDelay(_retryDelay * 2));
+            StartCoroutine(RetryLoadAd(_retryDelay * 2));
         }
     }
 
-    private IEnumerator RetryLoadAd()
+    private IEnumerator RetryLoadAd(float delay)
     {
-        yield return new WaitForSeconds(_retryDelay);
-        LoadAd();
-    }
-
-    private IEnumerator RetryLoadAdAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
+        // Realtime: menus run with Time.timeScale = 0.
+        yield return new WaitForSecondsRealtime(delay);
         LoadAd();
     }
 
     public void ShowAd()
     {
-        if (!_adLoaded)
+        if (_rewardedAd == null)
         {
-            if (!_isLoading && !IsAnyAdShowing())
+            return;
+        }
+
+        if (_isShowing || IsAnyAdShowing())
+        {
+            return;
+        }
+
+        if (!_adLoaded || !_rewardedAd.IsAdReady())
+        {
+            if (!_isLoading)
             {
                 LoadAd();
             }
@@ -133,7 +159,25 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
         _adLoaded = false;
         UpdateButtonVisibility();
 
-        Advertisement.Show(_adUnitId, this);
+        _rewardedAd.ShowAd();
+    }
+
+    private void OnAdDisplayFailed(com.unity3d.mediation.LevelPlayAdDisplayInfoError error)
+    {
+        _isShowing = false;
+        LoadAd();
+    }
+
+    private void OnAdRewarded(com.unity3d.mediation.LevelPlayAdInfo adInfo, com.unity3d.mediation.LevelPlayReward reward)
+    {
+        GrantReward(reward != null && reward.Amount > 0 ? reward.Amount : _fallbackRewardAmount);
+    }
+
+    private void OnAdClosed(com.unity3d.mediation.LevelPlayAdInfo adInfo)
+    {
+        _isShowing = false;
+        _adLoaded = false;
+        UpdateButtonVisibility();
         LoadAd();
     }
 
@@ -181,38 +225,15 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     {
         UpdateButtonVisibility();
 
-        if (!_adLoaded && !_isLoading && Advertisement.isInitialized && !IsAnyAdShowing())
+        if (_rewardedAd != null && !_adLoaded && !_isLoading && !IsAnyAdShowing())
         {
             LoadAd();
         }
     }
 
-    public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
+    private void GrantReward(int amount)
     {
-        Debug.LogError($"Error showing Rewarded Ad {adUnitId}: {error} - {message}");
-        _isShowing = false;
-        LoadAd();
-    }
-
-    public void OnUnityAdsShowStart(string adUnitId) { }
-
-    public void OnUnityAdsShowClick(string adUnitId) { }
-
-    public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
-    {
-        _isShowing = false;
-
-        if (showCompletionState == UnityAdsShowCompletionState.COMPLETED)
-        {
-            GrantReward();
-        }
-
-        LoadAd();
-    }
-
-    private void GrantReward()
-    {
-        WalletManager.AddCoins(300);
+        WalletManager.AddCoins(amount);
         AudioManager.Instance?.PlaySound(AudioManager.SoundType.Coin);
         NativeHaptics.TriggerSuccessNotification();
     }
@@ -220,5 +241,14 @@ public class RewardedAdButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsS
     void OnDestroy()
     {
         StopAllCoroutines();
+
+        if (Instance != this)
+            return;
+
+        if (_rewardedAd != null)
+        {
+            _rewardedAd.DestroyAd();
+            _rewardedAd = null;
+        }
     }
 }

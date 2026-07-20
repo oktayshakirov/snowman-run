@@ -1,17 +1,23 @@
-using UnityEngine;
-using UnityEngine.Advertisements;
 using System.Collections;
+using UnityEngine;
+using Unity.Services.LevelPlay;
 
-public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
+// LevelPlay 8.x still types its public events with the deprecated
+// com.unity3d.mediation aliases, so referencing them is unavoidable here.
+#pragma warning disable 0618
+
+public class InterstitialAd : MonoBehaviour
 {
     public static InterstitialAd Instance;
-    [SerializeField] string _androidAdUnitId = "Interstitial_Android";
-    [SerializeField] string _iOsAdUnitId = "Interstitial_iOS";
+
+    [Header("LevelPlay Interstitial Ad Unit IDs")]
+    [SerializeField] private string _androidInterstitialAdUnitId = "lffdi21azjq03dw2";
+    [SerializeField] private string _iOsInterstitialAdUnitId = "ooht1ea0q2gypi49";
 
     [Header("Ad Settings")]
     [SerializeField] private bool _autoShowOnLoad = true;
 
-    string _adUnitId;
+    private LevelPlayInterstitialAd _interstitialAd;
     private bool _adLoaded = false;
     private bool _isLoading = false;
     private bool _isShowing = false;
@@ -26,24 +32,55 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
         else
         {
             Destroy(gameObject);
+            return;
         }
-        _adUnitId = (Application.platform == RuntimePlatform.IPhonePlayer)
-            ? _iOsAdUnitId
-            : _androidAdUnitId;
+    }
+
+    void Start()
+    {
+        StartCoroutine(WaitForInitialization());
+    }
+
+    private IEnumerator WaitForInitialization()
+    {
+        while (AdsInitializer.Instance == null || !AdsInitializer.Instance.IsInitialized())
+        {
+            yield return null;
+        }
+
+        CreateInterstitialAd();
+    }
+
+    private void CreateInterstitialAd()
+    {
+        if (_interstitialAd != null)
+            return;
+
+#if UNITY_IOS
+        string adUnitId = _iOsInterstitialAdUnitId;
+#else
+        string adUnitId = _androidInterstitialAdUnitId;
+#endif
+
+        _interstitialAd = new LevelPlayInterstitialAd(adUnitId);
+        _interstitialAd.OnAdLoaded += OnAdLoaded;
+        _interstitialAd.OnAdLoadFailed += OnAdLoadFailed;
+        _interstitialAd.OnAdDisplayFailed += OnAdDisplayFailed;
+        _interstitialAd.OnAdClosed += OnAdClosed;
     }
 
     public void LoadAd()
     {
-        if (_isLoading || _adLoaded || IsAnyAdShowing())
+        if (_interstitialAd == null || _isLoading || _adLoaded || _isShowing || IsAnyAdShowing())
         {
             return;
         }
 
         _isLoading = true;
-        Advertisement.Load(_adUnitId, this);
+        _interstitialAd.LoadAd();
     }
 
-    public void OnUnityAdsAdLoaded(string adUnitId)
+    private void OnAdLoaded(com.unity3d.mediation.LevelPlayAdInfo adInfo)
     {
         _adLoaded = true;
         _isLoading = false;
@@ -54,15 +91,19 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
         }
     }
 
-    public void OnUnityAdsFailedToLoad(string adUnitId, UnityAdsLoadError error, string message)
+    private void OnAdLoadFailed(com.unity3d.mediation.LevelPlayAdError error)
     {
-        Debug.LogError($"Failed to load Interstitial Ad {adUnitId}: {error} - {message}");
         _isLoading = false;
     }
 
     public void ShowAd()
     {
-        if (!_adLoaded)
+        if (_interstitialAd == null)
+        {
+            return;
+        }
+
+        if (!_adLoaded || !_interstitialAd.IsAdReady())
         {
             LoadAd();
             return;
@@ -76,7 +117,19 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
         _isShowing = true;
         _adLoaded = false;
         NotifyRewardedAdToReload();
-        Advertisement.Show(_adUnitId, this);
+        _interstitialAd.ShowAd();
+    }
+
+    private void OnAdDisplayFailed(com.unity3d.mediation.LevelPlayAdDisplayInfoError error)
+    {
+        _isShowing = false;
+        NotifyRewardedAdToReload();
+    }
+
+    private void OnAdClosed(com.unity3d.mediation.LevelPlayAdInfo adInfo)
+    {
+        _isShowing = false;
+        NotifyRewardedAdToReload();
     }
 
     private void NotifyRewardedAdToReload()
@@ -87,23 +140,6 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
         }
     }
 
-    public void OnUnityAdsShowFailure(string adUnitId, UnityAdsShowError error, string message)
-    {
-        Debug.LogError($"Error showing Interstitial Ad {adUnitId}: {error} - {message}");
-        _isShowing = false;
-        NotifyRewardedAdToReload();
-    }
-
-    public void OnUnityAdsShowStart(string adUnitId) { }
-
-    public void OnUnityAdsShowClick(string adUnitId) { }
-
-    public void OnUnityAdsShowComplete(string adUnitId, UnityAdsShowCompletionState showCompletionState)
-    {
-        _isShowing = false;
-        NotifyRewardedAdToReload();
-    }
-
     public bool IsAdShowing()
     {
         return _isShowing;
@@ -112,5 +148,19 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     private bool IsAnyAdShowing()
     {
         return RewardedAdButton.Instance != null && RewardedAdButton.Instance.IsAdShowing();
+    }
+
+    void OnDestroy()
+    {
+        StopAllCoroutines();
+
+        if (Instance != this)
+            return;
+
+        if (_interstitialAd != null)
+        {
+            _interstitialAd.DestroyAd();
+            _interstitialAd = null;
+        }
     }
 }

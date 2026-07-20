@@ -56,7 +56,6 @@ public class Boosters : MonoBehaviour
             circleTimer.outputType = Timer.OutputType.StandardText;
         }
 
-        Debug.Log($"Loaded Boosters: GogglesDuration={gogglesDuration}, GogglesFogReduction={gogglesFogReduction}, MaxSpeed={maxSpeed}");
     }
 
     public void ActivateGoggles()
@@ -98,14 +97,12 @@ public class Boosters : MonoBehaviour
     public void UpgradeMaxSpeed(float additionalSpeed)
     {
         MaxSpeed += additionalSpeed;
-        Debug.Log($"Max speed upgraded to {MaxSpeed}!");
     }
 
     public void EnableNoAdsBoost()
     {
         PlayerPrefs.SetInt(GameOverInterstitialSuppressedKey, 1);
         PlayerPrefs.Save();
-        Debug.Log("No Ads: game over interstitials disabled (rewarded ads unchanged).");
     }
 
     public static bool IsGameOverInterstitialSuppressed()
@@ -138,7 +135,6 @@ public class Boosters : MonoBehaviour
 
     private void OnTimerEnd()
     {
-        Debug.Log("Timer finished!");
     }
 
     private IEnumerator GogglesCooldown()

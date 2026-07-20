@@ -122,7 +122,6 @@ public class Player : MonoBehaviour
     public void RefreshMaxSpeed()
     {
         maxSpeed = Boosters.Instance.MaxSpeed;
-        Debug.Log($"Player max speed updated to: {maxSpeed}");
     }
 
     private void Update()
