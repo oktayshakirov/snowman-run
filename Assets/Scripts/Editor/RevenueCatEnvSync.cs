@@ -52,7 +52,9 @@ public static class RevenueCatEnvSync
         string outPath = Path.Combine(streamingDir, StreamingFileName);
 
         var data = new RevenueCatKeysData { ios = ios, android = android };
-        File.WriteAllText(outPath, JsonUtility.ToJson(data, true), Encoding.UTF8);
+        // Encoding.UTF8 emits a BOM, which Android's UnityWebRequest read path
+        // hands to JsonUtility verbatim and it rejects. Write without one.
+        File.WriteAllText(outPath, JsonUtility.ToJson(data, true), new UTF8Encoding(false));
         AssetDatabase.Refresh();
         EditorUtility.DisplayDialog("RevenueCat", $"Wrote keys to:\nAssets/StreamingAssets/{StreamingFileName}", "OK");
     }

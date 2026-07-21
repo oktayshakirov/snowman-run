@@ -99,3 +99,7 @@ iOS/
 
 # Ignore the results of builds
 [Bb]uilds/
+
+# Android build outputs (R8/ProGuard mapping, Burst debug symbols)
+*_mapping.txt
+*_BurstDebugInformation_DoNotShip/

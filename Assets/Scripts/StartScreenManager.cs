@@ -20,6 +20,14 @@ public class StartScreenManager : MonoBehaviour
     [Header("Level Up Celebration")]
     [SerializeField] private float celebrationSeconds = 4f;
 
+    [Tooltip("Optional: style your own panel in the scene and assign it here. " +
+             "Leave empty to use the built-in runtime panel.")]
+    [SerializeField] private GameObject celebrationPanelOverride;
+    [Tooltip("Title text of the assigned panel, e.g. \"LEVEL 5!\".")]
+    [SerializeField] private TMP_Text celebrationTitleOverride;
+    [Tooltip("Details text of the assigned panel, e.g. \"Congratulations!\\n+125 coins\".")]
+    [SerializeField] private TMP_Text celebrationDetailsOverride;
+
     private GameObject celebrationPanel;
     private TMP_Text celebrationTitle;
     private TMP_Text celebrationDetails;
@@ -223,40 +231,91 @@ public class StartScreenManager : MonoBehaviour
         if (celebrationPanel != null)
             return;
 
+        // A panel styled in the scene wins; the runtime one is just a fallback.
+        if (celebrationPanelOverride != null &&
+            celebrationTitleOverride != null &&
+            celebrationDetailsOverride != null)
+        {
+            celebrationPanel = celebrationPanelOverride;
+            celebrationTitle = celebrationTitleOverride;
+            celebrationDetails = celebrationDetailsOverride;
+            celebrationPanel.SetActive(false);
+            return;
+        }
+
+        BuildCelebrationPanel(out celebrationPanel, out celebrationTitle, out celebrationDetails);
+    }
+
+    // Builds the panel hierarchy. Used both at runtime and by the editor
+    // context menu that bakes an editable copy into the scene.
+    private void BuildCelebrationPanel(out GameObject panel, out TMP_Text title, out TMP_Text details)
+    {
         // Same font and red as the settings/pause dialog titles.
         TMP_FontAsset font = Resources.Load<TMP_FontAsset>("Fonts & Materials/Numbers SDF");
         Color dialogRed = new Color(0.909804f, 0.007843138f, 0.039215688f, 1f);
 
-        celebrationPanel = new GameObject("LevelUpCelebration", typeof(RectTransform));
-        celebrationPanel.transform.SetParent(startScreenCanvas.transform, false);
+        panel = new GameObject("LevelUpCelebration", typeof(RectTransform));
+        panel.transform.SetParent(startScreenCanvas.transform, false);
 
-        RectTransform panelRect = (RectTransform)celebrationPanel.transform;
+        RectTransform panelRect = (RectTransform)panel.transform;
         panelRect.anchorMin = panelRect.anchorMax = new Vector2(0.5f, 0.5f);
         panelRect.pivot = new Vector2(0.5f, 0.5f);
         panelRect.anchoredPosition = new Vector2(0f, 190f);
         panelRect.sizeDelta = new Vector2(860f, 560f);
 
-        Image backdrop = celebrationPanel.AddComponent<Image>();
+        Image backdrop = panel.AddComponent<Image>();
         backdrop.raycastTarget = false;
 
-        // Reuse the exact bubble the settings dialog uses, so the celebration
-        // matches the dialogs even if their styling changes later.
+        // Reuse the bubble sprite the settings dialog uses, but fully opaque.
+        // The dialog can be translucent because it sits on its own solid
+        // background; this one floats over the start screen and must be solid
+        // on its own for the text to stay readable.
         Image bubble = FindSettingsBubble();
         if (bubble != null)
         {
             backdrop.sprite = bubble.sprite;
             backdrop.type = bubble.type;
             backdrop.preserveAspect = bubble.preserveAspect;
-            backdrop.color = bubble.color;
         }
-        else
+        backdrop.color = Color.white;
+
+        title = CreateCelebrationText(panel, "Title", font, dialogRed, 96f, new Vector2(0f, 80f));
+        details = CreateCelebrationText(panel, "Details", font, dialogRed, 44f, new Vector2(0f, -70f));
+    }
+
+#if UNITY_EDITOR
+    // Right-click the StartScreenManager component header -> this menu item.
+    // Creates a real, editable copy of the panel in the scene and wires it to
+    // the override fields, so the look can be designed in the editor.
+    [ContextMenu("Create Level Up Panel In Scene")]
+    private void CreateLevelUpPanelInScene()
+    {
+        if (celebrationPanelOverride != null)
         {
-            backdrop.color = new Color(1f, 1f, 1f, 0.3f);
+            Debug.LogWarning("A celebration panel is already assigned. Delete it first to recreate.", this);
+            return;
         }
 
-        celebrationTitle = CreateCelebrationText("Title", font, dialogRed, 96f, new Vector2(0f, 80f));
-        celebrationDetails = CreateCelebrationText("Details", font, dialogRed, 44f, new Vector2(0f, -70f));
+        BuildCelebrationPanel(out GameObject panel, out TMP_Text title, out TMP_Text details);
+
+        // Sample text so the panel is easy to judge in the editor; both strings
+        // are overwritten at runtime.
+        title.text = "LEVEL 5!";
+        details.text = "Congratulations!\n+125 coins";
+
+        celebrationPanelOverride = panel;
+        celebrationTitleOverride = title;
+        celebrationDetailsOverride = details;
+
+        UnityEditor.Undo.RegisterCreatedObjectUndo(panel, "Create Level Up Panel");
+        UnityEditor.Selection.activeGameObject = panel;
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
+
+        Debug.Log("Level up panel created under the start screen. Style it, then " +
+                  "deactivate it - the game shows it automatically on level up.", panel);
     }
+#endif
 
     private Image FindSettingsBubble()
     {
@@ -271,10 +330,10 @@ public class StartScreenManager : MonoBehaviour
         return null;
     }
 
-    private TMP_Text CreateCelebrationText(string name, TMP_FontAsset font, Color color, float size, Vector2 position)
+    private TMP_Text CreateCelebrationText(GameObject parent, string name, TMP_FontAsset font, Color color, float size, Vector2 position)
     {
         GameObject go = new GameObject(name, typeof(RectTransform));
-        go.transform.SetParent(celebrationPanel.transform, false);
+        go.transform.SetParent(parent.transform, false);
 
         RectTransform rect = (RectTransform)go.transform;
         rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);

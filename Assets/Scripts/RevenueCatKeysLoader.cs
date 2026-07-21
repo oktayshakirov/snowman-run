@@ -51,6 +51,12 @@ public static class RevenueCatKeysLoader
     {
         if (string.IsNullOrWhiteSpace(json))
             return null;
+
+        // On Android the file is read through UnityWebRequest, which returns the
+        // raw text including any UTF-8 BOM; JsonUtility rejects it. (File.ReadAllText
+        // strips it, which is why the sync path works on iOS.)
+        json = json.TrimStart('﻿', '​').Trim();
+
         try
         {
             return JsonUtility.FromJson<RevenueCatKeysData>(json);

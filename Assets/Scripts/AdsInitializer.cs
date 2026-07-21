@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -26,10 +27,16 @@ public class AdsInitializer : MonoBehaviour
     [Header("Consent")]
     [Tooltip("Max seconds to wait for the UMP consent info update before initializing ads anyway.")]
     [SerializeField] private float _consentUpdateTimeout = 15f;
+    [Tooltip("Max seconds to wait for the consent form (it is modal, so this allows reading time).")]
+    [SerializeField] private float _consentFormTimeout = 60f;
+    [Tooltip("Max seconds to wait for the iOS ATT prompt response.")]
+    [SerializeField] private float _attTimeout = 30f;
 
     [Header("Debug")]
-    [Tooltip("Opens the LevelPlay mediation test suite after init (development builds only). Has no effect in release builds.")]
+    [Tooltip("Opens the LevelPlay mediation test suite after init. MUST be OFF for store builds.")]
     [SerializeField] private bool _launchTestSuiteOnInit = false;
+    [Tooltip("Logs the consent/init sequence. Works in release builds - leave OFF for store builds.")]
+    [SerializeField] private bool _verboseAdLogging = false;
 
     [Header("Secondary Splash Screen")]
     [SerializeField] private GameObject splashScreenCanvas;
@@ -39,8 +46,31 @@ public class AdsInitializer : MonoBehaviour
 
     private string _appKey;
     private bool _isInitialized = false;
+    private bool _initRequested = false;
     private bool _splashHidden = false;
     private int _retryCount = 0;
+
+    // The splash animation ends with an AnimationEvent calling DisableCanvas(),
+    // which deactivates this very GameObject and would kill any coroutine
+    // running on it. The consent flow outlives the splash, so it runs on a
+    // persistent host instead.
+    private sealed class AdsCoroutineRunner : MonoBehaviour { }
+
+    private static AdsCoroutineRunner _runner;
+
+    private static AdsCoroutineRunner Runner
+    {
+        get
+        {
+            if (_runner == null)
+            {
+                GameObject host = new GameObject("AdsCoroutineRunner");
+                DontDestroyOnLoad(host);
+                _runner = host.AddComponent<AdsCoroutineRunner>();
+            }
+            return _runner;
+        }
+    }
 
     private void Awake()
     {
@@ -70,7 +100,7 @@ public class AdsInitializer : MonoBehaviour
 
         LevelPlay.OnInitSuccess += OnInitializationComplete;
         LevelPlay.OnInitFailed += OnInitializationFailed;
-        StartCoroutine(ConsentFlowThenInit());
+        Runner.StartCoroutine(ConsentFlowThenInit());
     }
 
     private void OnDestroy()
@@ -85,6 +115,9 @@ public class AdsInitializer : MonoBehaviour
     // App start order: ATT prompt (iOS) -> UMP consent form (GDPR regions) ->
     // LevelPlay init. The networks read the resulting TCF consent string and
     // ATT status themselves, so no popup of their own is shown afterwards.
+    //
+    // Every wait below is bounded: a stalled consent step must never leave the
+    // game without ads, so the flow always ends in InitializeLevelPlay().
     private IEnumerator ConsentFlowThenInit()
     {
 #if !UNITY_EDITOR
@@ -103,16 +136,22 @@ public class AdsInitializer : MonoBehaviour
         if (ATTrackingStatusBinding.GetAuthorizationTrackingStatus() !=
             ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
         {
+            AdLog($"ATT already resolved: {ATTrackingStatusBinding.GetAuthorizationTrackingStatus()}");
             yield break;
         }
 
+        AdLog("Requesting ATT authorization...");
         ATTrackingStatusBinding.RequestAuthorizationTracking();
 
+        float attDeadline = Time.realtimeSinceStartup + Mathf.Max(1f, _attTimeout);
         while (ATTrackingStatusBinding.GetAuthorizationTrackingStatus() ==
-               ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
+               ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED &&
+               Time.realtimeSinceStartup < attDeadline)
         {
             yield return new WaitForSecondsRealtime(0.2f);
         }
+
+        AdLog($"ATT status: {ATTrackingStatusBinding.GetAuthorizationTrackingStatus()}");
     }
 #endif
 
@@ -120,34 +159,87 @@ public class AdsInitializer : MonoBehaviour
     {
         bool updateDone = false;
         FormError updateError = null;
+        bool umpUnavailable = false;
 
-        ConsentInformation.Update(new ConsentRequestParameters(), error =>
+        AdLog("Requesting UMP consent info update...");
+
+        // The consent SDK is a hard dependency of neither the game nor the ad
+        // SDK. If it is missing or stripped it throws here, and ads must still
+        // initialize rather than the flow dying with the coroutine.
+        try
         {
-            updateError = error;
-            updateDone = true;
-        });
+            ConsentInformation.Update(new ConsentRequestParameters(), error =>
+            {
+                updateError = error;
+                updateDone = true;
+            });
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"UMP consent unavailable, continuing without it: {e.Message}");
+            umpUnavailable = true;
+        }
+
+        if (umpUnavailable)
+            yield break;
 
         // Ads must never be blocked by a hanging consent request (e.g. offline).
-        float deadline = Time.realtimeSinceStartup + _consentUpdateTimeout;
+        float deadline = Time.realtimeSinceStartup + Mathf.Max(1f, _consentUpdateTimeout);
         while (!updateDone && Time.realtimeSinceStartup < deadline)
         {
             yield return null;
         }
 
-        if (!updateDone || updateError != null)
+        if (!updateDone)
         {
+            AdLog("UMP update timed out; continuing to ads init.");
+            yield break;
+        }
+
+        if (updateError != null)
+        {
+            AdLog($"UMP update error: {updateError.Message}; continuing to ads init.");
             yield break;
         }
 
         bool formDone = false;
-        ConsentForm.LoadAndShowConsentFormIfRequired(error => { formDone = true; });
+        AdLog("Loading consent form if required...");
+        try
+        {
+            ConsentForm.LoadAndShowConsentFormIfRequired(error =>
+            {
+                if (error != null)
+                    AdLog($"Consent form error: {error.Message}");
+                formDone = true;
+            });
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Consent form unavailable, continuing without it: {e.Message}");
+            umpUnavailable = true;
+        }
 
-        // The form is modal; the callback also fires immediately when no form
-        // is required for this region or the form fails to load.
-        while (!formDone)
+        if (umpUnavailable)
+            yield break;
+
+        // The callback normally fires at once when no form is required for this
+        // region. The generous cap covers the modal case (user reading it) while
+        // still guaranteeing ads initialize if the callback never arrives.
+        float formDeadline = Time.realtimeSinceStartup + Mathf.Max(1f, _consentFormTimeout);
+        while (!formDone && Time.realtimeSinceStartup < formDeadline)
         {
             yield return null;
         }
+
+        AdLog(formDone
+            ? $"Consent flow done. CanRequestAds={ConsentInformation.CanRequestAds()}"
+            : "Consent form timed out; continuing to ads init.");
+    }
+
+    private void AdLog(string message)
+    {
+        if (_verboseAdLogging)
+            Debug.Log($"[Ads] {message}");
     }
 
     // Wire this to a settings button so EEA users can change their consent
@@ -163,11 +255,17 @@ public class AdsInitializer : MonoBehaviour
 
     private void InitializeLevelPlay()
     {
-        if (_launchTestSuiteOnInit && Debug.isDebugBuild)
+        // Guarded so a retry or a late consent callback cannot double-init.
+        if (_initRequested)
+            return;
+        _initRequested = true;
+
+        if (_launchTestSuiteOnInit)
         {
             IronSource.Agent.setMetaData("is_test_suite", "enable");
         }
 
+        AdLog($"Initializing LevelPlay (appKey {_appKey})...");
         LevelPlay.Init(_appKey, null, new[]
         {
             com.unity3d.mediation.LevelPlayAdFormat.REWARDED,
@@ -182,11 +280,12 @@ public class AdsInitializer : MonoBehaviour
 
     private void OnInitializationComplete(com.unity3d.mediation.LevelPlayConfiguration configuration)
     {
+        AdLog("LevelPlay init complete.");
         _isInitialized = true;
         OnInitializationCompleteEvent?.Invoke();
         HideSplash(animated: true);
 
-        if (_launchTestSuiteOnInit && Debug.isDebugBuild)
+        if (_launchTestSuiteOnInit)
         {
             LevelPlay.LaunchTestSuite();
         }
@@ -194,13 +293,15 @@ public class AdsInitializer : MonoBehaviour
 
     private void OnInitializationFailed(com.unity3d.mediation.LevelPlayInitError error)
     {
+        Debug.LogError($"LevelPlay init failed: {error.ErrorCode} - {error.ErrorMessage}");
+
         // Never keep the player stuck on the splash because of ads.
         HideSplash(animated: false);
 
         if (_retryCount < _maxRetries)
         {
             _retryCount++;
-            StartCoroutine(RetryInitialize());
+            Runner.StartCoroutine(RetryInitialize());
         }
     }
 
@@ -208,6 +309,7 @@ public class AdsInitializer : MonoBehaviour
     {
         // Realtime: menus run with Time.timeScale = 0.
         yield return new WaitForSecondsRealtime(_retryDelay);
+        _initRequested = false;
         InitializeLevelPlay();
     }
 
@@ -217,18 +319,25 @@ public class AdsInitializer : MonoBehaviour
             return;
         _splashHidden = true;
 
-        if (animated && splashScreenAnimator != null && splashScreenCanvas != null)
+        if (splashScreenCanvas == null)
+            return;
+
+        // The splash may already be gone: its animation ends with an
+        // AnimationEvent calling DisableCanvas(). Triggering an animator on a
+        // deactivated object does nothing, so fall through to deactivating it.
+        if (animated && splashScreenAnimator != null && splashScreenCanvas.activeInHierarchy)
         {
             splashScreenAnimator.SetTrigger("Hide");
+            return;
         }
-        else if (splashScreenCanvas != null)
-        {
-            splashScreenCanvas.SetActive(false);
-        }
+
+        splashScreenCanvas.SetActive(false);
     }
 
+    // Called from an AnimationEvent at the end of the splash animation.
     public void DisableCanvas()
     {
+        _splashHidden = true;
         if (splashScreenCanvas != null)
         {
             splashScreenCanvas.SetActive(false);

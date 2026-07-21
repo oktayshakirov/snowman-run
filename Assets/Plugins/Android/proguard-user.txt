@@ -1,1 +1,35 @@
+# Release builds run R8 minification (Player Settings -> Minify -> Release).
+# Everything below is reached only through JNI/reflection from C#, so R8 sees
+# no static reference and strips it, causing ClassNotFoundException at runtime.
+# A keep rule is required for every SDK accessed that way.
+
 -keep class com.revenuecat.** { *; }
+
+# Google User Messaging Platform (UMP) - the consent SDK, reached from
+# GoogleMobileAds.Ump via AndroidJavaClass.
+-keep class com.google.android.ump.** { *; }
+-dontwarn com.google.android.ump.**
+
+# Google Mobile Ads / AdMob
+-keep class com.google.android.gms.ads.** { *; }
+-dontwarn com.google.android.gms.ads.**
+
+# LevelPlay / ironSource mediation SDK and its network adapters
+-keep class com.ironsource.** { *; }
+-keep class com.unity3d.mediation.** { *; }
+-keep class com.unity3d.ironsourceads.** { *; }
+-keepclassmembers class com.ironsource.sdk.controller.IronSourceWebView$JSInterface {
+    public *;
+}
+-dontwarn com.ironsource.**
+
+# Unity Ads (mediated network)
+-keep class com.unity3d.ads.** { *; }
+-keep class com.unity3d.services.** { *; }
+-dontwarn com.unity3d.ads.**
+-dontwarn com.unity3d.services.**
+
+# Parcelable creators used by the ad SDKs
+-keepclassmembers class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
