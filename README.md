@@ -1,6 +1,6 @@
 # Snowman Run: Escape Winter
 
-![Snowman Run Banner](https://oktayshakirov.com/assets/images/projects/snowman-run.png)
+![Snowman Run Banner](https://oktayshakirov.com/assets/images/projects/snowman-run.webp)
 
 **Ready for an adrenaline-packed winter adventure? Jump into the frosty world of Snowman Run: Escape Winter, where the challenges keep coming!**
 
