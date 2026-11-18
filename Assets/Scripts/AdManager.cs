@@ -2,10 +2,6 @@ using System.Collections;
 using UnityEngine;
 using Unity.Services.LevelPlay;
 
-// LevelPlay 8.x still types its public events with the deprecated
-// com.unity3d.mediation aliases, so referencing them is unavoidable here.
-#pragma warning disable 0618
-
 public class InterstitialAd : MonoBehaviour
 {
     public static InterstitialAd Instance;
@@ -80,7 +76,7 @@ public class InterstitialAd : MonoBehaviour
         _interstitialAd.LoadAd();
     }
 
-    private void OnAdLoaded(com.unity3d.mediation.LevelPlayAdInfo adInfo)
+    private void OnAdLoaded(LevelPlayAdInfo adInfo)
     {
         _adLoaded = true;
         _isLoading = false;
@@ -91,7 +87,7 @@ public class InterstitialAd : MonoBehaviour
         }
     }
 
-    private void OnAdLoadFailed(com.unity3d.mediation.LevelPlayAdError error)
+    private void OnAdLoadFailed(LevelPlayAdError error)
     {
         _isLoading = false;
     }
@@ -120,13 +116,13 @@ public class InterstitialAd : MonoBehaviour
         _interstitialAd.ShowAd();
     }
 
-    private void OnAdDisplayFailed(com.unity3d.mediation.LevelPlayAdDisplayInfoError error)
+    private void OnAdDisplayFailed(LevelPlayAdInfo adInfo, LevelPlayAdError error)
     {
         _isShowing = false;
         NotifyRewardedAdToReload();
     }
 
-    private void OnAdClosed(com.unity3d.mediation.LevelPlayAdInfo adInfo)
+    private void OnAdClosed(LevelPlayAdInfo adInfo)
     {
         _isShowing = false;
         NotifyRewardedAdToReload();

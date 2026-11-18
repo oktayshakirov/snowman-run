@@ -1,9 +1,11 @@
 <dependencies>
-  <unityversion>8.12.0</unityversion>
+  <unityversion>9.8.0</unityversion>
+
   <androidPackages>
-    <androidPackage spec="com.unity3d.ads-mediation:mediation-sdk:8.12.0">
+    <androidPackage spec="com.unity3d.ads-mediation:mediation-sdk:9.8.0">
     </androidPackage>
   </androidPackages>
+
   <androidPackages>
     <androidPackage spec="com.google.android.gms:play-services-ads-identifier:18.1.0">
       <repositories>
@@ -11,11 +13,15 @@
       </repositories>
     </androidPackage>
   </androidPackages>
+
   <iosPods>
-    <iosPod name="IronSourceSDK" version="8.12.0.0">
+    <iosPod name="IronSourceSDK" version="9.8.0.0">
       <sources>
         <source>https://github.com/CocoaPods/Specs</source>
       </sources>
     </iosPod>
   </iosPods>
+  <!-- remoteSwiftPackage removed on purpose: the AdMob adapter (5.0.0.0) is
+       CocoaPods-only and pulls IronSourceSDK as a pod, so EDM4U adding the
+       SDK as a Swift package as well would link two copies of it. -->
 </dependencies>

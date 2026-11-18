@@ -3,10 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Services.LevelPlay;
 
-// LevelPlay 8.x still types its public events with the deprecated
-// com.unity3d.mediation aliases, so referencing them is unavoidable here.
-#pragma warning disable 0618
-
 public class RewardedAdButton : MonoBehaviour
 {
     public static RewardedAdButton Instance;
@@ -97,7 +93,7 @@ public class RewardedAdButton : MonoBehaviour
         _rewardedAd.LoadAd();
     }
 
-    private void OnAdLoaded(com.unity3d.mediation.LevelPlayAdInfo adInfo)
+    private void OnAdLoaded(LevelPlayAdInfo adInfo)
     {
         _adLoaded = true;
         _isLoading = false;
@@ -105,7 +101,7 @@ public class RewardedAdButton : MonoBehaviour
         UpdateButtonVisibility();
     }
 
-    private void OnAdLoadFailed(com.unity3d.mediation.LevelPlayAdError error)
+    private void OnAdLoadFailed(LevelPlayAdError error)
     {
         _isLoading = false;
         UpdateButtonVisibility();
@@ -162,18 +158,18 @@ public class RewardedAdButton : MonoBehaviour
         _rewardedAd.ShowAd();
     }
 
-    private void OnAdDisplayFailed(com.unity3d.mediation.LevelPlayAdDisplayInfoError error)
+    private void OnAdDisplayFailed(LevelPlayAdInfo adInfo, LevelPlayAdError error)
     {
         _isShowing = false;
         LoadAd();
     }
 
-    private void OnAdRewarded(com.unity3d.mediation.LevelPlayAdInfo adInfo, com.unity3d.mediation.LevelPlayReward reward)
+    private void OnAdRewarded(LevelPlayAdInfo adInfo, LevelPlayReward reward)
     {
         GrantReward(reward != null && reward.Amount > 0 ? reward.Amount : _fallbackRewardAmount);
     }
 
-    private void OnAdClosed(com.unity3d.mediation.LevelPlayAdInfo adInfo)
+    private void OnAdClosed(LevelPlayAdInfo adInfo)
     {
         _isShowing = false;
         _adLoaded = false;

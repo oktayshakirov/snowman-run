@@ -8,10 +8,6 @@ using GoogleMobileAds.Ump.Api;
 using Unity.Advertisement.IosSupport;
 #endif
 
-// LevelPlay 8.x still types its public events with the deprecated
-// com.unity3d.mediation aliases, so referencing them is unavoidable here.
-#pragma warning disable 0618
-
 public class AdsInitializer : MonoBehaviour
 {
     public static AdsInitializer Instance;
@@ -262,15 +258,11 @@ public class AdsInitializer : MonoBehaviour
 
         if (_launchTestSuiteOnInit)
         {
-            IronSource.Agent.setMetaData("is_test_suite", "enable");
+            LevelPlay.SetMetaData("is_test_suite", "enable");
         }
 
         AdLog($"Initializing LevelPlay (appKey {_appKey})...");
-        LevelPlay.Init(_appKey, null, new[]
-        {
-            com.unity3d.mediation.LevelPlayAdFormat.REWARDED,
-            com.unity3d.mediation.LevelPlayAdFormat.INTERSTITIAL
-        });
+        LevelPlay.Init(_appKey);
     }
 
     public bool IsInitialized()
@@ -278,7 +270,7 @@ public class AdsInitializer : MonoBehaviour
         return _isInitialized;
     }
 
-    private void OnInitializationComplete(com.unity3d.mediation.LevelPlayConfiguration configuration)
+    private void OnInitializationComplete(LevelPlayConfiguration configuration)
     {
         AdLog("LevelPlay init complete.");
         _isInitialized = true;
@@ -291,7 +283,7 @@ public class AdsInitializer : MonoBehaviour
         }
     }
 
-    private void OnInitializationFailed(com.unity3d.mediation.LevelPlayInitError error)
+    private void OnInitializationFailed(LevelPlayInitError error)
     {
         Debug.LogError($"LevelPlay init failed: {error.ErrorCode} - {error.ErrorMessage}");
 
